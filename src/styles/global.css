@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Playfair";
+  src: url("/fonts/PlayfairDisplay-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair";
+  src: url("/fonts/PlayfairDisplay-Italic.woff") format("woff");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair";
+  src: url("/fonts/PlayfairDisplay-Bold.woff") format("woff");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair";
+  src: url("/fonts/PlayfairDisplay-BoldItalic.woff") format("woff");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --accent: #A8C44A;
+  --paper: #ffffff;
+  --ink: #050505;
+  --muted: #6a6a6a;
+  --line: rgba(5, 5, 5, 0.16);
+}
+
+:root.dark {
+  --paper: #050505;
+  --ink: #f7f7f7;
+  --muted: #a7a7a7;
+  --line: rgba(247, 247, 247, 0.18);
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Playfair", Georgia, "Times New Roman", serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.site-shell {
+  width: min(100% - 2rem, 48rem);
+}
+
+.loss-number {
+  width: min(calc(100vw - 1rem), 72rem);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.control-veil {
+  opacity: 0.1;
+  transition: opacity 180ms ease;
+}
+
+.control-veil:hover,
+.control-veil:focus-within {
+  opacity: 1;
+}
+
+.theme-button {
+  position: relative;
+  display: inline-flex;
+  height: 2.25rem;
+  width: 4.25rem;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 90%, var(--ink) 10%);
+  padding: 0.25rem;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.theme-button::before,
+.theme-button::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.theme-button::before {
+  left: 0.62rem;
+  content: "L";
+}
+
+.theme-button::after {
+  right: 0.58rem;
+  content: "D";
+}
+
+.theme-knob {
+  position: relative;
+  z-index: 1;
+  height: 1.65rem;
+  width: 1.65rem;
+  transform: translateX(0);
+  border-radius: 9999px;
+  background: var(--ink);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+:root.dark .theme-knob {
+  transform: translateX(1.95rem);
+  background: var(--accent);
+}
+
+.language-pill {
+  display: inline-flex;
+  height: 2.25rem;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 90%, var(--ink) 10%);
+  padding: 0 0.75rem;
+}
+
+.language-pill select {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  outline: none;
+}
+
+.flag-gb {
+  position: relative;
+  display: inline-block;
+  height: 0.78rem;
+  width: 1.1rem;
+  overflow: hidden;
+  border-radius: 0.08rem;
+  background:
+    linear-gradient(90deg, transparent 42%, #ffffff 42% 58%, transparent 58%),
+    linear-gradient(transparent 35%, #ffffff 35% 65%, transparent 65%),
+    linear-gradient(90deg, transparent 46%, #c8102e 46% 54%, transparent 54%),
+    linear-gradient(transparent 42%, #c8102e 42% 58%, transparent 58%),
+    #012169;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.flag-gb::before,
+.flag-gb::after {
+  position: absolute;
+  inset: -0.12rem;
+  content: "";
+  background: #ffffff;
+  transform: rotate(28deg);
+  clip-path: polygon(0 43%, 100% 43%, 100% 57%, 0 57%);
+}
+
+.flag-gb::after {
+  background: #c8102e;
+  transform: rotate(-28deg);
+  clip-path: polygon(0 46%, 100% 46%, 100% 54%, 0 54%);
+}
+
+.breakout-card {
+  width: min(calc(100vw - 2rem), 48rem);
+  border: 1px solid color-mix(in srgb, var(--accent) 72%, var(--ink) 28%);
+  background: var(--accent);
+  color: #050505;
+  box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.14);
+  transform: translateX(var(--shift));
+}
+
+.breakout-card:nth-child(odd) {
+  --shift: clamp(1.25rem, 8vw, 8rem);
+}
+
+.breakout-card:nth-child(even) {
+  --shift: calc(clamp(1.25rem, 8vw, 8rem) * -1);
+}
+
+@media (max-width: 700px) {
+  .breakout-card:nth-child(odd) {
+    --shift: 0.75rem;
+  }
+
+  .breakout-card:nth-child(even) {
+    --shift: -0.75rem;
+  }
+}

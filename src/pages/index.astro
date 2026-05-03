@@ -1,0 +1,180 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="/favicon.svg"
+		/>
+		<link
+			rel="icon"
+			href="/favicon.ico"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<meta
+			name="generator"
+			content={Astro.generator}
+		/>
+		<meta
+			name="description"
+			content="A plain-language campaign letter about keeping Android safe without closing it down."
+		/>
+		<title>helpsaveandroid.org</title>
+		<script is:inline>
+			const storedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+				document.documentElement.classList.add('dark');
+			}
+		</script>
+	</head>
+	<body class="selection:bg-[var(--accent)] selection:text-black">
+		<header class="flex w-full flex-wrap items-start justify-between gap-3 px-5 py-5 sm:px-8 sm:py-7">
+			<a
+				href="/"
+				class="control-veil rounded-full px-2 py-1 text-lg font-bold leading-none text-[var(--ink)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] sm:text-xl"
+				aria-label="helpsaveandroid.org home"
+			>
+				helpsaveandroid<span class="text-[var(--accent)]">.</span>org
+			</a>
+
+			<div class="control-veil ml-auto flex items-center gap-2 rounded-full">
+				<button
+					id="theme-toggle"
+					class="theme-button outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+					type="button"
+					aria-label="Toggle dark theme"
+					aria-pressed="false"
+				>
+					<span
+						class="theme-knob"
+						aria-hidden="true"
+					></span>
+				</button>
+
+				<label class="language-pill">
+					<span
+						class="flag-gb"
+						aria-hidden="true"
+					></span>
+					<span class="sr-only">Language</span>
+					<select aria-label="Language">
+						<option>English</option>
+					</select>
+				</label>
+			</div>
+		</header>
+
+		<main class="pb-28 pt-14 sm:pt-84">
+			<section
+				class="site-shell mx-auto"
+				aria-labelledby="loss-heading"
+			>
+				<p class="text-muted text-left text-xl italic sm:text-2xl">in 2025,</p>
+				<h1
+					id="loss-heading"
+					class="loss-number my-4 text-center text-4xl font-bold leading-[0.9] text-[var(--ink)] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[8.5rem]"
+				>
+					$400,000,000,000
+				</h1>
+				<p class="text-muted ml-auto max-w-[24rem] text-right text-xl pt-8 italic leading-tight sm:text-2xl">
+					was ruined and lost to scams.
+				</p>
+			</section>
+
+			<section
+				class="site-shell mx-auto mt-28 space-y-8 text-justify text-2xl leading-[1.55] sm:mt-84 sm:text-3xl sm:leading-[1.5]"
+			>
+				<p>Android is trying to fix this, but they're doing it wrong.</p>
+
+				<p class="text-muted">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae neque at lectus gravida
+					porttitor. Sed non erat sit amet sem luctus consequat, a placerat risus.
+				</p>
+
+				<p class="text-muted">
+					Curabitur a mi in dolor pharetra blandit. Nulla facilisi. Suspendisse tincidunt, nisl at aliquam
+					pretium, justo lorem sagittis massa, sit amet tempor ipsum lacus sed nibh.
+				</p>
+			</section>
+
+			<section
+				class="site-shell mx-auto mt-24 space-y-8"
+				aria-label="Sample campaign notes"
+			>
+				<article class="breakout-card rounded-lg p-7 sm:p-9">
+					<p class="text-sm uppercase">Sample card</p>
+					<h2 class="mt-4 text-3xl font-bold leading-tight sm:text-4xl">
+						Protection should not require permission from one company.
+					</h2>
+					<p class="mt-5 text-lg leading-8">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vitae diam at risus finibus
+						laoreet.
+					</p>
+				</article>
+
+				<article class="breakout-card rounded-lg p-7 sm:p-9">
+					<p class="text-sm uppercase">Sample card</p>
+					<h2 class="mt-4 text-3xl font-bold leading-tight sm:text-4xl">
+						Security can be strong without making Android smaller.
+					</h2>
+					<p class="mt-5 text-lg leading-8">
+						Donec luctus ligula at lacus porttitor, vitae dictum enim feugiat. Morbi nec ipsum quis nisl
+						tempor lacinia.
+					</p>
+				</article>
+
+				<article class="breakout-card rounded-lg p-7 sm:p-9">
+					<p class="text-sm uppercase">Sample card</p>
+					<h2 class="mt-4 text-3xl font-bold leading-tight sm:text-4xl">
+						The answer has to protect people and preserve choice.
+					</h2>
+					<p class="mt-5 text-lg leading-8">
+						Aliquam erat volutpat. In hac habitasse platea dictumst. Duis imperdiet lectus a felis dapibus, at
+						fermentum odio luctus.
+					</p>
+				</article>
+			</section>
+
+			<section
+				class="site-shell mx-auto mt-28 space-y-8 text-justify text-2xl leading-[1.55] sm:mt-32 sm:text-3xl sm:leading-[1.5]"
+			>
+				<p class="text-muted">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae neque at lectus gravida
+					porttitor. Sed non erat sit amet sem luctus consequat, a placerat risus.
+				</p>
+
+				<p class="text-muted">
+					Curabitur a mi in dolor pharetra blandit. Nulla facilisi. Suspendisse tincidunt, nisl at aliquam
+					pretium, justo lorem sagittis massa, sit amet tempor ipsum lacus sed nibh.
+				</p>
+			</section>
+		</main>
+
+		<script>
+			const themeToggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+
+			const syncPressedState = () => {
+				themeToggle?.setAttribute(
+					'aria-pressed',
+					String(document.documentElement.classList.contains('dark')),
+				);
+			};
+
+			syncPressedState();
+
+			themeToggle?.addEventListener('click', () => {
+				const isDark = document.documentElement.classList.toggle('dark');
+				localStorage.setItem('theme', isDark ? 'dark' : 'light');
+				syncPressedState();
+			});
+		</script>
+	</body>
+</html>
