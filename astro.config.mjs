@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'helpsaveandroid.github.io',
+  site: 'https://saveandroid.github.io',
   base: '/helpsaveandroid.org',
 
   vite: {
