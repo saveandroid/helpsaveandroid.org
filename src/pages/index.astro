@@ -1,5 +1,6 @@
 ---
-import '../styles/global.css';
+import { Font } from 'astro:assets';
+import '@/styles/global.css';
 ---
 
 <html lang="en">
@@ -9,6 +10,10 @@ import '../styles/global.css';
 			rel="icon"
 			type="image/svg+xml"
 			href="/favicon.svg"
+		/>
+		<link
+			rel="icon"
+			href="/favicon.ico"
 		/>
 		<meta
 			name="viewport"
@@ -22,6 +27,7 @@ import '../styles/global.css';
 			name="description"
 			content="A plain-language campaign letter about keeping Android safe without closing it down."
 		/>
+		<Font cssVariable="--font-serif" />
 		<title>helpsaveandroid.org</title>
 		<script is:inline>
 			const storedTheme = localStorage.getItem('theme');
@@ -31,11 +37,11 @@ import '../styles/global.css';
 			}
 		</script>
 	</head>
-	<body class="selection:bg-[var(--accent)] selection:text-black">
+	<body class="selection:bg-[var(--accent)] font-serif selection:text-black">
 		<header class="flex w-full flex-wrap items-start justify-between gap-3 px-5 py-5 sm:px-8 sm:py-7">
 			<a
 				href="/"
-				class="control-veil rounded-full px-2 py-1 text-lg font-bold leading-none text-[var(--ink)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] sm:text-xl"
+				class="control-veil rounded-full px-2 py-1 text-xl font-bold leading-none text-[var(--ink)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] sm:text-2xl"
 				aria-label="helpsaveandroid.org home"
 			>
 				helpsaveandroid<span class="text-[var(--accent)]">.</span>org
@@ -76,10 +82,17 @@ import '../styles/global.css';
 				<p class="text-muted text-left text-xl italic sm:text-2xl">in 2025,</p>
 				<h1
 					id="loss-heading"
-					class="loss-number my-4 text-center text-4xl font-bold leading-[0.9] text-[var(--ink)] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[8.5rem]"
+					class="loss-number odometer-number my-4 text-center text-4xl font-bold leading-[0.9] text-(--ink) sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[8.5rem]"
+					data-count-up-target="400000000000"
+					data-count-up-duration="10000"
 				>
 					$400,000,000,000
 				</h1>
+				<script is:inline>
+					if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+						document.getElementById('loss-heading').textContent = '$0';
+					}
+				</script>
 				<p class="text-muted ml-auto max-w-[24rem] text-right text-xl pt-8 italic leading-tight sm:text-2xl">
 					was ruined and lost to scams.
 				</p>
@@ -88,16 +101,182 @@ import '../styles/global.css';
 			<section
 				class="site-shell mx-auto mt-28 space-y-8 text-justify text-2xl leading-[1.55] sm:mt-84 sm:text-3xl sm:leading-[1.5]"
 			>
-				<p>Android is trying to fix this, but they're doing it wrong.</p>
-
-				<p class="text-muted">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae neque at lectus gravida
-					porttitor. Sed non erat sit amet sem luctus consequat, a placerat risus.
+				<p>
+					Android is trying to fix this, but they're doing it wrong. What might a better approach, and a
+					better android look like?
 				</p>
 
-				<p class="text-muted">
-					Curabitur a mi in dolor pharetra blandit. Nulla facilisi. Suspendisse tincidunt, nisl at aliquam
-					pretium, justo lorem sagittis massa, sit amet tempor ipsum lacus sed nibh.
+				<div
+					class="image-pair"
+					aria-label="Placeholder visuals for an anti-scam model and an open app store"
+				>
+					<figure class="image-placeholder">
+						<div
+							class="placeholder-visual anti-scam-placeholder"
+							role="img"
+							aria-label="Placeholder for an anti-scam model running on a phone"
+						>
+							<span class="phone-shell">
+								<span class="model-pulse"></span>
+								<span class="model-line model-line-one"></span>
+								<span class="model-line model-line-two"></span>
+								<span class="model-line model-line-three"></span>
+							</span>
+						</div>
+						<figcaption>anti-scam model</figcaption>
+					</figure>
+
+					<figure class="image-placeholder">
+						<div
+							class="placeholder-visual app-store-placeholder"
+							role="img"
+							aria-label="Placeholder for an open Android app store"
+						>
+							<span class="store-window">
+								<span class="store-topbar"></span>
+								<span class="store-grid">
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+								</span>
+							</span>
+						</div>
+						<figcaption>open app store</figcaption>
+					</figure>
+				</div>
+
+				<p>Is it possible to instead end scams forever?</p>
+
+				<p>
+					We propose creating a <span class="italic font-bold">World Wide Web</span> with an open language model
+					to detect scams, for everyone.
+				</p>
+
+				<p>
+					You can now run local language models on just your phone. You could have a model on your phone
+					protecting you from ever more sophisticated scamming attempts.
+				</p>
+
+				<p>
+					Everyone contributes to the model, and one fun activity is seeing how close you can get to making a
+					mock scam. You get a score on how close you got, but the model is so good that you never really get
+					close. A score of 20% close to scamming would be very good.
+				</p>
+
+				<p>
+					There are also other very good reasons we're doing this, mainly to do with software freedom, but
+					also because
+					<a
+						href="https://www.aclu.org/news/free-speech/app-store-oligopoly"
+						target="_blank"
+						rel="noreferrer"
+						class="text-link"
+					>
+						app-store gatekeepers can be pressured into removing apps
+					</a>
+					<sup id="fnref-1"><a href="#fn-1">1</a></sup>, including Google removing a voting app from its
+					Russian store after government pressure<sup id="fnref-2"><a href="#fn-2">2</a></sup>.
+				</p>
+
+				<p>
+					So, we've made a little open thing online, and you can suggest your best ideas to help save Android.
+				</p>
+
+				<div
+					class="principles"
+					aria-label="Minimum requirements for any approach"
+				>
+					<p>solving the problem must be, at a minimum:</p>
+					<ol class="marker:font-normal">
+						<li>anonymous</li>
+						<li>safe for grandma</li>
+						<li>easy for geeks</li>
+					</ol>
+				</div>
+
+				<p>
+					Anyone can contribute to the approach. You're welcome to send an email to
+					<a
+						href="mailto:ideas@helpsaveandroid.org?subject=Idea%20to%20help%20save%20Android"
+						class="text-link"
+						data-email-link
+					>
+						ideas@helpsaveandroid.org</a
+					> or discuss approaches on
+					<a
+						href="https://github.com/helpsaveandroid"
+						target="_blank"
+						rel="noreferrer"
+						class="text-link"
+					>
+						GitHub
+					</a>.
+				</p>
+
+				<div class="comparison">
+					<div class="comparison-heading">our current best approach</div>
+					<div class="comparison-heading">compared with Google</div>
+					<div>import a text file from GitHub, or maybe GitLab</div>
+					<div>all developers need to identify themselves with government ID</div>
+					<div>keep the list human-readable, forkable, and easy to audit</div>
+					<div>mandate apps and developers that are approved using checksums</div>
+					<div>let users decide once the risk is clearly explained</div>
+					<div>prevent installing applications for one day</div>
+				</div>
+
+				<section
+					class="footnotes"
+					aria-label="Sources"
+				>
+					<ol>
+						<li id="fn-1">
+							[1] American Civil Liberties Union, <a
+								href="https://www.aclu.org/news/free-speech/app-store-oligopoly"
+								target="_blank"
+								rel="noreferrer"
+								class="text-link"
+							>
+								"Your Smartphone, Their Rules: How App Stores Enable Corporate-Government Censorship."</a
+							>
+							<a
+								href="#fnref-1"
+								class="footnote-backref"
+								aria-label="Back to citation 1"
+							>
+								(back)
+							</a>
+						</li>
+						<li id="fn-2">
+							[2] <a
+								href="https://www.investing.com/news/stock-market-news/google-apple-remove-navalny-app-from-stores-as-russian-elections-begin-2618929"
+								target="_blank"
+								rel="noreferrer"
+								class="text-link"
+							>
+								Reuters reported
+							</a>
+							in September 2021 that Google and Apple removed Alexei Navalny's Smart Voting app from their Russian
+							stores after pressure from Russian authorities.
+							<a
+								href="#fnref-2"
+								class="footnote-backref"
+								aria-label="Back to citation 2"
+							>
+								(back)
+							</a>
+						</li>
+					</ol>
+				</section>
+
+				<p>
+					Thank you to Google for letting us suggest feedback on the thing. But I'm afraid it's not enough.
+				</p>
+
+				<p class="text-3xl font-bold leading-tight text-left sm:text-5xl">
+					We will make and keep Android open and safe.
 				</p>
 			</section>
 
@@ -138,24 +317,50 @@ import '../styles/global.css';
 					</p>
 				</article>
 			</section>
-
-			<section
-				class="site-shell mx-auto mt-28 space-y-8 text-justify text-2xl leading-[1.55] sm:mt-32 sm:text-3xl sm:leading-[1.5]"
-			>
-				<p class="text-muted">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae neque at lectus gravida
-					porttitor. Sed non erat sit amet sem luctus consequat, a placerat risus.
-				</p>
-
-				<p class="text-muted">
-					Curabitur a mi in dolor pharetra blandit. Nulla facilisi. Suspendisse tincidunt, nisl at aliquam
-					pretium, justo lorem sagittis massa, sit amet tempor ipsum lacus sed nibh.
-				</p>
-			</section>
 		</main>
+
+		<dialog
+			id="email-dialog"
+			class="email-dialog"
+			aria-labelledby="email-dialog-title"
+		>
+			<div class="email-dialog-panel">
+				<h2
+					id="email-dialog-title"
+					class="text-3xl font-bold leading-tight"
+				>
+					Before you email
+				</h2>
+				<p class="mt-4 text-lg leading-8">
+					Messages to ideas@helpsaveandroid.org will be reviewed by volunteers. Please do not send secrets,
+					passwords, private data, or live scam material.
+				</p>
+				<div class="mt-7 flex flex-wrap gap-3">
+					<a
+						href="mailto:ideas@helpsaveandroid.org?subject=Idea%20to%20help%20save%20Android"
+						class="dialog-action primary-action"
+						data-email-continue
+					>
+						Continue to email
+					</a>
+					<button
+						type="button"
+						class="dialog-action"
+						data-email-cancel
+					>
+						Cancel
+					</button>
+				</div>
+			</div>
+		</dialog>
 
 		<script>
 			const themeToggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+			const countUpAmount = document.querySelector<HTMLElement>('[data-count-up-target]');
+			const emailLink = document.querySelector<HTMLAnchorElement>('[data-email-link]');
+			const emailDialog = document.querySelector<HTMLDialogElement>('#email-dialog');
+			const emailCancel = document.querySelector<HTMLButtonElement>('[data-email-cancel]');
+			const emailContinue = document.querySelector<HTMLAnchorElement>('[data-email-continue]');
 
 			const syncPressedState = () => {
 				themeToggle?.setAttribute(
@@ -171,6 +376,126 @@ import '../styles/global.css';
 				localStorage.setItem('theme', isDark ? 'dark' : 'light');
 				syncPressedState();
 			});
+
+			emailLink?.addEventListener('click', (event) => {
+				if (!emailDialog || typeof emailDialog.showModal !== 'function') {
+					return;
+				}
+
+				event.preventDefault();
+				emailDialog.showModal();
+			});
+
+			emailCancel?.addEventListener('click', () => {
+				emailDialog?.close();
+			});
+
+			emailContinue?.addEventListener('click', () => {
+				emailDialog?.close();
+			});
+
+			emailDialog?.addEventListener('click', (event) => {
+				if (event.target === emailDialog) {
+					emailDialog.close();
+				}
+			});
+
+			if (countUpAmount) {
+				const formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0,
+				});
+				const target = Number(countUpAmount.dataset.countUpTarget);
+				const duration = Number(countUpAmount.dataset.countUpDuration ?? 1400);
+				const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				const digitReels: HTMLElement[] = [];
+				const finalAmount = formatter.format(target);
+				const targetDigitCount = finalAmount.replace(/\D/g, '').length;
+				const formatWithFinalMask = (amount: number) => {
+					const amountDigits = String(Math.max(0, Math.round(amount)))
+						.padStart(targetDigitCount, '0')
+						.slice(-targetDigitCount);
+					let digitIndex = 0;
+
+					return finalAmount.replace(/\d/g, () => amountDigits[digitIndex++] ?? '0');
+				};
+				const createDigitReel = (digit: string) => {
+					const digitShell = document.createElement('span');
+					const reel = document.createElement('span');
+
+					digitShell.className = 'odometer-digit';
+					digitShell.setAttribute('aria-hidden', 'true');
+					digitShell.style.setProperty('--digit', digit);
+					reel.className = 'odometer-reel';
+
+					for (let index = 0; index <= 9; index += 1) {
+						const reelDigit = document.createElement('span');
+						reelDigit.textContent = String(index);
+						reel.append(reelDigit);
+					}
+
+					digitShell.append(reel);
+					digitReels.push(digitShell);
+
+					return digitShell;
+				};
+				const createOdometer = (amount: number) => {
+					const maskedAmount = formatWithFinalMask(amount);
+					countUpAmount.textContent = '';
+					countUpAmount.setAttribute('aria-label', finalAmount);
+					countUpAmount.setAttribute('aria-live', 'off');
+					digitReels.length = 0;
+
+					for (const character of maskedAmount) {
+						if (/\d/.test(character)) {
+							countUpAmount.append(createDigitReel(character));
+						} else {
+							const staticCharacter = document.createElement('span');
+							staticCharacter.className = character === ',' ? 'odometer-separator' : 'odometer-symbol';
+							staticCharacter.setAttribute('aria-hidden', 'true');
+							staticCharacter.textContent = character;
+							countUpAmount.append(staticCharacter);
+						}
+					}
+				};
+				const renderAmount = (amount: number) => {
+					const maskedAmount = formatWithFinalMask(amount);
+					let digitIndex = 0;
+
+					for (const character of maskedAmount) {
+						if (/\d/.test(character)) {
+							digitReels[digitIndex]?.style.setProperty('--digit', character);
+							digitIndex += 1;
+						}
+					}
+				};
+
+				if (Number.isFinite(target) && target > 0) {
+					if (prefersReducedMotion) {
+						countUpAmount.textContent = finalAmount;
+					} else {
+						const startedAt = performance.now();
+						const logCurve = 99;
+						createOdometer(0);
+
+						const animateAmount = (now: number) => {
+							const progress = Math.min((now - startedAt) / duration, 1);
+							const easedProgress = Math.log1p(progress * logCurve) / Math.log1p(logCurve);
+							renderAmount(Math.round(target * easedProgress));
+
+							if (progress < 1) {
+								requestAnimationFrame(animateAmount);
+							} else {
+								renderAmount(target);
+							}
+						};
+
+						requestAnimationFrame(animateAmount);
+					}
+				}
+			}
 		</script>
 	</body>
 </html>
