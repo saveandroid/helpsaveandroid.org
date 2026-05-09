@@ -1,0 +1,208 @@
+---
+import grandmaImage from '@/assets/grandma.png';
+import geekImage from '@/assets/geek.png';
+import devImage from '@/assets/dev.png';
+
+const { class: className = '', size = 'default' } = Astro.props;
+const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : undefined;
+---
+
+<div
+	class:list={['phone-shell phone-frame transition-transform duration-500', className]}
+	style={widthStyle}
+	data-phone
+	data-mode="chat"
+	aria-label="Mock Android phone showing a scam warning conversation and safer Android user groups"
+>
+	<div class="phone-speaker"></div>
+
+	<div class="phone-screen">
+		<div class="chat-screen absolute inset-0 overflow-hidden rounded-[inherit]">
+			<div class="flex h-full flex-col bg-[#e6efdc]">
+				<div class="bg-[#0b6b41] px-5 pb-4 pt-3 text-white">
+					<div class="mb-4 flex items-center justify-between text-[0.7rem] font-medium text-white/70">
+						<span>10:32</span>
+						<span>LTE 42%</span>
+					</div>
+					<div class="flex items-center gap-3">
+						<div class="grid h-10 w-10 place-items-center rounded-full bg-white/18 text-xl">?</div>
+						<div>
+							<p class="text-lg font-semibold leading-tight">Unknown Number</p>
+							<p class="text-sm leading-tight text-white/78">+00 8XX XXX 4921</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="flex flex-1 flex-col gap-3 bg-[#eef2e5] px-4 pb-8 pt-5">
+					<div class="max-w-[86%] rounded-2xl rounded-tl-none bg-white px-4 py-3 shadow-sm">
+						<p class="text-[1.05rem] leading-snug text-[#243126]">
+							Your refund is approved. Install this Android security update to receive payment.
+						</p>
+						<p class="mt-1 text-right text-xs text-[#697568]">10:32</p>
+					</div>
+
+					<div
+						class="urgent-pulse max-w-[91%] rounded-2xl rounded-tl-none border border-[rgba(200,78,85,.24)] bg-white px-3 py-3 shadow-sm"
+					>
+						<div class="flex items-center gap-3">
+							<div
+								class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[var(--rose)] text-sm font-bold text-white"
+							>
+								APK
+							</div>
+							<div class="min-w-0">
+								<p class="truncate text-base font-semibold text-[#243126]">Secure Refund Update.apk</p>
+								<p class="text-sm text-[#697568]">2.8 MB - Tap To Install</p>
+							</div>
+						</div>
+						<p class="mt-2 text-right text-xs text-[#697568]">10:33</p>
+					</div>
+
+					<div class="ml-auto max-w-[78%] rounded-2xl rounded-tr-none bg-[#d5f5c4] px-4 py-3 shadow-sm">
+						<p class="text-[1.05rem] leading-snug text-[#243126]">Who is this?</p>
+						<p class="mt-1 text-right text-xs text-[#697568]">10:35</p>
+					</div>
+
+					<div class="mt-auto rounded-2xl border border-[#d0dcc7] bg-white/80 px-4 py-3">
+						<div class="flex items-center justify-between gap-3">
+							<p class="text-sm font-semibold text-[#344136]">Android Warning</p>
+							<span class="h-2.5 w-2.5 rounded-full bg-[var(--rose)]"></span>
+						</div>
+						<p class="mt-1 text-sm leading-snug text-[#5f6d61]">
+							This file asks to bypass Play Protect and read messages!
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="people-screen absolute inset-0 overflow-hidden rounded-3xl">
+			<div class="relative h-full overflow-hidden bg-[linear-gradient(180deg,#f8fbf2_0%,#dfead3_100%)]">
+				<div
+					class="absolute inset-x-0 top-0 z-10 border-b border-[rgba(21,22,17,.12)] bg-white/74 px-5 pb-3 pt-10 backdrop-blur"
+				>
+					<div class="flex items-center justify-between">
+						<p class="text-lg font-semibold font-serif text-[#273021]">A Calmer Android...</p>
+						<span class="h-3 w-3 rounded-full bg-[var(--accent)]"></span>
+					</div>
+				</div>
+
+				<div class="absolute inset-0 top-20">
+					<div
+						class="absolute left-[-3.7rem] top-4 h-56 w-56 overflow-hidden rounded-full border-[0.45rem] border-[#ee9aa2] bg-white shadow-[0_1.2rem_2.5rem_rgba(21,22,17,.18)]"
+					>
+						<img
+							src={grandmaImage.src}
+							alt="Grandma"
+							class="h-full w-full object-cover"
+						/>
+					</div>
+
+					<div
+						class="absolute right-[-2rem] top-52 h-56 w-56 overflow-hidden rounded-full border-[0.45rem] border-[var(--accent)] bg-white shadow-[0_1.2rem_2.5rem_rgba(21,22,17,.18)]"
+					>
+						<img
+							src={geekImage.src}
+							alt="Geek"
+							class="h-full w-full object-cover"
+						/>
+					</div>
+
+					<div
+						class="absolute bottom-7 left-[-3.3rem] h-56 w-56 overflow-hidden rounded-full border-[0.45rem] border-[var(--blue)] bg-white shadow-[0_1.2rem_2.5rem_rgba(21,22,17,.18)]"
+					>
+						<img
+							src={devImage.src}
+							alt="Developer"
+							class="h-full w-full object-cover"
+						/>
+					</div>
+				</div>
+
+				<div
+					class="absolute bottom-5 left-5 right-5 rounded-full border border-[rgba(21,22,17,.13)] bg-white/82 p-2 shadow-sm backdrop-blur"
+				>
+					<p class="text-sm leading-snug text-[#4d5748] italic text-center">
+						a system that's better for everyone.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.phone-frame {
+		position: relative;
+		width: var(--phone-width, min(76vw, 23.25rem));
+		aspect-ratio: 9 / 18.5;
+		border: 0.48rem solid color-mix(in srgb, var(--ink) 88%, var(--paper) 12%);
+		border-radius: 2.55rem;
+		background: color-mix(in srgb, var(--ink) 88%, var(--paper) 12%);
+		box-shadow:
+			0 2.2rem 5rem var(--page-shadow),
+			inset 0 0 0 1px color-mix(in srgb, var(--paper) 28%, transparent);
+	}
+
+	.phone-speaker {
+		position: absolute;
+		z-index: 2;
+		top: 0.72rem;
+		left: 50%;
+		width: 3.8rem;
+		height: 0.28rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--paper) 24%, var(--ink) 76%);
+		transform: translateX(-50%);
+	}
+
+	.phone-screen {
+		position: absolute;
+		inset: 0.56rem;
+		isolation: isolate;
+		overflow: hidden;
+		border-radius: 2rem;
+		background:
+			radial-gradient(
+				circle at 20% 9%,
+				color-mix(in srgb, var(--android-green) 16%, transparent),
+				transparent 28%
+			),
+			linear-gradient(
+				180deg,
+				var(--android-surface),
+				color-mix(in srgb, var(--paper) 78%, var(--accent-soft) 22%)
+			);
+		font-family:
+			ui-sans-serif,
+			system-ui,
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			sans-serif;
+		text-rendering: geometricPrecision;
+	}
+
+	.phone-screen::after {
+		position: absolute;
+		right: 38%;
+		bottom: 0.55rem;
+		left: 38%;
+		z-index: 30;
+		height: 0.25rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--ink) 38%, transparent);
+		content: '';
+	}
+
+	.chat-screen,
+	.people-screen {
+		clip-path: inset(0 round 2rem);
+		will-change: opacity;
+	}
+
+	.phone-shell.is-ready .chat-screen,
+	.phone-shell.is-ready .people-screen {
+		transition: opacity 320ms ease;
+	}
+</style>
