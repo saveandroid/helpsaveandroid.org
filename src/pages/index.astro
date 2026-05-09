@@ -698,6 +698,20 @@ import '@/styles/global.css';
 
 			syncThemeState();
 
+			let themeTransitionTimer: number | undefined;
+
+			const animateThemeTransition = () => {
+				if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+					return;
+				}
+
+				document.documentElement.classList.add('theme-transitioning');
+				window.clearTimeout(themeTransitionTimer);
+				themeTransitionTimer = window.setTimeout(() => {
+					document.documentElement.classList.remove('theme-transitioning');
+				}, 520);
+			};
+
 			const setupHeaderReveal = () => {
 				if (!siteHeader) {
 					return;
@@ -755,6 +769,7 @@ import '@/styles/global.css';
 			};
 
 			themeToggle?.addEventListener('click', () => {
+				animateThemeTransition();
 				const isDark = document.documentElement.classList.toggle('dark');
 				try {
 					localStorage.setItem('theme', isDark ? 'dark' : 'light');
