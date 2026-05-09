@@ -18,13 +18,15 @@
   --amber: #c88317;
   --rose: #c84e55;
   --page-shadow: rgba(21, 22, 17, 0.16);
+  --theme-transition-duration: 420ms;
+  --theme-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: light;
 }
 
 :root.dark {
-  --accent: #9ed651;
-  --accent-strong: #b7ec71;
-  --accent-soft: #1d3017;
+  --accent: #5f8f2d;
+  --accent-strong: #73a73a;
+  --accent-soft: #14240f;
   --paper: #0d0f0b;
   --paper-raised: #151811;
   --ink: #f6f7ee;
@@ -32,9 +34,9 @@
   --line: rgba(246, 247, 238, 0.16);
   --line-strong: rgba(246, 247, 238, 0.34);
   --grid-line: rgba(246, 247, 238, 0.1);
-  --android-green: #3ddc84;
-  --android-green-strong: #73eca4;
-  --android-surface: #111a14;
+  --android-green: #25a35f;
+  --android-green-strong: #5a9632;
+  --android-surface: #0f1711;
   --blue: #72b5e8;
   --amber: #e5b75a;
   --rose: #ee888f;
@@ -46,9 +48,22 @@
   box-sizing: border-box;
 }
 
+:root.theme-transitioning *,
+:root.theme-transitioning *::before,
+:root.theme-transitioning *::after {
+  transition:
+    background-color var(--theme-transition-duration) var(--theme-transition-ease),
+    color var(--theme-transition-duration) var(--theme-transition-ease),
+    border-color var(--theme-transition-duration) var(--theme-transition-ease),
+    box-shadow var(--theme-transition-duration) var(--theme-transition-ease),
+    opacity 260ms ease,
+    transform var(--theme-transition-duration) var(--theme-transition-ease);
+}
+
 html {
   min-width: 320px;
   scroll-behavior: smooth;
+  background-color: var(--paper);
   background: var(--paper);
   color: var(--ink);
 }
@@ -62,6 +77,7 @@ body {
   margin: 0;
   padding-top: var(--site-header-height, 5rem);
   overflow-x: clip;
+  background-color: var(--paper);
   background:
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
@@ -184,44 +200,135 @@ button {
   border-radius: 999px;
   background: var(--paper-raised);
   color: var(--ink);
+  overflow: hidden;
+  transition:
+    transform 180ms ease,
+    border-color 220ms ease,
+    background-color var(--theme-transition-duration) var(--theme-transition-ease),
+    box-shadow 220ms ease;
+}
+
+.icon-button:hover {
+  border-color: color-mix(in srgb, var(--accent-strong) 58%, var(--line) 42%);
+  box-shadow: 0 0.5rem 1.4rem color-mix(in srgb, var(--page-shadow) 30%, transparent);
+  transform: rotate(-7deg) scale(1.04);
+}
+
+:root.dark .icon-button:hover {
+  transform: rotate(7deg) scale(1.04);
+}
+
+#theme-toggle::before {
+  position: absolute;
+  inset: 0.35rem;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--amber) 22%, transparent), transparent 34%),
+    color-mix(in srgb, var(--accent-soft) 30%, transparent);
+  content: "";
+  opacity: 0.78;
+  transition:
+    background var(--theme-transition-duration) var(--theme-transition-ease),
+    opacity var(--theme-transition-duration) var(--theme-transition-ease),
+    transform var(--theme-transition-duration) var(--theme-transition-ease);
+}
+
+:root.dark #theme-toggle::before {
+  background:
+    radial-gradient(circle at 64% 36%, color-mix(in srgb, var(--blue) 24%, transparent), transparent 34%),
+    color-mix(in srgb, var(--paper) 42%, transparent);
+  opacity: 0.92;
+  transform: rotate(18deg);
 }
 
 .sun-icon,
 .moon-icon {
   position: absolute;
   display: block;
+  transition:
+    opacity var(--theme-transition-duration) var(--theme-transition-ease),
+    transform var(--theme-transition-duration) var(--theme-transition-ease),
+    filter var(--theme-transition-duration) var(--theme-transition-ease);
 }
 
 .sun-icon {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid var(--amber);
+  width: 0.92rem;
+  height: 0.92rem;
+  border: 0;
   border-radius: 999px;
+  background: var(--amber);
+  box-shadow:
+    0 0 0 0.18rem color-mix(in srgb, var(--amber) 20%, transparent),
+    0 0 0.8rem color-mix(in srgb, var(--amber) 32%, transparent);
+  transform: rotate(0deg) scale(1);
 }
 
 .sun-icon::before {
   position: absolute;
-  inset: -0.45rem;
-  border: 1px solid var(--amber);
+  inset: -0.48rem;
+  background: repeating-conic-gradient(
+    from 0deg,
+    var(--amber) 0 9deg,
+    transparent 9deg 45deg
+  );
+  content: "";
+  -webkit-mask: radial-gradient(circle, transparent 0 0.68rem, #000 0.7rem);
+  mask: radial-gradient(circle, transparent 0 0.68rem, #000 0.7rem);
+}
+
+.sun-icon::after {
+  position: absolute;
+  inset: 0.18rem 0.48rem auto auto;
+  width: 0.17rem;
+  height: 0.17rem;
   border-radius: inherit;
+  background: color-mix(in srgb, #fff 65%, var(--amber) 35%);
   content: "";
 }
 
 .moon-icon {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.14rem;
+  height: 1.14rem;
   border-radius: 999px;
-  box-shadow: -0.35rem 0 0 var(--blue);
+  background: var(--blue);
+  box-shadow:
+    inset 0.34rem -0.18rem 0 color-mix(in srgb, var(--paper-raised) 94%, transparent),
+    0 0 0.8rem color-mix(in srgb, var(--blue) 34%, transparent);
   opacity: 0;
-  transform: translateX(0.25rem);
+  transform: translate(0.28rem, 0.18rem) rotate(-18deg) scale(0.76);
+}
+
+.moon-icon::before,
+.moon-icon::after {
+  position: absolute;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 82%, var(--blue) 18%);
+  content: "";
+}
+
+.moon-icon::before {
+  top: -0.18rem;
+  right: -0.18rem;
+  width: 0.18rem;
+  height: 0.18rem;
+  box-shadow: -0.82rem 0.08rem 0 -0.03rem color-mix(in srgb, #fff 70%, var(--blue) 30%);
+}
+
+.moon-icon::after {
+  right: -0.28rem;
+  bottom: 0.16rem;
+  width: 0.13rem;
+  height: 0.13rem;
 }
 
 :root.dark .sun-icon {
   opacity: 0;
+  transform: translate(-0.18rem, -0.2rem) rotate(48deg) scale(0.72);
 }
 
 :root.dark .moon-icon {
   opacity: 1;
+  transform: translate(0, 0) rotate(0deg) scale(1);
 }
 
 .section-shell {
