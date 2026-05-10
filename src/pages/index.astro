@@ -42,10 +42,10 @@ import '@/styles/global.css';
 	<body>
 		<a
 			href="#top"
-			class="side-wordmark"
+			class="side-wordmark text-(--muted)/50! hover:text-(--ink)! group"
 			aria-label="helpsaveandroid.org home"
 		>
-			helpsaveandroid<span class="text-[var(--accent)]">.</span>org
+			helpsaveandroid<span class="group-hover:text-(--accent) transition-colors">.</span>org
 		</a>
 
 		<main
@@ -53,7 +53,7 @@ import '@/styles/global.css';
 			class="relative overflow-x-clip"
 		>
 			<section
-				class="relative mx-auto grid max-w-screen-xl px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,27rem)] lg:gap-16 lg:px-12 xl:gap-24"
+				class="relative mx-auto grid max-w-7xl px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,27rem)] lg:gap-16 lg:px-12 xl:gap-24"
 			>
 				<div class="relative z-10">
 					<div class="sticky top-4 z-20 mx-auto mb-12 flex justify-center lg:hidden">
@@ -62,22 +62,22 @@ import '@/styles/global.css';
 
 					<section class="snap-panel flex min-h-screen items-center pb-20 pt-14 lg:pb-24 lg:pt-24">
 						<div class="max-w-3xl">
-							<p class="type-body italic text-[var(--muted)]">since the beginning of last year,</p>
+							<p class="type-body italic text-(--muted)">since the beginning of last year,</p>
 							<div
-								class="type-heading mt-5 max-w-full whitespace-nowrap text-[var(--ink)] tabular-nums"
+								class="type-heading mt-5 max-w-full whitespace-nowrap text-(--ink) tabular-nums"
 								data-loss-counter
 							>
 								$0
 							</div>
-							<p class="type-body pl-69 mt-6 max-w-2xl italic text-[var(--muted)]">
+							<p class="type-body pl-69 mt-6 max-w-2xl italic text-(--muted)">
 								has been ruined and lost to scams.
 							</p>
 
-							<div class="type-body mt-11 max-w-2xl space-y-5 text-[var(--muted)]">
+							<div class="type-body mt-11 max-w-2xl space-y-5 text-(--muted)">
 								<p>
 									google is trying to fix this, but they're doing so by tightening their control of android.
 								</p>
-								<p class="text-[var(--ink)]">what might a better approach, and a better android look like?</p>
+								<p class="text-(--ink)">what might a better approach, and a better android look like?</p>
 							</div>
 						</div>
 					</section>
@@ -88,21 +88,19 @@ import '@/styles/global.css';
 						data-people-trigger
 					>
 						<div class="max-w-3xl">
-							<p class="type-subheading max-w-2xl text-[var(--ink)]">
-								the solution has to work for everyone.
-							</p>
-							<p class="type-body mt-8 text-[var(--muted)]">it has to be:</p>
-							<ol class="type-body mt-4 ml-6 grid text-[var(--ink)]">
+							<p class="type-subheading max-w-2xl text-(--ink)">the solution has to work for everyone.</p>
+							<p class="type-body mt-8 text-(--muted)">it has to be:</p>
+							<ol class="type-body mt-4 ml-6 grid text-(--ink)">
 								<li class="flex items-baseline gap-4 py-1">
-									<span class="text-[var(--accent-strong)]">1.</span>
+									<span class="text-(--accent-strong)">1.</span>
 									<span>safe for grandma,</span>
 								</li>
 								<li class="flex items-baseline gap-4 py-1">
-									<span class="text-[var(--accent-strong)]">2.</span>
+									<span class="text-(--accent-strong)">2.</span>
 									<span>easy for geeks, and</span>
 								</li>
 								<li class="flex items-baseline gap-4 py-1">
-									<span class="text-[var(--accent-strong)]">3.</span>
+									<span class="text-(--accent-strong)">3.</span>
 									<span>anonymous for developers.</span>
 								</li>
 							</ol>
@@ -115,28 +113,26 @@ import '@/styles/global.css';
 				</aside>
 			</section>
 
-			<section
-				class="snap-panel border-t border-[var(--line)] bg-[var(--paper-raised)] px-5 py-28 sm:px-8 lg:px-12"
-			>
-				<div class="mx-auto max-w-screen-md">
-					<p class="type-body text-[var(--muted)]">
+			<section class="snap-panel border-t border-(--line) bg-(--paper-raised) px-5 py-28 sm:px-8 lg:px-12">
+				<div class="mx-auto max-w-3xl">
+					<p class="type-body text-(--muted)">
 						We propose creating a local and open language model to detect scams, for everyone.
 					</p>
 
 					<div class="my-16 grid gap-4 lg:-ml-36 lg:w-[calc(100%+18rem)] lg:grid-cols-2">
 						<div
-							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
 						>
-							<p class="type-subheading text-[var(--muted)]">[anti-scam model]</p>
+							<p class="type-subheading text-(--muted)">[anti-scam model]</p>
 						</div>
 						<div
-							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
 						>
-							<p class="type-subheading text-[var(--muted)]">[an open app store]</p>
+							<p class="type-subheading text-(--muted)">[an open app store]</p>
 						</div>
 					</div>
 
-					<div class="type-body space-y-5 text-[var(--muted)]">
+					<div class="type-body space-y-5 text-(--muted)">
 						<p>
 							You can now run local language models on your phone. So, you could have one that's just
 							protecting you from ever sophisticated scamming attempts.
@@ -154,18 +150,18 @@ import '@/styles/global.css';
 					</div>
 
 					<div
-						class="my-16 grid min-h-96 place-items-center rounded-lg border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)] lg:-ml-36 lg:w-[calc(100%+18rem)]"
+						class="my-16 grid min-h-96 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)] lg:-ml-36 lg:w-[calc(100%+18rem)]"
 					>
-						<p class="type-subheading text-[var(--muted)]">[a world wide web of open-source applications]</p>
+						<p class="type-subheading text-(--muted)">[a world wide web of open-source applications]</p>
 					</div>
 
-					<p class="type-body text-[var(--muted)]">
+					<p class="type-body text-(--muted)">
 						We think this is quite possible, and can help everyone. There are simple too many scams that
 						people need to pay attention to nowadays, and a model for detecting them has to be something that
 						everyone can help improve.
 					</p>
 
-					<p class="type-body mt-16 text-[var(--muted)]">
+					<p class="type-body mt-16 text-(--muted)">
 						There are also oher very good reasons we're doing this, mainly to do with software freedom, but
 						also that Google has a documented history of removing apps when regimes have asked.
 					</p>
@@ -179,7 +175,7 @@ import '@/styles/global.css';
 								href="https://www.aclu.org/news/free-speech/app-store-oligopoly"
 								target="_blank"
 								rel="noreferrer"
-								class="block rounded-lg border border-[var(--accent)] bg-[var(--accent-strong)] p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)]"
+								class="block rounded-lg border border-(--accent) bg-(--accent-strong) p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--ink)"
 							>
 								<p class="text-sm font-semibold uppercase tracking-[0.12em] text-white/72">ACLU</p>
 								<h3 class="type-subheading mt-3">Your Smartphone, Their Rules</h3>
@@ -188,14 +184,14 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-[var(--line)] bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
 								<iframe
 									src="https://www.aclu.org/news/free-speech/app-store-oligopoly"
 									title="ACLU article preview"
 									loading="lazy"
-									class="h-[720px] w-[1280px] origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
+									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
 								></iframe>
 							</div>
 						</article>
@@ -208,7 +204,7 @@ import '@/styles/global.css';
 								href="https://www.theguardian.com/world/2021/sep/17/apple-and-google-accused-of-political-censorship-over-alexei-navalny-app"
 								target="_blank"
 								rel="noreferrer"
-								class="block rounded-lg border border-[var(--accent)] bg-[var(--accent-strong)] p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)]"
+								class="block rounded-lg border border-(--accent) bg-(--accent-strong) p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-(--ink)"
 							>
 								<p class="text-sm font-semibold uppercase tracking-[0.12em] text-white/72">The Guardian</p>
 								<h3 class="type-subheading mt-3">Apple and Google Accused of Political Censorship</h3>
@@ -217,14 +213,14 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-[var(--line)] bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
 								<iframe
 									src="https://www.theguardian.com/world/2021/sep/17/apple-and-google-accused-of-political-censorship-over-alexei-navalny-app"
 									title="The Guardian article preview"
 									loading="lazy"
-									class="h-[720px] w-[1280px] origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
+									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
 								></iframe>
 							</div>
 						</article>
@@ -237,7 +233,7 @@ import '@/styles/global.css';
 								href="https://www.techradar.com/vpn/vpn-privacy-security/russia-orders-apple-and-google-to-remove-important-stories-an-investigative-media-app-that-works-without-a-vpn-leaving-russians-without-a-key-source-for-accessing-uncensored-news"
 								target="_blank"
 								rel="noreferrer"
-								class="block rounded-lg border border-[var(--accent)] bg-[var(--accent-strong)] p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)]"
+								class="block rounded-lg border border-(--accent) bg-(--accent-strong) p-6 text-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-(--ink)"
 							>
 								<p class="text-sm font-semibold uppercase tracking-[0.12em] text-white/72">TechRadar</p>
 								<h3 class="type-subheading mt-3">
@@ -248,36 +244,36 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-[var(--line)] bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
 								<iframe
 									src="https://www.techradar.com/vpn/vpn-privacy-security/russia-orders-apple-and-google-to-remove-important-stories-an-investigative-media-app-that-works-without-a-vpn-leaving-russians-without-a-key-source-for-accessing-uncensored-news"
 									title="TechRadar Article Preview"
 									loading="lazy"
-									class="h-[720px] w-[1280px] origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
+									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
 								></iframe>
 							</div>
 						</article>
 					</div>
 
-					<div class="type-body space-y-5 text-[var(--muted)]">
+					<div class="type-body space-y-5 text-(--muted)">
 						<p>
 							This isn't something we can achieve alone. We have made a little open thing online, and you can
 							suggest your best ideas to help save Android. Instead of mandating that Android developers
 							identify themselves, solving the problem must be (at a minimum):
 						</p>
-						<ol class="ml-6 grid text-[var(--muted)]">
+						<ol class="ml-6 grid text-(--muted)">
 							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-[var(--accent-strong)]">1.</span>
+								<span class="text-(--accent-strong)">1.</span>
 								<span>safe for grandma,</span>
 							</li>
 							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-[var(--accent-strong)]">2.</span>
+								<span class="text-(--accent-strong)">2.</span>
 								<span>easy for geeks, and</span>
 							</li>
 							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-[var(--accent-strong)]">3.</span>
+								<span class="text-(--accent-strong)">3.</span>
 								<span>anonymous for developers</span>
 							</li>
 						</ol>
@@ -285,7 +281,7 @@ import '@/styles/global.css';
 							Anyone can contribute ideas, and you're welcome to
 							<a
 								href="mailto:ideas@helpsaveandroid.org"
-								class="text-[var(--muted)] font-semibold underline decoration-[var(--accent-strong)] decoration-2 hover:decoration-4 underline-offset-4"
+								class="text-(--muted) font-semibold underline decoration-(--accent-strong) decoration-2 hover:decoration-4 underline-offset-4"
 							>
 								send an email</a
 							>
@@ -294,12 +290,88 @@ import '@/styles/global.css';
 								href="https://github.com/saveandroid/helpsaveandroid.org"
 								target="_blank"
 								rel="noreferrer"
-								class="text-[var(--muted)] font-semibold underline decoration-[var(--accent-strong)] hover:decoration-4 decoration-2 underline-offset-4"
+								class="text-(--muted) font-semibold underline decoration-(--accent-strong) hover:decoration-4 decoration-2 underline-offset-4"
 							>
 								discuss approaches on GitHub</a
 							>.
 						</p>
 					</div>
+
+					<div class="mx-auto my-20 flex justify-center">
+						<img
+							src="/divider.svg"
+							alt=""
+							class="h-14 w-auto opacity-80"
+							loading="lazy"
+						/>
+					</div>
+
+					<section
+						aria-labelledby="scenario-heading"
+						class="type-body space-y-7 text-(--muted)"
+					>
+						<h2
+							id="scenario-heading"
+							class="type-subheading text-center text-(--ink)"
+						>
+							A Scenario...
+						</h2>
+
+						<p>
+							Let's imagine that the internet gets censored, and an anonymous developer builds chatting using
+							Bluetooth.
+						</p>
+
+						<div
+							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+						>
+							<p class="type-body font-semibold! text-(--muted)">
+								[developer sitting in the window programming]
+							</p>
+						</div>
+
+						<p>
+							You can relay messages between people, and share what you're thinking about in your
+							neighbourhood, and they relay around the world.
+						</p>
+
+						<div
+							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+						>
+							<p class="type-body font-semibold! text-(--muted)">
+								[how the app works and messaging around the world]
+							</p>
+						</div>
+
+						<p>
+							Google has to comply with the government, and takes down the app; they also give the government
+							the developers real name.
+						</p>
+
+						<div
+							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+						>
+							<p class="type-body font-semibold! text-(--muted)">
+								[developer gets a knock on the door from people in suits]
+							</p>
+						</div>
+
+						<p>
+							It is also very possible that, at some point, there is a digital pre-requisite checking the
+							functionality of your application and doesn't even allow you to build it in the first place.
+						</p>
+
+						<p>
+							Unless we do something, the first step towards this future is in
+							<span
+								class="font-semibold tabular-nums text-(--ink)"
+								data-days-until-september
+							>
+								114</span
+							>
+							<span class="font-semibold text-(--ink)">days</span>.
+						</p>
+					</section>
 				</div>
 			</section>
 		</main>
@@ -331,6 +403,18 @@ import '@/styles/global.css';
 
 			if (counters.length) {
 				requestAnimationFrame(renderCounter);
+			}
+
+			const daysUntilSeptember = document.querySelector('[data-days-until-september]');
+			if (daysUntilSeptember) {
+				const targetDate = new Date('2026-09-01T00:00:00');
+				const startOfToday = new Date();
+				startOfToday.setHours(0, 0, 0, 0);
+				const msPerDay = 24 * 60 * 60 * 1000;
+				daysUntilSeptember.textContent = Math.max(
+					0,
+					Math.ceil((targetDate.getTime() - startOfToday.getTime()) / msPerDay),
+				).toLocaleString('en-US');
 			}
 
 			const phones = document.querySelectorAll('[data-phone]');
