@@ -8,7 +8,11 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 ---
 
 <div
-	class:list={['phone-shell phone-frame transition-transform duration-500', className]}
+	class:list={[
+		'phone-shell phone-frame transition-transform duration-500',
+		size === 'compact' && 'phone-frame--compact',
+		className,
+	]}
 	style={widthStyle}
 	data-phone
 	data-mode="chat"
@@ -20,25 +24,25 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 		<div class="chat-screen absolute inset-0 overflow-hidden rounded-[inherit]">
 			<div class="flex h-full flex-col bg-[#e6efdc]">
 				<div class="bg-[#0b6b41] px-5 pb-4 pt-3 text-white">
-					<div class="mb-4 flex items-center justify-between text-[0.7rem] font-medium text-white/70">
+					<div class="phone-status mb-4 flex items-center justify-between font-medium text-white/70">
 						<span>10:32</span>
 						<span>LTE 42%</span>
 					</div>
 					<div class="flex items-center gap-3">
-						<div class="grid h-10 w-10 place-items-center rounded-full bg-white/18 text-xl">?</div>
+						<div class="phone-avatar grid h-10 w-10 place-items-center rounded-full bg-white/18">?</div>
 						<div>
-							<p class="text-lg font-semibold leading-tight">Unknown Number</p>
-							<p class="text-sm leading-tight text-white/78">+00 8XX XXX 4921</p>
+							<p class="phone-contact-name font-semibold leading-tight">Unknown Number</p>
+							<p class="phone-contact-meta leading-tight text-white/78">+00 8XX XXX 4921</p>
 						</div>
 					</div>
 				</div>
 
 				<div class="flex flex-1 flex-col gap-3 bg-[#eef2e5] px-4 pb-8 pt-5">
 					<div class="max-w-[86%] rounded-2xl rounded-tl-none bg-white px-4 py-3 shadow-sm">
-						<p class="text-[1.05rem] leading-snug text-[#243126]">
+						<p class="phone-message-text leading-snug text-[#243126]">
 							Your refund is approved. Install this Android security update to receive payment.
 						</p>
-						<p class="mt-1 text-right text-xs text-[#697568]">10:32</p>
+						<p class="phone-message-time mt-1 text-right text-[#697568]">10:32</p>
 					</div>
 
 					<div
@@ -46,29 +50,29 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 					>
 						<div class="flex items-center gap-3">
 							<div
-								class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[var(--rose)] text-sm font-bold text-white"
+								class="phone-apk-label grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[var(--rose)] font-bold text-white"
 							>
 								APK
 							</div>
 							<div class="min-w-0">
-								<p class="truncate text-base font-semibold text-[#243126]">Secure Refund Update.apk</p>
-								<p class="text-sm text-[#697568]">2.8 MB - Tap To Install</p>
+								<p class="phone-file-name truncate font-semibold text-[#243126]">Secure Refund Update.apk</p>
+								<p class="phone-file-meta text-[#697568]">2.8 MB - Tap To Install</p>
 							</div>
 						</div>
-						<p class="mt-2 text-right text-xs text-[#697568]">10:33</p>
+						<p class="phone-message-time mt-2 text-right text-[#697568]">10:33</p>
 					</div>
 
 					<div class="ml-auto max-w-[78%] rounded-2xl rounded-tr-none bg-[#d5f5c4] px-4 py-3 shadow-sm">
-						<p class="text-[1.05rem] leading-snug text-[#243126]">Who is this?</p>
-						<p class="mt-1 text-right text-xs text-[#697568]">10:35</p>
+						<p class="phone-message-text leading-snug text-[#243126]">Who is this?</p>
+						<p class="phone-message-time mt-1 text-right text-[#697568]">10:35</p>
 					</div>
 
 					<div class="mt-auto rounded-2xl border border-[#d0dcc7] bg-white/80 px-4 py-3">
 						<div class="flex items-center justify-between gap-3">
-							<p class="text-sm font-semibold text-[#344136]">Android Warning</p>
+							<p class="phone-warning-title font-semibold text-[#344136]">Android Warning</p>
 							<span class="h-2.5 w-2.5 rounded-full bg-[var(--rose)]"></span>
 						</div>
-						<p class="mt-1 text-sm leading-snug text-[#5f6d61]">
+						<p class="phone-warning-text mt-1 leading-snug text-[#5f6d61]">
 							This file asks to bypass Play Protect and read messages!
 						</p>
 					</div>
@@ -82,7 +86,7 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 					class="absolute inset-x-0 top-0 z-10 border-b border-[rgba(21,22,17,.12)] bg-white/74 px-5 pb-3 pt-10 backdrop-blur"
 				>
 					<div class="flex items-center justify-between">
-						<p class="text-lg font-semibold font-serif text-[#273021]">A Calmer Android...</p>
+						<p class="phone-people-title font-semibold font-serif text-[#273021]">A Calmer Android...</p>
 						<span class="h-3 w-3 rounded-full bg-[var(--accent)]"></span>
 					</div>
 				</div>
@@ -122,7 +126,7 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 				<div
 					class="absolute bottom-5 left-5 right-5 rounded-full border border-[rgba(21,22,17,.13)] bg-white/82 p-2 shadow-sm backdrop-blur"
 				>
-					<p class="text-sm leading-snug text-[#4d5748] italic text-center">
+					<p class="phone-people-caption leading-snug text-[#4d5748] italic text-center">
 						a system that's better for everyone.
 					</p>
 				</div>
@@ -136,12 +140,41 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 		position: relative;
 		width: var(--phone-width, min(76vw, 23.25rem));
 		aspect-ratio: 9 / 18.5;
+		--phone-status-size: 0.7rem;
+		--phone-avatar-size: 1.25rem;
+		--phone-contact-size: 1.125rem;
+		--phone-contact-meta-size: 0.875rem;
+		--phone-message-size: 1.05rem;
+		--phone-message-time-size: 0.75rem;
+		--phone-apk-size: 0.875rem;
+		--phone-file-name-size: 1rem;
+		--phone-file-meta-size: 0.875rem;
+		--phone-warning-title-size: 0.875rem;
+		--phone-warning-text-size: 0.875rem;
+		--phone-people-title-size: 1.125rem;
+		--phone-people-caption-size: 0.875rem;
 		border: 0.48rem solid color-mix(in srgb, var(--ink) 88%, var(--paper) 12%);
 		border-radius: 2.55rem;
 		background: color-mix(in srgb, var(--ink) 88%, var(--paper) 12%);
 		box-shadow:
 			0 2.2rem 5rem var(--page-shadow),
 			inset 0 0 0 1px color-mix(in srgb, var(--paper) 28%, transparent);
+	}
+
+	.phone-frame--compact {
+		--phone-status-size: 0.62rem;
+		--phone-avatar-size: 1.05rem;
+		--phone-contact-size: 0.98rem;
+		--phone-contact-meta-size: 0.78rem;
+		--phone-message-size: 0.78rem;
+		--phone-message-time-size: 0.68rem;
+		--phone-apk-size: 0.78rem;
+		--phone-file-name-size: 0.86rem;
+		--phone-file-meta-size: 0.78rem;
+		--phone-warning-title-size: 0.78rem;
+		--phone-warning-text-size: 0.76rem;
+		--phone-people-title-size: 0.98rem;
+		--phone-people-caption-size: 0.78rem;
 	}
 
 	.phone-speaker {
@@ -193,6 +226,58 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--ink) 38%, transparent);
 		content: '';
+	}
+
+	.phone-status {
+		font-size: var(--phone-status-size);
+	}
+
+	.phone-avatar {
+		font-size: var(--phone-avatar-size);
+	}
+
+	.phone-contact-name {
+		font-size: var(--phone-contact-size);
+	}
+
+	.phone-contact-meta {
+		font-size: var(--phone-contact-meta-size);
+	}
+
+	.phone-message-text {
+		font-size: var(--phone-message-size);
+	}
+
+	.phone-message-time {
+		font-size: var(--phone-message-time-size);
+	}
+
+	.phone-apk-label {
+		font-size: var(--phone-apk-size);
+	}
+
+	.phone-file-name {
+		font-size: var(--phone-file-name-size);
+	}
+
+	.phone-file-meta {
+		font-size: var(--phone-file-meta-size);
+	}
+
+	.phone-warning-title {
+		font-size: var(--phone-warning-title-size);
+	}
+
+	.phone-warning-text {
+		font-size: var(--phone-warning-text-size);
+	}
+
+	.phone-people-title {
+		font-size: var(--phone-people-title-size);
+	}
+
+	.phone-people-caption {
+		font-size: var(--phone-people-caption-size);
 	}
 
 	.chat-screen,
