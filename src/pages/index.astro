@@ -1,5 +1,8 @@
 ---
 import { Font } from 'astro:assets';
+import acluPreviewImage from '@/assets/placeholder-aclu.png';
+import guardianPreviewImage from '@/assets/placeholder-guardian.png';
+import techradarPreviewImage from '@/assets/placeholder-techradar.png';
 import PhoneMockup from '@/components/phone-mockup.astro';
 import '@/styles/global.css';
 ---
@@ -187,15 +190,16 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
-								<iframe
-									src="https://www.aclu.org/news/free-speech/app-store-oligopoly"
-									title="ACLU article preview"
+								<img
+									src={acluPreviewImage.src}
+									alt=""
 									loading="lazy"
-									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
-								></iframe>
+									decoding="async"
+									class="block h-auto w-full bg-white border-2 border-(--line) rounded-md"
+								/>
 							</div>
 						</article>
 
@@ -216,15 +220,16 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
-								<iframe
-									src="https://www.theguardian.com/world/2021/sep/17/apple-and-google-accused-of-political-censorship-over-alexei-navalny-app"
-									title="The Guardian article preview"
+								<img
+									src={guardianPreviewImage.src}
+									alt=""
 									loading="lazy"
-									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
-								></iframe>
+									decoding="async"
+									class="block h-auto w-full bg-white border-2 border-(--line) rounded-md"
+								/>
 							</div>
 						</article>
 
@@ -247,15 +252,16 @@ import '@/styles/global.css';
 								</p>
 							</a>
 							<div
-								class="pointer-events-none invisible fixed left-0 top-0 z-50 aspect-video w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
+								class="pointer-events-none invisible fixed left-0 top-0 z-50 w-80 overflow-hidden rounded-md border border-(--line) bg-white opacity-0 shadow-[0_1rem_2rem_rgba(21,22,17,.28)] transition-opacity duration-150 sm:w-96"
 								data-news-preview
 							>
-								<iframe
-									src="https://www.techradar.com/vpn/vpn-privacy-security/russia-orders-apple-and-google-to-remove-important-stories-an-investigative-media-app-that-works-without-a-vpn-leaving-russians-without-a-key-source-for-accessing-uncensored-news"
-									title="TechRadar Article Preview"
+								<img
+									src={techradarPreviewImage.src}
+									alt=""
 									loading="lazy"
-									class="h-180 w-7xl origin-top-left scale-[0.25] bg-white sm:scale-[0.3]"
-								></iframe>
+									decoding="async"
+									class="block h-auto w-full bg-white border-2 border-(--line) rounded-md"
+								/>
 							</div>
 						</article>
 					</div>
