@@ -56,43 +56,47 @@ import '@/styles/global.css';
 			class="relative overflow-x-clip"
 		>
 			<section
-				class="relative mx-auto grid max-w-7xl px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,27rem)] lg:gap-16 lg:px-12 xl:gap-24"
+				class="relative mx-auto grid max-w-7xl px-5 sm:px-8 md:grid-cols-[minmax(0,1fr)_minmax(19rem,27rem)] md:gap-16 md:px-12 xl:gap-24"
 			>
 				<div class="relative z-10">
-					<div class="sticky top-4 z-20 mx-auto mb-12 flex justify-center lg:hidden">
-						<PhoneMockup size="compact" />
+					<div class="pointer-events-none sticky top-0 z-0 -mb-[100svh] h-svh overflow-hidden md:hidden">
+						<div class="absolute inset-x-0 -bottom-[11rem] flex justify-center sm:-bottom-[13.25rem]">
+							<PhoneMockup size="compact" />
+						</div>
 					</div>
 
-					<section class="snap-panel flex min-h-screen items-center pb-20 pt-14 lg:pb-24 lg:pt-24">
+					<section
+						class="snap-panel relative z-10 flex min-h-screen items-start pb-20 pt-8 sm:pt-10 md:items-center md:pb-24 md:pt-24"
+					>
 						<div class="max-w-3xl">
-							<p class="type-body italic text-(--muted)">since the beginning of last year,</p>
+							<p class="type-body italic text-(--muted)">Since the beginning of last year,</p>
 							<div
 								class="type-heading mt-5 max-w-full whitespace-nowrap text-(--ink) tabular-nums"
 								data-loss-counter
 							>
 								$0
 							</div>
-							<p class="type-body pl-69 mt-6 max-w-2xl italic text-(--muted)">
+							<p class="type-body text-end lg:text-start lg:pl-69 mt-6 max-w-2xl italic text-(--muted)">
 								has been ruined and lost to scams.
 							</p>
 
 							<div class="type-body mt-11 max-w-2xl space-y-5 text-(--muted)">
 								<p>
-									google is trying to fix this, but they're doing so by tightening their control of android.
+									Google is trying to fix this, but they're doing so by tightening their control of Android.
 								</p>
-								<p class="text-(--ink)">what might a better approach, and a better android look like?</p>
+								<p class="text-(--ink)">What might a better approach, and a better Android look like?</p>
 							</div>
 						</div>
 					</section>
 
 					<section
 						id="solution"
-						class="snap-panel flex min-h-screen items-center py-24"
+						class="snap-panel relative z-10 flex min-h-screen items-start pb-24 pt-12 sm:pt-16 md:items-center md:py-24"
 						data-people-trigger
 					>
 						<div class="max-w-3xl">
-							<p class="type-subheading max-w-2xl text-(--ink)">the solution has to work for everyone.</p>
-							<p class="type-body mt-8 text-(--muted)">it has to be:</p>
+							<p class="type-subheading max-w-2xl text-(--ink)">The solution has to work for everyone.</p>
+							<p class="type-body mt-8 text-(--muted)">It has to be:</p>
 							<ol class="type-body mt-4 ml-6 grid text-(--ink)">
 								<li class="flex items-baseline gap-4 py-1">
 									<span class="text-(--accent-strong)">1.</span>
@@ -111,12 +115,14 @@ import '@/styles/global.css';
 					</section>
 				</div>
 
-				<aside class="pointer-events-none sticky top-0 hidden h-screen items-center justify-center lg:flex">
+				<aside class="pointer-events-none sticky top-0 hidden h-screen items-center justify-center md:flex">
 					<PhoneMockup />
 				</aside>
 			</section>
 
-			<section class="snap-panel border-t border-(--line) bg-(--paper-raised) px-5 py-28 sm:px-8 lg:px-12">
+			<section
+				class="snap-panel relative z-10 border-t border-(--line) bg-(--paper-raised) px-5 pb-28 pt-10 sm:px-8 lg:px-12"
+			>
 				<div class="mx-auto max-w-3xl">
 					<p class="type-body text-(--muted)">
 						We propose creating a local and open language model to detect scams, for everyone.
@@ -148,7 +154,7 @@ import '@/styles/global.css';
 							(But, the model is so good that you never really get close; like 20% close is a really good
 							score.)
 						</p>
-						<p class="mb-2.5">Also, what about creating a "World Wide Web", where:</p>
+						<p class="mb-2.5">Also, what about creating a "World Wide Web", where,</p>
 						<ul class="ml-16 mb-2.5 grid list-disc gap-1">
 							<li>developers can give away useful and open apps,</li>
 							<li>with open-source code,</li>
@@ -168,7 +174,7 @@ import '@/styles/global.css';
 					</div>
 
 					<p class="type-body text-(--muted)">
-						There are also oher very good reasons we're doing this, mainly to do with software freedom, but
+						There are also other very good reasons we're doing this, mainly to do with software freedom, but
 						also that Google has a documented history of removing apps when regimes have asked.
 					</p>
 
