@@ -4,6 +4,7 @@ import acluPreviewImage from '@/assets/placeholder-aclu.png';
 import guardianPreviewImage from '@/assets/placeholder-guardian.png';
 import techradarPreviewImage from '@/assets/placeholder-techradar.png';
 import PhoneMockup from '@/components/phone-mockup.astro';
+import RepresentativeVoting from '@/components/representative-voting.astro';
 import '@/styles/global.css';
 ---
 
@@ -387,6 +388,17 @@ import '@/styles/global.css';
 							<span class="font-semibold text-(--ink)">days</span>.
 						</p>
 					</section>
+
+					<div class="mx-auto my-20 flex justify-center">
+						<img
+							src="/divider.svg"
+							alt=""
+							class="h-14 w-auto opacity-80"
+							loading="lazy"
+						/>
+					</div>
+
+					<RepresentativeVoting />
 				</div>
 			</section>
 		</main>

@@ -142,3 +142,15 @@ body {
 .urgent-pulse {
   animation: urgent-pulse 1.8s ease-in-out infinite;
 }
+
+.rep-status :where(p, ul, ol, blockquote) {
+  margin: 0;
+}
+
+.rep-status :where(a) {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-strong);
+  text-underline-offset: 0.18em;
+}
