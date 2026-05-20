@@ -1,0 +1,42 @@
+---
+import RepresentativeVotingIsland from './representative-voting.tsx';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+---
+
+<section
+	id="representatives"
+	class="relative z-10 my-20 bg-(--paper-raised) py-10 sm:my-24 sm:py-12 lg:-ml-36 lg:w-[calc(100%+18rem)]"
+	aria-labelledby="representatives-heading"
+>
+	<div class="mx-auto max-w-4xl px-4 sm:px-6">
+		<div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+			<div>
+				<p class="text-sm font-semibold uppercase tracking-[0.12em] text-(--accent-strong)">
+					representative voting
+				</p>
+				<h2
+					id="representatives-heading"
+					class="type-subheading mt-2 text-(--ink)"
+				>
+					Who should hear from the internet?
+				</h2>
+				<p class="text-base leading-relaxed text-(--muted)">
+					Upvote many. Star one. No account, just a signed anonymous browser token.
+				</p>
+			</div>
+		</div>
+
+		<RepresentativeVotingIsland
+			client:load
+			siteKey={siteKey}
+		/>
+	</div>
+</section>
+
+<script
+	is:inline
+	src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+	async
+	defer
+></script>
