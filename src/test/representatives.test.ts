@@ -11,6 +11,10 @@ import {
 import { renderSafeGfm } from '@/lib/representatives/markdown';
 import { hashVoterId, signVoterId, verifyVoterCookie } from '@/lib/representatives/cookies';
 import { detailsFromWikidataEntity } from '@/lib/representatives/wikidata';
+import { personExclusionTags } from '@/data/person-exclusion-tags';
+import { normalisePersonQuery, shardPrefixForQuery } from '@/lib/people/normalise';
+import { mergePeopleResults, searchPeopleLocal } from '@/lib/people/search';
+import type { PersonTuple } from '@/lib/people/types';
 
 type Candidate = {
   qid: string;
@@ -170,6 +174,54 @@ function env(db: MemoryD1, blockKv = new MemoryKv(), statusKv = new MemoryKv()):
 }
 
 describe('representative voting', () => {
+  it('normalises people queries for aliases, punctuation, and shard lookup', () => {
+    expect(normalisePersonQuery('  Mr_Beast!! ')).toBe('mr beast');
+    expect(normalisePersonQuery('Björk Guðmundsdóttir')).toBe('bjork gudmundsdottir');
+    expect(shardPrefixForQuery('John Smith', ['jo'])).toBe('joh');
+    expect(shardPrefixForQuery('Jo', ['jo'])).toBe('jo');
+  });
+
+  it('ranks local people by name, alias, token, and popularity', () => {
+    const people: PersonTuple[] = [
+      ['Q1', 'PewDiePie', ['Felix Kjellberg'], 9950],
+      ['Q2', 'Felix Hacker', [], 100],
+      ['Q3', 'MrBeast', ['Jimmy Donaldson', 'Mr Beast'], 9900],
+    ];
+
+    expect(searchPeopleLocal('felix kjellberg', people)[0]?.id).toBe('Q1');
+    expect(searchPeopleLocal('felix hacker', people)[0]?.id).toBe('Q2');
+    expect(searchPeopleLocal('mr beast', people)[0]?.id).toBe('Q3');
+    expect(searchPeopleLocal('felix', people).map((result) => result.id)).toEqual(['Q1', 'Q2']);
+  });
+
+  it('deduplicates local and remote people by QID while preserving the strongest score', () => {
+    const merged = mergePeopleResults(
+      [{ id: 'Q1', name: 'PewDiePie', aliases: ['Felix Kjellberg'], popularity: 9000, score: 940, source: 'local' }],
+      [
+        { id: 'Q1', name: 'PewDiePie', aliases: ['pewd'], popularity: 8000, score: 1000, source: 'remote' },
+        { id: 'Q2', name: 'PewDiePie related', aliases: [], popularity: 200, score: 500, source: 'remote' },
+      ],
+    );
+
+    expect(merged[0]).toMatchObject({
+      id: 'Q1',
+      name: 'PewDiePie',
+      aliases: ['Felix Kjellberg', 'pewd'],
+      score: 1000,
+      source: 'local+remote',
+    });
+    expect(merged).toHaveLength(2);
+  });
+
+  it('keeps exclusion tag slugs unique and displayable', () => {
+    const slugs = personExclusionTags.map((tag) => tag.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    expect(slugs).toContain('animal-harm-concerns');
+    expect(slugs).toContain('private-person');
+    expect(personExclusionTags.every((tag) => tag.label && tag.publicReason)).toBe(true);
+    expect(personExclusionTags.every((tag) => tag.publicReason === tag.label)).toBe(true);
+  });
+
   it('rejects tampered voter cookies', async () => {
     const signed = await signVoterId('secret', 'abcdefghijabcdefghijabcdefghij');
     expect(await verifyVoterCookie('secret', signed)).toBe('abcdefghijabcdefghijabcdefghij');

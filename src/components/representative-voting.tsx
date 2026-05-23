@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowUp,
@@ -11,6 +11,8 @@ import {
   Star,
   X,
 } from 'lucide-react';
+import { mergePeopleResults, searchPeopleLocal } from '@/lib/people/search';
+import type { PersonResult, PersonSource, PersonTuple } from '@/lib/people/types';
 
 type Representative = {
   qid: string;
@@ -47,6 +49,10 @@ type MessageState = {
 type SearchResult = {
   id: string;
   label: string;
+  aliases: string[];
+  popularity: number;
+  score: number;
+  source: PersonSource;
   description?: string;
   url?: string;
   eligible?: boolean;
@@ -55,6 +61,8 @@ type SearchResult = {
   known?: boolean;
   blockHtml?: string;
 };
+
+type SearchState = 'idle' | 'loading-local' | 'ready' | 'searching-remote' | 'error';
 
 type TurnstileApi = {
   render: (element: HTMLElement, options: Record<string, unknown>) => string;
@@ -70,6 +78,12 @@ declare global {
 }
 
 const formatter = new Intl.NumberFormat('en-US');
+const POPULAR_PEOPLE_URL = '/people/popular.json';
+const entityKindLabel: Record<string, string> = {
+  account: 'Account',
+  human: 'Human',
+  organization: 'Organization',
+};
 
 function uniqueRows(rows: Representative[]): Representative[] {
   const seen = new Set<string>();
@@ -95,6 +109,104 @@ async function apiJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload;
 }
 
+function resultFromPerson(result: PersonResult): SearchResult {
+  return {
+    id: result.id,
+    label: result.name,
+    aliases: result.aliases,
+    popularity: result.popularity,
+    score: result.score,
+    source: result.source,
+    url: `https://www.wikidata.org/wiki/${result.id}`,
+    eligible: true,
+    entityKind: null,
+    blocked: false,
+    known: false,
+    blockHtml: '',
+  };
+}
+
+function searchResultMetaParts(result: SearchResult): string[] {
+  const parts = [result.aliases[0], result.description].filter((part): part is string => Boolean(part?.trim()));
+  const seen = new Set<string>();
+
+  return parts.filter((part) => {
+    const key = part.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function uniqueSearchResultAliases(result: SearchResult): string[] {
+  const seen = new Set<string>();
+
+  return result.aliases.filter((alias) => {
+    const key = alias.trim().toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function popularSearchResultMetaParts(result: SearchResult): string[] {
+  const aliases = uniqueSearchResultAliases(result);
+  const description = result.description?.trim();
+  const aliasKeys = new Set(aliases.map((alias) => alias.trim().toLowerCase()));
+
+  return [
+    aliases.length > 0 ? `Aliases: ${aliases.join(', ')}` : null,
+    description && !aliasKeys.has(description.toLowerCase()) ? description : null,
+  ].filter((part): part is string => Boolean(part));
+}
+
+function formatEntityKind(value: string): string {
+  return entityKindLabel[value] ?? value.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function mergeRepresentativeSearchResults(localResults: SearchResult[], remoteResults: SearchResult[], limit = 8): SearchResult[] {
+  const mergedPeople = mergePeopleResults(
+    localResults.map((result) => ({
+      id: result.id,
+      name: result.label,
+      aliases: result.aliases,
+      popularity: result.popularity,
+      score: result.score,
+      source: result.source,
+    })),
+    remoteResults.map((result) => ({
+      id: result.id,
+      name: result.label,
+      aliases: result.aliases,
+      popularity: result.popularity,
+      score: result.score,
+      source: result.source,
+    })),
+    limit,
+  );
+  const metadataById = new Map([...localResults, ...remoteResults].map((result) => [result.id, result]));
+
+  return mergedPeople.map((person) => {
+    const metadata = metadataById.get(person.id);
+    return {
+      ...metadata,
+      id: person.id,
+      label: person.name,
+      aliases: person.aliases,
+      popularity: person.popularity,
+      score: person.score,
+      source: person.source,
+      description: metadata?.description,
+      url: metadata?.url ?? `https://www.wikidata.org/wiki/${person.id}`,
+      eligible: metadata?.eligible ?? true,
+      entityKind: metadata?.entityKind ?? null,
+      blocked: metadata?.blocked ?? false,
+      known: metadata?.known ?? false,
+      blockHtml: metadata?.blockHtml ?? '',
+    };
+  });
+}
+
 export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [topRows, setTopRows] = useState<Representative[]>([]);
   const [extraRows, setExtraRows] = useState<Representative[]>([]);
@@ -104,6 +216,9 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchedQuery, setSearchedQuery] = useState('');
+  const [searchState, setSearchState] = useState<SearchState>('idle');
+  const [popularPeople, setPopularPeople] = useState<PersonTuple[]>([]);
+  const [popularLoadError, setPopularLoadError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [hoverStarQid, setHoverStarQid] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,6 +228,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const turnstileWidgetRef = useRef<string | null>(null);
   const turnstileResolverRef = useRef<((token: string) => void) | null>(null);
   const turnstileRejectRef = useRef<((error: Error) => void) | null>(null);
+  const popularPeoplePromiseRef = useRef<Promise<PersonTuple[]> | null>(null);
 
   const topQids = useMemo(() => new Set(topRows.map((row) => row.qid)), [topRows]);
   const rowsByQid = useMemo(() => {
@@ -125,6 +241,44 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     () => uniqueRows(extraRows).filter((row) => !topQids.has(row.qid)),
     [extraRows, topQids],
   );
+  const popularSearchResults = useMemo(
+    () => searchResults.filter((result) => result.source.includes('local')),
+    [searchResults],
+  );
+  const wikidataSearchResults = useMemo(
+    () => searchResults.filter((result) => !result.source.includes('local')),
+    [searchResults],
+  );
+  const orderedSearchResults = useMemo(
+    () => [...popularSearchResults, ...wikidataSearchResults],
+    [popularSearchResults, wikidataSearchResults],
+  );
+
+  const loadPopularPeople = useCallback(async () => {
+    if (popularPeople.length > 0) return popularPeople;
+    if (popularPeoplePromiseRef.current) return popularPeoplePromiseRef.current;
+
+    setSearchState('loading-local');
+    setPopularLoadError(null);
+    popularPeoplePromiseRef.current = fetch(POPULAR_PEOPLE_URL)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Could not load popular people (${response.status})`);
+        return (await response.json()) as PersonTuple[];
+      })
+      .then((people) => {
+        setPopularPeople(people);
+        setSearchState('ready');
+        return people;
+      })
+      .catch((error) => {
+        popularPeoplePromiseRef.current = null;
+        setSearchState('error');
+        setPopularLoadError(error instanceof Error ? error.message : 'Could not load popular people.');
+        return [];
+      });
+
+    return popularPeoplePromiseRef.current;
+  }, [popularPeople]);
 
   const addDelta = (qid: string, field: keyof CountDelta, amount: number) => {
     setDeltas((current) => ({
@@ -234,83 +388,64 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
       setSearchResults([]);
       setSearchedQuery('');
       setSearching(false);
+      setSearchState(popularPeople.length > 0 ? 'ready' : 'idle');
       return;
     }
 
     const controller = new AbortController();
+    let cancelled = false;
     setSearchedQuery('');
-    const timer = window.setTimeout(async () => {
-      setSearching(true);
+
+    const runSearch = async () => {
       try {
-        const url = new URL('https://www.wikidata.org/w/api.php');
-        url.searchParams.set('action', 'wbsearchentities');
-        url.searchParams.set('language', 'en');
-        url.searchParams.set('format', 'json');
-        url.searchParams.set('origin', '*');
-        url.searchParams.set('limit', '6');
-        url.searchParams.set('search', trimmed);
+        const localPeople = popularPeople.length > 0 ? popularPeople : await loadPopularPeople();
+        if (cancelled) return;
 
-        const response = await fetch(url, { signal: controller.signal });
-        const payload = (await response.json()) as {
-          search?: Array<{ id: string; label: string; description?: string; concepturi?: string }>;
-        };
-        const candidates = (payload.search ?? []).filter((result) => /^Q[1-9]\d+$/.test(result.id));
-        const eligibility = await apiJson<{
-          results: Array<{
-            qid: string;
-            eligible: boolean;
-            label: string | null;
-            description: string | null;
-            entityKind: string | null;
-            blocked: boolean;
-            known: boolean;
-            blockHtml: string;
-          }>;
-        }>('/api/representatives/eligibility', {
-          method: 'POST',
-          body: JSON.stringify({ qids: candidates.map((result) => result.id) }),
-          signal: controller.signal,
-        });
-        const byQid = new Map(eligibility.results.map((result) => [result.qid, result]));
-
-        const selectableResults = candidates
-          .map((result) => {
-            const checked = byQid.get(result.id);
-            return {
-              id: result.id,
-              label: checked?.label ?? result.label,
-              description: checked?.description ?? result.description,
-              url: result.concepturi,
-              eligible: checked?.eligible ?? false,
-              entityKind: checked?.entityKind ?? null,
-              blocked: checked?.blocked ?? false,
-              known: checked?.known ?? false,
-              blockHtml: checked?.blockHtml ?? '',
-            };
-          })
-          .filter((result) => result.eligible || result.blocked);
-
-        setSearchResults(selectableResults);
+        const localResults = searchPeopleLocal(trimmed, localPeople, 8).map(resultFromPerson);
+        setSearchResults(localResults);
         setSearchedQuery(trimmed);
+
+        if (trimmed.length < 3) {
+          setSearching(false);
+          setSearchState('ready');
+          return;
+        }
+
+        setSearching(localResults.length === 0);
+        setSearchState('searching-remote');
+        const remote = await apiJson<{ results: SearchResult[] }>(
+          `/api/representatives/search?q=${encodeURIComponent(trimmed)}&limit=10`,
+          {
+            signal: controller.signal,
+          },
+        );
+        if (cancelled) return;
+
+        setSearchResults(mergeRepresentativeSearchResults(localResults, remote.results, 8));
+        setSearchState('ready');
       } catch (error) {
-        if (!controller.signal.aborted) {
+        if (!controller.signal.aborted && !cancelled) {
           setSearchResults([]);
           setSearchedQuery(trimmed);
+          setSearchState('error');
           setMessage({
             text: error instanceof Error ? error.message : 'Search failed.',
             type: 'error',
           });
         }
       } finally {
-        if (!controller.signal.aborted) setSearching(false);
+        if (!controller.signal.aborted && !cancelled) setSearching(false);
       }
-    }, 260);
+    };
+
+    const timer = window.setTimeout(runSearch, trimmed.length >= 3 ? 180 : 80);
 
     return () => {
+      cancelled = true;
       controller.abort();
       window.clearTimeout(timer);
     };
-  }, [query]);
+  }, [loadPopularPeople, popularPeople, query]);
 
   const runAction = async (key: string, action: (token: string) => Promise<void>) => {
     setBusyAction(key);
@@ -398,12 +533,13 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
-    const firstEnabled = searchResults.find((result) => result.eligible && !result.blocked);
+    const firstEnabled = orderedSearchResults.find((result) => result.eligible && !result.blocked);
     if (firstEnabled) addCandidate(firstEnabled);
   };
 
   const trimmedQuery = query.trim();
   const searchIsSettled = searchedQuery === trimmedQuery && trimmedQuery.length >= 2;
+  const wikidataSearchIsLoading = searchState === 'searching-remote';
 
   const renderSectionLabel = (label: string, constrained = false) => (
     <div className={['flex items-center gap-3', constrained ? 'mx-auto w-full max-w-3xl' : ''].join(' ')}>
@@ -511,13 +647,63 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     </div>
   );
 
+  const renderSearchResult = (result: SearchResult, section: 'popular' | 'wikidata') => {
+    const metaParts = section === 'popular' ? popularSearchResultMetaParts(result) : searchResultMetaParts(result);
+
+    return (
+      <button
+        key={result.id}
+        type="button"
+        disabled={Boolean(busyAction) || result.blocked || !result.eligible}
+        onClick={() => addCandidate(result)}
+        className="grid rounded-lg border border-(--line) bg-(--paper-raised) p-3 text-left transition hover:border-(--accent-strong) disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-(--ink)">{result.label}</span>
+          <span className="text-sm text-(--muted)">{result.id}</span>
+          {result.known && (
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-(--accent-strong)">
+              <Check className="size-3.5" />
+              Known
+            </span>
+          )}
+          {result.entityKind && !result.blocked && (
+            <span className="text-xs font-semibold uppercase tracking-widest text-(--muted)">
+              {formatEntityKind(result.entityKind)}
+            </span>
+          )}
+          {result.blocked && (
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-(--rose)">
+              <X className="size-3.5" />
+              Blocked
+            </span>
+          )}
+        </span>
+        {metaParts.length > 0 && (
+          <span className="mt-1 text-sm text-(--muted)">
+            {metaParts.join(' · ')}
+          </span>
+        )}
+        {result.blockHtml && (
+          <span className="mt-1 text-sm text-(--rose)">
+            Sorry, we can't add {result.label} due to:
+            <span
+              className="rep-status mt-1 block"
+              dangerouslySetInnerHTML={{ __html: result.blockHtml }}
+            />
+          </span>
+        )}
+      </button>
+    );
+  };
+
   return (
     <div className="grid gap-5">
       <div ref={turnstileHostRef} className="fixed bottom-0 left-0 size-px overflow-hidden" aria-hidden="true" />
 
       <form onSubmit={submitSearch} className="rounded-lg border border-(--line) bg-(--paper) p-3">
         <label className="mb-2 block text-sm font-semibold uppercase tracking-[0.12em] text-(--muted)" htmlFor="representative-search">
-          Add a person or public account
+          Add a Person or Public Account
         </label>
         <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
           <div className="relative">
@@ -526,13 +712,16 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
               id="representative-search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search Wikidata"
+              onFocus={() => {
+                void loadPopularPeople();
+              }}
+              placeholder="Search for a public figure..."
               className="h-12 w-full rounded-lg border border-(--line) bg-(--paper-raised) pl-10 pr-3 text-lg text-(--ink) outline-none transition placeholder:text-(--muted) focus:border-(--accent-strong)"
             />
           </div>
           <button
             type="submit"
-            disabled={Boolean(busyAction) || !searchResults.some((result) => result.eligible && !result.blocked)}
+            disabled={Boolean(busyAction) || !orderedSearchResults.some((result) => result.eligible && !result.blocked)}
             className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-(--accent-strong) bg-(--accent-strong) px-4 text-base font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-(--line-strong)"
           >
             <Sparkles className="size-4" />
@@ -542,55 +731,42 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
 
         {(searching || searchResults.length > 0 || searchIsSettled) && (
           <div className="mt-3 grid gap-2">
-            {searching && (
+            {searchState === 'loading-local' && searchResults.length === 0 && (
               <p className="flex items-center gap-2 text-sm text-(--muted)">
                 <Loader2 className="size-4 animate-spin" />
-                Searching Wikidata
+                Loading Popular People
+              </p>
+            )}
+            {popularLoadError && (
+              <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
+                Local suggestions are unavailable. Broader search still works for names with at least three characters.
               </p>
             )}
             {!searching && searchIsSettled && searchResults.length === 0 && (
               <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
-                No selectable people, organizations, or public accounts found.
+                No exact match found. Try another name, alias, or handle.
               </p>
             )}
-            {searchResults.map((result) => (
-              <button
-                key={result.id}
-                type="button"
-                disabled={Boolean(busyAction) || result.blocked || !result.eligible}
-                onClick={() => addCandidate(result)}
-                className="grid rounded-lg border border-(--line) bg-(--paper-raised) p-3 text-left transition hover:border-(--accent-strong) disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-(--ink)">{result.label}</span>
-                  <span className="text-sm text-(--muted)">{result.id}</span>
-                  {result.known && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-(--accent-strong)">
-                      <Check className="size-3.5" />
-                      known
-                    </span>
-                  )}
-                  {result.entityKind && !result.blocked && (
-                    <span className="text-xs font-semibold uppercase tracking-widest text-(--muted)">
-                      {result.entityKind}
-                    </span>
-                  )}
-                  {result.blocked && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-(--rose)">
-                      <X className="size-3.5" />
-                      blocked
-                    </span>
-                  )}
-                </span>
-                {result.description && <span className="mt-1 text-sm text-(--muted)">{result.description}</span>}
-                {result.blockHtml && (
-                  <span
-                    className="rep-status mt-1 text-sm text-(--rose)"
-                    dangerouslySetInnerHTML={{ __html: result.blockHtml }}
-                  />
+            {popularSearchResults.length > 0 && (
+              <div className="grid gap-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">Popular Results</p>
+                {popularSearchResults.map((result) => renderSearchResult(result, 'popular'))}
+              </div>
+            )}
+            {(wikidataSearchResults.length > 0 || wikidataSearchIsLoading) && (
+              <div className="grid gap-2">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
+                  More From Wikidata
+                  {wikidataSearchIsLoading && <Loader2 className="size-3.5 animate-spin" />}
+                </p>
+                {wikidataSearchResults.map((result) => renderSearchResult(result, 'wikidata'))}
+                {wikidataSearchIsLoading && wikidataSearchResults.length === 0 && (
+                  <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
+                    Searching broader list...
+                  </p>
                 )}
-              </button>
-            ))}
+              </div>
+            )}
           </div>
         )}
       </form>

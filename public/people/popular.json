@@ -1,0 +1,20 @@
+[
+  ["Q13423853", "PewDiePie", ["Felix Kjellberg", "pewd"], 9950],
+  ["Q15994958", "Marques Brownlee", ["MKBHD"], 9700],
+  ["Q34253", "Linus Torvalds", ["Linux", "Git"], 9650],
+  ["Q58008262", "Louis Rossmann", ["Louis Rossman"], 9400],
+  ["Q113114818", "Theo Browne", ["T3", "t3.gg", "Theo ping.gg", "Theo dev"], 9350],
+  ["Q133541374", "ThePrimeagen", ["Michael B. Paulson", "Primeagen", "Primagen"], 9325],
+  ["Q58482636", "Evan You", ["Vue.js", "Vite"], 9275],
+  ["Q30942", "Guido van Rossum", ["Python"], 9225],
+  ["Q7439", "Richard Stallman", ["RMS", "GNU"], 9175],
+  ["Q70071434", "Kitboga", [], 9000],
+  ["Q117818819", "Scammer Payback", ["Pierogi"], 8600],
+  ["Q111862397", "Linus Tech Tips", ["LTT"], 8500],
+  ["Q196535", "Taylor Swift", [], 9999],
+  ["Q171052", "MrBeast", ["Jimmy Donaldson", "Mr Beast"], 9900],
+  ["Q317521", "Elon Musk", [], 9800],
+  ["Q36844", "Joe Rogan", ["Joseph James Rogan"], 9600],
+  ["Q36215", "Kanye West", ["Ye"], 9500],
+  ["Q21621919", "Post Malone", ["Austin Post"], 9300]
+]
