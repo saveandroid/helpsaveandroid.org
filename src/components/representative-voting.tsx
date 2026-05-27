@@ -563,7 +563,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
             key={row.qid}
             className={[
               [
-                'grid gap-3 rounded-lg border bg-(--paper) p-3 shadow-[0_0.55rem_1.3rem_var(--page-shadow)] transition',
+                'grid gap-3 rounded-lg border bg-(--paper) p-3 hover:shadow-md transition',
                 horizontalActions ? 'sm:grid-cols-[minmax(0,1fr)_8rem]' : 'sm:grid-cols-[minmax(0,1fr)_3.5rem]',
               ].join(' '),
               starred ? 'border-(--accent-strong) ring-2 ring-(--accent)/35' : 'border-(--line)',
@@ -600,13 +600,14 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
               {row.description && <p className="mt-1 text-base leading-snug text-(--muted)">{row.description}</p>}
             </div>
 
-            <div className={horizontalActions ? 'grid grid-cols-2 gap-2 sm:w-32' : 'grid grid-cols-2 gap-2 sm:w-14 sm:grid-cols-1'}>
+            <div className={horizontalActions ? 'grid grid-cols-2 my-auto sm:w-32' : 'grid grid-cols-2 sm:w-14 sm:grid-cols-1'}>
               <button
                 type="button"
                 onClick={() => toggleUpvote(row)}
                 disabled={Boolean(busyAction)}
                 className={[
-                  'inline-flex h-12 items-center justify-center gap-1.5 rounded-lg border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                  'inline-flex h-12 items-center justify-center gap-1.5 border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                  horizontalActions ? 'rounded-l-lg sm:w-full' : 'rounded-t-lg',
                   upvoted
                     ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
                     : 'border-(--line) bg-(--paper-raised) text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
@@ -628,7 +629,8 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
                 onBlur={() => setHoverStarQid(null)}
                 disabled={Boolean(busyAction)}
                 className={[
-                  'inline-flex h-12 items-center justify-center gap-1.5 rounded-lg border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                  'inline-flex h-12 items-center justify-center gap-1.5 border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                  horizontalActions ? 'rounded-r-lg sm:w-full' : 'rounded-b-lg',
                   starred
                     ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
                     : 'border-(--line) bg-(--paper-raised) text-(--muted) hover:border-(--amber) hover:text-(--ink)',
