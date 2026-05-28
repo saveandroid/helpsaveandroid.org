@@ -2,10 +2,13 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
   AlertTriangle,
   ArrowUp,
+  ChevronDown,
   Check,
   CircleCheck,
+  Database,
   ExternalLink,
   Loader2,
+  Maximize2,
   Search,
   Sparkles,
   Star,
@@ -79,11 +82,37 @@ declare global {
 
 const formatter = new Intl.NumberFormat('en-US');
 const POPULAR_PEOPLE_URL = '/people/popular.json';
+const RANKED_REPRESENTATIVES_URL = '/api/representatives/top?limit=200';
 const entityKindLabel: Record<string, string> = {
   account: 'Account',
   human: 'Human',
   organization: 'Organization',
 };
+
+const pillPalettes = [
+  { border: '#6f9f31', color: '#4f7f1f' },
+  { border: '#2f86b7', color: '#17628f' },
+  { border: '#c88317', color: '#8b5b0e' },
+  { border: '#c84e55', color: '#9d3038' },
+  { border: '#7f68b5', color: '#594394' },
+  { border: '#27856f', color: '#166d5a' },
+];
+
+function hashString(value: string): number {
+  return [...value].reduce((hash, character) => hash + character.charCodeAt(0), 0);
+}
+
+function pillStyle(value: string, offset = 0) {
+  const palette = pillPalettes[(hashString(value) + offset) % pillPalettes.length];
+  return {
+    borderColor: `color-mix(in srgb, ${palette.border} 62%, transparent)`,
+    color: palette.color,
+  };
+}
+
+function stripHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
 
 function uniqueRows(rows: Representative[]): Representative[] {
   const seen = new Set<string>();
@@ -209,19 +238,24 @@ function mergeRepresentativeSearchResults(localResults: SearchResult[], remoteRe
 
 export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [topRows, setTopRows] = useState<Representative[]>([]);
+  const [rankedRows, setRankedRows] = useState<Representative[]>([]);
   const [extraRows, setExtraRows] = useState<Representative[]>([]);
   const [starredQid, setStarredQid] = useState<string | null>(null);
   const [upvotedQids, setUpvotedQids] = useState<Set<string>>(() => new Set());
   const [deltas, setDeltas] = useState<Record<string, CountDelta>>({});
+  const [rankedExpanded, setRankedExpanded] = useState(false);
+  const [databaseOpen, setDatabaseOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchedQuery, setSearchedQuery] = useState('');
   const [searchState, setSearchState] = useState<SearchState>('idle');
   const [popularPeople, setPopularPeople] = useState<PersonTuple[]>([]);
   const [popularLoadError, setPopularLoadError] = useState<string | null>(null);
+  const [rankedLoadError, setRankedLoadError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [hoverStarQid, setHoverStarQid] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [rankedLoading, setRankedLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const turnstileHostRef = useRef<HTMLDivElement>(null);
@@ -229,17 +263,29 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const turnstileResolverRef = useRef<((token: string) => void) | null>(null);
   const turnstileRejectRef = useRef<((error: Error) => void) | null>(null);
   const popularPeoplePromiseRef = useRef<Promise<PersonTuple[]> | null>(null);
+  const rankedRowsPromiseRef = useRef<Promise<Representative[]> | null>(null);
 
   const topQids = useMemo(() => new Set(topRows.map((row) => row.qid)), [topRows]);
   const rowsByQid = useMemo(() => {
     const map = new Map<string, Representative>();
-    uniqueRows([...topRows, ...extraRows]).forEach((row) => map.set(row.qid, row));
+    uniqueRows([...topRows, ...rankedRows, ...extraRows]).forEach((row) => map.set(row.qid, row));
     return map;
-  }, [extraRows, topRows]);
-
+  }, [extraRows, rankedRows, topRows]);
+  const rankedPreviewRows = useMemo(
+    () => uniqueRows(rankedRows).filter((row) => !topQids.has(row.qid)).slice(0, 10),
+    [rankedRows, topQids],
+  );
+  const displayedQids = useMemo(
+    () => new Set([...topRows.map((row) => row.qid), ...(rankedExpanded ? rankedPreviewRows.map((row) => row.qid) : [])]),
+    [rankedExpanded, rankedPreviewRows, topRows],
+  );
   const visibleExtras = useMemo(
-    () => uniqueRows(extraRows).filter((row) => !topQids.has(row.qid)),
-    [extraRows, topQids],
+    () => uniqueRows(extraRows).filter((row) => !displayedQids.has(row.qid)),
+    [displayedQids, extraRows],
+  );
+  const databaseRows = useMemo(
+    () => uniqueRows([...rankedRows, ...topRows, ...extraRows]),
+    [extraRows, rankedRows, topRows],
   );
   const popularSearchResults = useMemo(
     () => searchResults.filter((result) => result.source.includes('local')),
@@ -279,6 +325,29 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
 
     return popularPeoplePromiseRef.current;
   }, [popularPeople]);
+
+  const loadRankedRows = useCallback(async () => {
+    if (rankedRows.length > 0) return rankedRows;
+    if (rankedRowsPromiseRef.current) return rankedRowsPromiseRef.current;
+
+    setRankedLoading(true);
+    setRankedLoadError(null);
+    rankedRowsPromiseRef.current = apiJson<{ representatives: Representative[] }>(RANKED_REPRESENTATIVES_URL)
+      .then((payload) => {
+        setRankedRows(payload.representatives);
+        return payload.representatives;
+      })
+      .catch((error) => {
+        rankedRowsPromiseRef.current = null;
+        setRankedLoadError(error instanceof Error ? error.message : 'Could not load ranked people.');
+        return [];
+      })
+      .finally(() => {
+        setRankedLoading(false);
+      });
+
+    return rankedRowsPromiseRef.current;
+  }, [rankedRows]);
 
   const addDelta = (qid: string, field: keyof CountDelta, amount: number) => {
     setDeltas((current) => ({
@@ -357,7 +426,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
       setLoading(true);
       try {
         const [top, me] = await Promise.all([
-          apiJson<{ representatives: Representative[] }>('/api/representatives/top'),
+          apiJson<{ representatives: Representative[] }>('/api/representatives/top?mode=seed'),
           apiJson<VisitorState>('/api/representatives/me'),
         ]);
         if (cancelled) return;
@@ -549,103 +618,142 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     </div>
   );
 
-  const renderRows = (rows: Representative[], compact = false, twoColumn = false, horizontalActions = false) => (
-    <div className={['grid gap-3', twoColumn ? 'lg:grid-cols-2' : ''].join(' ')}>
-      {rows.map((row) => {
+  const renderTagPill = (label: string, offset = 0) => (
+    <span
+      key={label}
+      className="inline-flex h-7 items-center whitespace-nowrap rounded-full border bg-transparent px-2.5 text-xs font-semibold"
+      style={pillStyle(label, offset)}
+    >
+      {label}
+    </span>
+  );
+
+  const tagsFor = (row: Representative) =>
+    [
+      formatEntityKind(row.entityKind).toLowerCase(),
+      row.source === 'user' ? 'community added' : null,
+      row.groupHeading ? 'anti-scam' : null,
+    ].filter((tag): tag is string => Boolean(tag));
+
+  const renderPersonTable = (rows: Representative[], options: { ranked?: boolean; dense?: boolean } = {}) => (
+    <div className="overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)]">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[58rem] border-separate border-spacing-0 text-left">
+          <thead>
+            <tr className="bg-(--paper-raised) text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
+              <th className="w-[36%] px-3 py-2.5">Person</th>
+              <th className="w-[22%] px-3 py-2.5">Status</th>
+              <th className="w-[24%] px-3 py-2.5">Tags</th>
+              <th className="w-[18%] px-3 py-2.5 text-right">Votes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => {
         const starred = starredQid === row.qid;
         const upvoted = upvotedQids.has(row.qid);
         const oldStarDimmed = starred && hoverStarQid && hoverStarQid !== row.qid;
         const upvoteBusy = busyAction === `upvote:${row.qid}`;
         const starBusy = busyAction === `star:${row.qid}`;
+        const statusText = stripHtml(row.statusHtml || row.fallbackStatus || 'status pending') || 'status pending';
+        const tags = tagsFor(row);
 
         return (
-          <article
+          <tr
             key={row.qid}
             className={[
-              [
-                'grid gap-3 rounded-lg border bg-(--paper) p-3 hover:shadow-md transition',
-                horizontalActions ? 'sm:grid-cols-[minmax(0,1fr)_8rem]' : 'sm:grid-cols-[minmax(0,1fr)_3.5rem]',
-              ].join(' '),
-              starred ? 'border-(--accent-strong) ring-2 ring-(--accent)/35' : 'border-(--line)',
+              'group transition hover:bg-(--paper-raised)',
+              starred ? 'bg-(--accent-soft)' : '',
               oldStarDimmed ? 'opacity-55' : '',
             ].join(' ')}
           >
-            <div className="min-w-0">
-              {row.statusHtml && (
-                <div
-                  className="rep-status mb-1 text-xs font-semibold uppercase tracking-[0.12em] text-(--accent-strong)"
-                  dangerouslySetInnerHTML={{ __html: row.statusHtml }}
-                />
-              )}
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <h3 className={compact ? 'text-lg font-semibold leading-tight text-(--ink)' : 'text-xl font-semibold leading-tight text-(--ink)'}>
-                  {row.label}
-                </h3>
-                {row.groupHeading && (
-                  <span className="rounded-full border border-(--line) bg-(--accent-soft) px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-(--accent-strong)">
-                    anti-scam
+            <td className="border-t border-(--line) px-3 py-3 align-middle">
+              <div className="flex min-w-0 items-start gap-2.5">
+                {options.ranked && (
+                  <span className="mt-0.5 inline-flex h-7 min-w-9 items-center justify-center rounded-md border border-(--line) bg-(--paper-raised) px-2 text-xs font-semibold tabular-nums text-(--muted)">
+                    #{index + 1}
                   </span>
                 )}
-                <a
-                  href={row.wikidataUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex size-7 items-center justify-center rounded-full border border-(--line) bg-(--paper-raised) text-(--muted) transition hover:border-(--line-strong) hover:text-(--ink)"
-                  aria-label={`Open ${row.label} on Wikidata`}
-                  title={`Open ${row.label} on Wikidata`}
-                >
-                  <ExternalLink className="size-3.5" />
-                </a>
+                <div className="min-w-0">
+                  <div className="flex min-w-0 items-center gap-1.5">
+                    <h3 className={options.dense ? 'truncate text-base font-semibold leading-tight text-(--ink)' : 'truncate text-lg font-semibold leading-tight text-(--ink)'}>
+                      {row.label}
+                    </h3>
+                    <a
+                      href={row.wikidataUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent text-(--muted) opacity-0 transition hover:border-(--line) hover:text-(--ink) group-hover:opacity-100 focus-visible:opacity-100"
+                      aria-label={`Open ${row.label} on Wikidata`}
+                      title={`Open ${row.label} on Wikidata`}
+                    >
+                      <ExternalLink className="size-3.5" />
+                    </a>
+                  </div>
+                  {row.description && <p className="mt-1 line-clamp-2 text-sm leading-snug text-(--muted)">{row.description}</p>}
+                </div>
               </div>
-              {row.description && <p className="mt-1 text-base leading-snug text-(--muted)">{row.description}</p>}
-            </div>
+            </td>
+            <td className="border-t border-(--line) px-3 py-3 align-middle">
+              <div
+                className="rep-status inline-flex min-h-7 max-w-full items-center rounded-full border bg-transparent px-2.5 py-1 text-xs font-semibold leading-tight"
+                style={pillStyle(statusText, 2)}
+                dangerouslySetInnerHTML={{ __html: row.statusHtml || statusText }}
+              />
+            </td>
+            <td className="border-t border-(--line) px-3 py-3 align-middle">
+              <div className="flex flex-wrap gap-1.5">
+                {tags.map((tag, tagIndex) => renderTagPill(tag, tagIndex))}
+              </div>
+            </td>
+            <td className="border-t border-(--line) px-3 py-3 align-middle">
+              <div className="w-full inline-flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => toggleUpvote(row)}
+                  disabled={Boolean(busyAction)}
+                  className={[
+                    'inline-flex h-9 min-w-16 items-center justify-center gap-1 rounded-l-md rounded-r-none border px-1.5 text-sm font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                    upvoted
+                      ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
+                      : 'border-(--line) bg-transparent text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
+                  ].join(' ')}
+                  aria-pressed={upvoted}
+                  title={upvoted ? 'Remove upvote' : 'Upvote'}
+                  aria-label={`${upvoted ? 'Remove upvote from' : 'Upvote'} ${row.label}`}
+                >
+                  {upvoteBusy ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
+                  <span className='pl-0.5'>{formatter.format(countFor(row, 'upvote'))}</span>
+                </button>
 
-            <div className={horizontalActions ? 'grid grid-cols-2 my-auto sm:w-32' : 'grid grid-cols-2 sm:w-14 sm:grid-cols-1'}>
-              <button
-                type="button"
-                onClick={() => toggleUpvote(row)}
-                disabled={Boolean(busyAction)}
-                className={[
-                  'inline-flex h-12 items-center justify-center gap-1.5 border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
-                  horizontalActions ? 'rounded-l-lg sm:w-full' : 'rounded-t-lg',
-                  upvoted
-                    ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
-                    : 'border-(--line) bg-(--paper-raised) text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
-                ].join(' ')}
-                aria-pressed={upvoted}
-                title={upvoted ? 'Remove upvote' : 'Upvote'}
-                aria-label={`${upvoted ? 'Remove upvote from' : 'Upvote'} ${row.label}`}
-              >
-                {upvoteBusy ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
-                <span>{formatter.format(countFor(row, 'upvote'))}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => toggleStar(row)}
-                onPointerEnter={() => setHoverStarQid(row.qid)}
-                onPointerLeave={() => setHoverStarQid(null)}
-                onFocus={() => setHoverStarQid(row.qid)}
-                onBlur={() => setHoverStarQid(null)}
-                disabled={Boolean(busyAction)}
-                className={[
-                  'inline-flex h-12 items-center justify-center gap-1.5 border px-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
-                  horizontalActions ? 'rounded-r-lg sm:w-full' : 'rounded-b-lg',
-                  starred
-                    ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
-                    : 'border-(--line) bg-(--paper-raised) text-(--muted) hover:border-(--amber) hover:text-(--ink)',
-                ].join(' ')}
-                aria-pressed={starred}
-                title={starred ? 'Clear star' : 'Star favorite'}
-                aria-label={`${starred ? 'Clear star from' : 'Star'} ${row.label}`}
-              >
-                {starBusy ? <Loader2 className="size-4 animate-spin" /> : <Star className={starred ? 'size-4 fill-current' : 'size-4'} />}
-                <span>{formatter.format(countFor(row, 'star'))}</span>
-              </button>
-            </div>
-          </article>
+                <button
+                  type="button"
+                  onClick={() => toggleStar(row)}
+                  onPointerEnter={() => setHoverStarQid(row.qid)}
+                  onPointerLeave={() => setHoverStarQid(null)}
+                  onFocus={() => setHoverStarQid(row.qid)}
+                  onBlur={() => setHoverStarQid(null)}
+                  disabled={Boolean(busyAction)}
+                  className={[
+                    '-ml-px inline-flex h-9 min-w-16 items-center justify-center gap-1 rounded-l-none rounded-r-md border px-1.5 text-sm font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+                    starred
+                      ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
+                      : 'border-(--line) bg-transparent text-(--muted) hover:border-(--amber) hover:text-(--ink)',
+                  ].join(' ')}
+                  aria-pressed={starred}
+                  title={starred ? 'Clear star' : 'Star favorite'}
+                  aria-label={`${starred ? 'Clear star from' : 'Star'} ${row.label}`}
+                >
+                  {starBusy ? <Loader2 className="size-4 animate-spin" /> : <Star className={starred ? 'size-4 fill-current' : 'size-4'} />}
+                  <span className='pl-0.5'>{formatter.format(countFor(row, 'star'))}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
         );
-      })}
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -699,79 +807,91 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     );
   };
 
+  const renderSearchApplication = () => (
+    <form onSubmit={submitSearch} className="rounded-lg border border-(--line) bg-(--paper) p-3">
+      <label className="mb-2 block text-sm font-semibold uppercase tracking-[0.12em] text-(--muted)" htmlFor="representative-search">
+        Add a Person or Public Account
+      </label>
+      <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-(--muted)" />
+          <input
+            id="representative-search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onFocus={() => {
+              void loadPopularPeople();
+            }}
+            placeholder="Search for a public figure..."
+            className="h-12 w-full rounded-lg border border-(--line) bg-(--paper-raised) pl-10 pr-3 text-lg text-(--ink) outline-none transition placeholder:text-(--muted) focus:border-(--accent-strong)"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={Boolean(busyAction) || !orderedSearchResults.some((result) => result.eligible && !result.blocked)}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-(--accent-strong) bg-(--accent-strong) px-4 text-base font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-(--line-strong)"
+        >
+          <Sparkles className="size-4" />
+          Add
+        </button>
+      </div>
+
+      {(searching || searchResults.length > 0 || searchIsSettled) && (
+        <div className="mt-3 grid gap-2">
+          {searchState === 'loading-local' && searchResults.length === 0 && (
+            <p className="flex items-center gap-2 text-sm text-(--muted)">
+              <Loader2 className="size-4 animate-spin" />
+              Loading Popular People
+            </p>
+          )}
+          {popularLoadError && (
+            <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
+              Local suggestions are unavailable. Broader search still works for names with at least three characters.
+            </p>
+          )}
+          {!searching && searchIsSettled && searchResults.length === 0 && (
+            <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
+              No exact match found. Try another name, alias, or handle.
+            </p>
+          )}
+          {popularSearchResults.length > 0 && (
+            <div className="grid gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">Popular Results</p>
+              {popularSearchResults.map((result) => renderSearchResult(result, 'popular'))}
+            </div>
+          )}
+          {(wikidataSearchResults.length > 0 || wikidataSearchIsLoading) && (
+            <div className="grid gap-2">
+              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
+                More From Wikidata
+                {wikidataSearchIsLoading && <Loader2 className="size-3.5 animate-spin" />}
+              </p>
+              {wikidataSearchResults.map((result) => renderSearchResult(result, 'wikidata'))}
+              {wikidataSearchIsLoading && wikidataSearchResults.length === 0 && (
+                <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
+                  Searching broader list...
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </form>
+  );
+
+  const openRankedPreview = () => {
+    setRankedExpanded(true);
+    void loadRankedRows();
+  };
+
+  const openDatabase = () => {
+    setDatabaseOpen(true);
+    void loadRankedRows();
+  };
+
   return (
     <div className="grid gap-5">
       <div ref={turnstileHostRef} className="fixed bottom-0 left-0 size-px overflow-hidden" aria-hidden="true" />
-
-      <form onSubmit={submitSearch} className="rounded-lg border border-(--line) bg-(--paper) p-3">
-        <label className="mb-2 block text-sm font-semibold uppercase tracking-[0.12em] text-(--muted)" htmlFor="representative-search">
-          Add a Person or Public Account
-        </label>
-        <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-(--muted)" />
-            <input
-              id="representative-search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              onFocus={() => {
-                void loadPopularPeople();
-              }}
-              placeholder="Search for a public figure..."
-              className="h-12 w-full rounded-lg border border-(--line) bg-(--paper-raised) pl-10 pr-3 text-lg text-(--ink) outline-none transition placeholder:text-(--muted) focus:border-(--accent-strong)"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={Boolean(busyAction) || !orderedSearchResults.some((result) => result.eligible && !result.blocked)}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-(--accent-strong) bg-(--accent-strong) px-4 text-base font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-(--line-strong)"
-          >
-            <Sparkles className="size-4" />
-            Add
-          </button>
-        </div>
-
-        {(searching || searchResults.length > 0 || searchIsSettled) && (
-          <div className="mt-3 grid gap-2">
-            {searchState === 'loading-local' && searchResults.length === 0 && (
-              <p className="flex items-center gap-2 text-sm text-(--muted)">
-                <Loader2 className="size-4 animate-spin" />
-                Loading Popular People
-              </p>
-            )}
-            {popularLoadError && (
-              <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
-                Local suggestions are unavailable. Broader search still works for names with at least three characters.
-              </p>
-            )}
-            {!searching && searchIsSettled && searchResults.length === 0 && (
-              <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
-                No exact match found. Try another name, alias, or handle.
-              </p>
-            )}
-            {popularSearchResults.length > 0 && (
-              <div className="grid gap-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">Popular Results</p>
-                {popularSearchResults.map((result) => renderSearchResult(result, 'popular'))}
-              </div>
-            )}
-            {(wikidataSearchResults.length > 0 || wikidataSearchIsLoading) && (
-              <div className="grid gap-2">
-                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
-                  More From Wikidata
-                  {wikidataSearchIsLoading && <Loader2 className="size-3.5 animate-spin" />}
-                </p>
-                {wikidataSearchResults.map((result) => renderSearchResult(result, 'wikidata'))}
-                {wikidataSearchIsLoading && wikidataSearchResults.length === 0 && (
-                  <p className="rounded-lg border border-dashed border-(--line) bg-(--paper-raised) p-3 text-sm text-(--muted)">
-                    Searching broader list...
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </form>
 
       {message && (
         <div className="flex items-start gap-2 rounded-lg border border-(--line) bg-(--paper) p-3 text-sm text-(--ink)">
@@ -791,13 +911,102 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
           <Loader2 className="size-7 animate-spin text-(--accent-strong)" />
         </div>
       ) : (
-        renderRows(topRows, false, true)
+        renderPersonTable(topRows)
+      )}
+
+      {!rankedExpanded && (
+        <button
+          type="button"
+          onClick={openRankedPreview}
+          className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-(--line) bg-transparent px-4 py-2 text-sm font-semibold text-(--muted) transition hover:border-(--line-strong) hover:text-(--ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)"
+        >
+          <ChevronDown className="size-4" />
+          Show More
+        </button>
+      )}
+
+      {rankedExpanded && (
+        <section className="grid gap-4 pt-1">
+          {renderSectionLabel('next highest rated')}
+          {rankedLoading && rankedPreviewRows.length === 0 ? (
+            <div className="grid min-h-28 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper)">
+              <Loader2 className="size-6 animate-spin text-(--accent-strong)" />
+            </div>
+          ) : rankedLoadError ? (
+            <p className="rounded-lg border border-dashed border-(--line) bg-(--paper) p-3 text-sm text-(--muted)">
+              {rankedLoadError}
+            </p>
+          ) : rankedPreviewRows.length > 0 ? (
+            renderPersonTable(rankedPreviewRows, { ranked: true, dense: true })
+          ) : (
+            <p className="rounded-lg border border-dashed border-(--line) bg-(--paper) p-3 text-sm text-(--muted)">
+              No more ranked people yet.
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={openDatabase}
+            className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-(--accent-strong) bg-(--accent-strong) px-4 py-2 text-sm font-semibold text-white transition hover:brightness-105 mt-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)"
+          >
+            <Maximize2 className="size-4" />
+            Open Full Database
+          </button>
+        </section>
       )}
 
       {visibleExtras.length > 0 && (
         <section className="grid gap-3 pt-2">
           {renderSectionLabel('your picks')}
-          {renderRows(visibleExtras, true, false, true)}
+          {renderPersonTable(visibleExtras, { dense: true })}
+        </section>
+      )}
+
+      {databaseOpen && (
+        <section
+          role="dialog"
+          aria-modal="true"
+          aria-label="People outreach database"
+          className="fixed inset-0 z-40 overflow-y-auto bg-(--paper-raised) px-4 py-5 sm:px-6 sm:py-7"
+        >
+          <div className="mx-auto grid max-w-6xl gap-5">
+            <div className="sticky top-0 z-10 -mx-4 border-b border-(--line) bg-(--paper-raised) px-4 py-3 sm:-mx-6 sm:px-6">
+              <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.12em] text-(--muted)">People outreach</p>
+                  <h2 className="type-subheading text-(--ink)">Full Voting Database</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDatabaseOpen(false)}
+                  className="inline-flex size-10 items-center justify-center rounded-full border border-(--line) bg-transparent text-(--muted) transition hover:border-(--line-strong) hover:text-(--ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)"
+                  aria-label="Close database"
+                  title="Close database"
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
+            </div>
+
+            {renderSearchApplication()}
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-(--muted)">
+                {databaseRows.length === 1 ? '1 person' : `${formatter.format(databaseRows.length)} people`} currently visible.
+              </p>
+              <span className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-transparent px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
+                <Database className="size-3.5" />
+                Ranked by stars, then upvotes
+              </span>
+            </div>
+
+            {rankedLoading && databaseRows.length === 0 ? (
+              <div className="grid min-h-48 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper)">
+                <Loader2 className="size-7 animate-spin text-(--accent-strong)" />
+              </div>
+            ) : (
+              renderPersonTable(databaseRows, { ranked: true, dense: true })
+            )}
+          </div>
         </section>
       )}
     </div>
