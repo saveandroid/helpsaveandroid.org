@@ -1,4 +1,4 @@
-import { seedRepresentativeByQid } from '@/data/representatives';
+import { seedRepresentativeByQid, seedRepresentatives } from '@/data/representatives';
 import { renderSafeGfm } from './markdown';
 import type { WikidataCandidateDetails } from './wikidata';
 
@@ -221,6 +221,13 @@ export async function getTopRepresentatives(env: EnvBindings, limit = 10): Promi
     if (rows.length >= limit) break;
   }
   return rows;
+}
+
+export async function getSeedRepresentatives(env: EnvBindings): Promise<RepresentativeApiRow[]> {
+  return getRepresentativeRows(
+    env,
+    seedRepresentatives.map((representative) => representative.qid),
+  );
 }
 
 export async function getRepresentativeRows(env: EnvBindings, qids: string[]): Promise<RepresentativeApiRow[]> {

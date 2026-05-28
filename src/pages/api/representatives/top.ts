@@ -1,12 +1,11 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { envBindings, json } from '@/lib/representatives/http';
-import { getTopRepresentatives } from '@/lib/representatives/db';
+import { getSeedRepresentatives, getTopRepresentatives } from '@/lib/representatives/db';
 
 export const GET: APIRoute = async ({ request }) => {
-  const cacheUrl = new URL(request.url);
-  cacheUrl.search = '';
-  const cacheKey = new Request(cacheUrl.toString(), { method: 'GET' });
+  const url = new URL(request.url);
+  const cacheKey = new Request(url.toString(), { method: 'GET' });
 
   try {
     const cached = await caches.default.match(cacheKey);
@@ -15,7 +14,11 @@ export const GET: APIRoute = async ({ request }) => {
     // Cache API may be unavailable in some local test runners.
   }
 
-  const rows = await getTopRepresentatives(envBindings(env));
+  const limit = Math.min(Math.max(Number(url.searchParams.get('limit') ?? 10) || 10, 1), 200);
+  const rows =
+    url.searchParams.get('mode') === 'seed'
+      ? await getSeedRepresentatives(envBindings(env))
+      : await getTopRepresentatives(envBindings(env), limit);
   const response = json(
     {
       representatives: rows,
