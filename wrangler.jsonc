@@ -11,37 +11,45 @@
 		"enabled": true
 	},
 	"vars": {
-		"PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAADTDZuukQkuuHp4Z"
+		"PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAADYBrpGgqUndcxVx"
 	},
 	"d1_databases": [
 		{
 			"binding": "HSA_VOTES_DB",
 			"database_name": "hsa-votes",
-			"database_id": "a14bc6ec-46d6-4087-a160-f1792f5ef61b",
+			"database_id": "17724e73-b868-4d4f-9ff6-2dd69a2a3f86",
 			"migrations_dir": "migrations"
 		}
 	],
 	"kv_namespaces": [
 		{
 			"binding": "HSA_WIKIDATA_CACHE",
-			"id": "d7f5f5cc8e42450cadb388547a3c6af0"
+			"id": "696d750eb3c04d91920e2b9ace234400"
 		},
 		{
 			"binding": "HSA_REP_STATUS",
-			"id": "f205b6eb675a4ab08c28d14a08150d5e"
+			"id": "b72ccbe2b6414978873dce1c72caef62"
 		},
 		{
 			"binding": "HSA_BLOCKED_QIDS",
-			"id": "0df01bb34bc34a1c97c645662075570f"
+			"id": "f0e94f9daa884ae3b88b95df92e68552"
 		},
 		{
 			"binding": "HSA_SESSION",
-			"id": "914c8f8e2e5d4a91bfc176c4024c0173"
+			"id": "6a50c82e18f54fd0a19e7b70892cb862"
 		}
 	],
 	"triggers": {
 		"crons": [
 			"0 */3 * * *"
 		]
-	}
+	},
+	"preview_urls": false,
+	"workers_dev": false,
+	"routes": [
+		{
+			"pattern": "helpsaveandroid.org",
+			"custom_domain": true
+		}
+	]
 }
