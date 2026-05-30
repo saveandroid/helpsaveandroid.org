@@ -4,6 +4,8 @@ import acluPreviewImage from '@/assets/placeholder-aclu.png';
 import guardianPreviewImage from '@/assets/placeholder-guardian.png';
 import techradarPreviewImage from '@/assets/placeholder-techradar.png';
 import CyberdeckScrapbook from '@/components/cyberdeck-scrapbook.astro';
+import EventInterestPlaceholder from '@/components/event-interest-placeholder.astro';
+import OpenAppShowcase from '@/components/open-app-showcase.astro';
 import PhoneMockup from '@/components/phone-mockup.astro';
 import RepresentativeVoting from '@/components/representative-voting.astro';
 import '@/styles/global.css';
@@ -71,22 +73,22 @@ import '@/styles/global.css';
 						class="snap-panel relative z-10 flex min-h-screen items-start pb-20 pt-8 sm:pt-10 md:items-center md:pb-24 md:pt-24"
 					>
 						<div class="max-w-3xl">
-							<p class="type-body italic text-(--ink)">Since the beginning of last year,</p>
+							<p class="type-body italic text-(--ink)">since the beginning of last year,</p>
 							<div
 								class="type-heading mt-5 max-w-full whitespace-nowrap text-(--ink) tabular-nums"
 								data-loss-counter
 							>
 								$0
 							</div>
-							<p class="type-body text-end lg:text-start lg:pl-69 mt-6 max-w-2xl italic text-(--ink)">
-								has been ruined and lost to scams.
+							<p class="type-body text-end lg:text-start lg:pl-84 mt-6 max-w-2xl italic text-(--ink)">
+								was ruined and lost to scams.
 							</p>
 
 							<div class="type-body mt-11 max-w-2xl space-y-5 text-(--ink)">
 								<p>
-									Google is trying to fix this, but they're doing so by tightening their control of Android.
+									google is trying to fix this, but they're doing so by making everyone identify themselves.
 								</p>
-								<p class="text-(--ink)">What might a better approach, and a better Android look like?</p>
+								<p class="text-(--ink)">what might a better approach, and a better android look like?</p>
 							</div>
 						</div>
 					</section>
@@ -127,7 +129,7 @@ import '@/styles/global.css';
 			>
 				<div class="mx-auto max-w-3xl">
 					<p class="type-body text-(--ink)">
-						We propose creating a local and open language model to detect scams, for everyone.
+						we propose creating a local and open language model to detect scams, for everyone.
 					</p>
 
 					<div class="my-16 grid gap-4 lg:-ml-36 lg:w-[calc(100%+18rem)] lg:grid-cols-2">
@@ -143,30 +145,28 @@ import '@/styles/global.css';
 						</div>
 					</div>
 
-					<div class="type-body space-y-5 text-(--ink)">
+					<div class="type-body text-(--ink)">
 						<p>
-							You can now run local language models on your phone. So, you could have one that's just
+							you can run local language models on your phone. so, you could have a model on your phone
 							protecting you from ever sophisticated scamming attempts.
 						</p>
-						<p class="mb-1">
-							Everyone can contribute to the model, and a fun activity is seeing how close you can get to
-							scamming; you get a score on how close you got.
+						<p class="mt-16">
+							everyone can contribute to the model, and a fun task is seeing how close you can get to scamming
+							– you get a score on how close you got.
 						</p>
-						<p class="text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic">
-							(But, the model is so good that you never really get close; like 20% close is a really good
-							score.)
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							(but, the model is so good that you never really get close; like 20% close is a really good
+							score)
 						</p>
-						<p class="mb-2.5">Also, what about creating a "World Wide Web", where,</p>
-						<ul class="ml-16 mb-2.5 grid list-disc gap-1">
-							<li>developers can give away useful and open apps,</li>
-							<li>with open-source code,</li>
-							<li>and automatic filtering,</li>
+						<p class="mt-16">also, what about creating a "World Wide Web" where:</p>
+						<ul class="mt-5 ml-16 grid list-disc gap-1">
+							<li>developers can give away useful and open apps for free</li>
+							<li>with open source code</li>
+							<li>automatic filtering</li>
 						</ul>
-						<p>which are personally checked by actual people?</p>
-						<p>
-							We think that creating a world without scams becomes possible with open and transparent
-							software.
-						</p>
+						<p class="mt-5">and that are personally checked by actual people?</p>
 					</div>
 
 					<div
@@ -174,6 +174,338 @@ import '@/styles/global.css';
 					>
 						<p class="type-subheading text-(--muted)">[a world wide web of open-source applications]</p>
 					</div>
+
+					<div class="type-body mb-16 text-(--ink)">
+						<p>we think that a world without scams becomes possible with open and transparent software.</p>
+						<p class="mt-16">
+							this means that companies shouldn't be able to create their own limits about on you using
+							something that you own and paid for. your phone is a really powerful computer, and it should be
+							yours.
+						</p>
+						<p class="mt-16">
+							after all, the great developments on the internet (and in history) happened when people could
+							play around with stuff; it's lead to a lot of innovation, too.
+						</p>
+						<p class="mt-16">
+							we think that the new developments in local language models (that you can run on your phone or
+							laptop yourself) can keep people safe.
+						</p>
+						<p class="mt-5">
+							there are simply too many scams to pay attention to nowadays; any approach to solving them has
+							to be something that everyone can work towards together.
+						</p>
+						<p class="mt-16">
+							apart from good names for an open app store, there's also some technical problems to work
+							through too.
+						</p>
+						<p class="mt-5">for example:</p>
+						<ul class="mt-5 ml-16 grid list-disc gap-6">
+							<li>
+								while most new devices can run local language models, what about low-powered phones, like
+								those found in developing and emerging countries?
+							</li>
+							<li>
+								also, within developing countries: people, including tourists, have been abducted –
+								<em>abducted</em> – or coerced, and forced to work in scamming operations.
+								<span class="mt-3 block">
+									how might we make sure that people are released, and are going to be safe?
+								</span>
+							</li>
+							<li>
+								and if you're going to have an open app store, the engineering problem is that it needs to be
+								easy to install, cost nothing to run the infrastructure, and require no logins or accounts
+							</li>
+							<li>
+								and, if developers can choose to be anonymous, how do you stop bad actors from spamming or
+								lying or sneaking, and create governance through consensus?
+							</li>
+						</ul>
+						<p class="mt-16">
+							scamming and technology are both really big industries – we have some ideas, but
+						</p>
+						<p class="mt-5 pl-8">honestly, it does come down a bit to public relations.</p>
+						<p class="mt-16">it seems like we're up against a giant megacorporation,</p>
+						<p class="mt-5 pl-8">but as far as we're concerned, we're not really against them (yet).</p>
+						<p class="mt-5">nobody likes getting scammed, including google.</p>
+					</div>
+
+					<figure class="my-16 lg:-ml-36 lg:w-[calc(100%+18rem)]">
+						<div
+							class="grid min-h-96 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+						>
+							<p class="type-subheading text-(--muted)">[phishing swindle image]</p>
+						</div>
+						<figcaption class="mt-4 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
+							source:
+							<a
+								href="https://bitwarden.com/blog/what-is-a-common-indicator-of-phishing/"
+								target="_blank"
+								rel="noreferrer"
+								class="underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								bitwarden article</a
+							>
+						</figcaption>
+					</figure>
+
+					<div class="type-body mb-16 text-(--ink)">
+						<p>it happens.</p>
+						<p class="mt-16">
+							it's more that we're against the pretty common myth of "you can have <em>safety</em>, or you can
+							have <em>privacy</em>."
+						</p>
+						<p class="mt-5">
+							we know the <strong><em>simple fact that both of these things can be true.</em></strong>
+						</p>
+						<h2 class="type-subheading mt-28 text-center text-(--ink)">
+							What might something else look like?
+						</h2>
+						<p class="mt-12">as geeks, we see the basic problem as this:</p>
+						<p class="mt-16">
+							instead of mandating that android developers identify themselves, solving the problem must be
+							(at a minimum)
+						</p>
+						<blockquote class="mt-5 border-l-2 border-(--accent-strong) pl-6">
+							<ol class="grid gap-1 text-(--ink)">
+								<li>1. anonymous</li>
+								<li>2. safe for grandma</li>
+								<li>3. easy for geeks.</li>
+							</ol>
+						</blockquote>
+						<div
+							class="mt-16 overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)] lg:-ml-20 lg:w-[calc(100%+10rem)]"
+						>
+							<div class="overflow-x-auto">
+								<table
+									class="w-full min-w-[48rem] border-separate border-spacing-0 text-left text-[clamp(1.08rem,1.35vw,1.28rem)] leading-relaxed"
+								>
+									<thead>
+										<tr class="bg-(--paper-raised) text-(--ink)">
+											<th class="w-1/2 border-b border-(--line) px-4 py-2 font-semibold">
+												our current best approach is
+											</th>
+											<th class="w-1/2 border-b border-l border-(--line) px-4 py-2 font-semibold">
+												compared with google:
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="border-b border-(--line) px-4 py-3 align-top">
+												import txt from github, or maybe gitlab?
+											</td>
+											<td class="border-b border-l border-(--line) px-4 py-3 align-top">
+												all developers need to identify themselves with government ID
+											</td>
+										</tr>
+										<tr>
+											<td class="border-b border-(--line) px-4 py-3 align-top text-(--muted)"></td>
+											<td class="border-b border-l border-(--line) px-4 py-3 align-top">
+												mandate apps and developers that are approved using checksums
+											</td>
+										</tr>
+										<tr>
+											<td class="px-4 py-3 align-top text-(--muted)"></td>
+											<td class="border-l border-(--line) px-4 py-3 align-top">
+												prevent installing unapproved applications for 24 hours.
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<p class="mt-16">
+							Anyone can share ideas, and you're welcome to send an email to
+							<a
+								href="mailto:ideas@helpsaveandroid.org"
+								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								ideas@helpsaveandroid.org</a
+							>, or on
+							<a
+								href="https://github.com/saveandroid/approach"
+								target="_blank"
+								rel="noreferrer"
+								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								GitHub</a
+							>
+							or
+							<a
+								href="https://gitlab.com/saveandroid/approach"
+								target="_blank"
+								rel="noreferrer"
+								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								Gitlab</a
+							>.
+						</p>
+						<p
+							class="mt-5 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							[please note, volunteers are checking the emails, so they're semi-public, but they can't see
+							your email address.]
+						</p>
+						<p class="mt-16">We believe that the approach above can</p>
+						<ul class="mt-5 ml-16 grid list-disc gap-1">
+							<li>solve scams</li>
+							<li>keep privacy</li>
+							<li>be far more secure.</li>
+						</ul>
+						<p class="mt-5">
+							There's nothing that spreads faster than a good idea, and an open scam model could be added to
+							Apple's devices, as well.
+						</p>
+						<div
+							class="my-16 grid min-h-96 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)] lg:-ml-36 lg:w-[calc(100%+18rem)]"
+						>
+							<p class="type-subheading text-(--muted)">[graphics to show help sharing; iPhone?]</p>
+						</div>
+						<p class="mt-16">So, with everyone together – we can help save android.</p>
+					</div>
+
+					<section
+						aria-labelledby="how-heading"
+						class="type-body mb-16 text-(--ink)"
+					>
+						<h2
+							id="how-heading"
+							class="type-subheading mt-28 text-center text-(--ink)"
+						>
+							How?
+						</h2>
+						<p class="mt-12">
+							There's something for everyone – from artists to programmers to musicians and just sharing the
+							idea of open software around the world.
+						</p>
+						<p class="mt-5">
+							You can help by chatting with your friends, and putting the link in your discord bio. you can
+							also join our discord too
+						</p>
+						<p class="mt-16">
+							Online, you can help signal boost to people in tech online, but actually more broadly.
+						</p>
+					</section>
+
+					<RepresentativeVoting />
+
+					<section class="type-body mb-16 text-(--ink)">
+						<p>The main approach is asking Post Malone(?) to make a comment on the Android situation,</p>
+						<p class="mt-5 pl-8">and, as a failsafe, you might need to sidestep big tech as a whole.</p>
+						<p class="mt-3 pl-14 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
+							(but don't worry, we'll make doing this easy and more pleasant, too.)
+						</p>
+						<p class="mt-16">
+							We're wanting to share ideas to keep android open – along with ending scams, forever. – with
+							everyone who might end up finding them interesting.
+						</p>
+						<p class="mt-5">
+							This might be someone at work or school who's a bit tech-minded or 'into android' or anyone who
+							uses a smartphone at all. 'going against big tech' is really about just many small actions,
+							together.
+						</p>
+						<p class="mt-16">
+							Heaps of people and organisations are against Android getting locked down, and have been showing
+							their support (including open app repositories like
+							<a
+								href="https://f-droid.org"
+								target="_blank"
+								rel="noreferrer"
+								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								F-Droid</a
+							>) because of
+							<a
+								href="https://keepandroidopen.org"
+								target="_blank"
+								rel="noreferrer"
+								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								already existing campaigns</a
+							>
+							about the issue as a whole.
+						</p>
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							(spearheaded by
+							<a
+								href="https://github.com/marcprux"
+								target="_blank"
+								rel="noreferrer"
+								class="underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								someone</a
+							>
+							building methods of
+							<a
+								href="https://skip.dev/"
+								target="_blank"
+								rel="noreferrer"
+								class="underline decoration-(--accent-strong) decoration-2 underline-offset-4 hover:decoration-4"
+							>
+								software working across iOS and Android too</a
+							>.)
+						</p>
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							and to fellow open sourcers out there: we can make something more accessible than f-droid –
+							mirrored through a web of devices – and that parents might use, too.
+						</p>
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							this could even be something like a new operating layer for mobile devices; something new and
+							cool.
+						</p>
+						<p class="mt-16">
+							creating more choices for the computers in our pockets keeps them private, and yours; and it is
+							not fair that anyone, or a corporation, should be able to control what you're doing with
+							something that you own.
+						</p>
+						<p class="mt-16">At the end of this page, there's some small actions you can do to help</p>
+						<p class="mt-5">Such as:</p>
+						<ul class="mt-5 ml-16 grid list-disc gap-1">
+							<li>posting online</li>
+							<li>telling your friends</li>
+							<li>sharing in your (discord) bio.</li>
+						</ul>
+						<p class="mt-5">plus some more, depending on what you enjoy doing.</p>
+						<p class="mt-16 pl-8">
+							we'd also really like Tame Impala to play at our online event [date to be confirmed]
+						</p>
+						<p class="mt-5 pl-14">
+							you can help by messaging Tame Impala and asking him nicely, because it'd help create
+							conversations about ending scams between everyone
+						</p>
+					</section>
+
+					<EventInterestPlaceholder />
+
+					<section class="type-body mb-16 text-(--ink)">
+						<p>but honestly, the best thing would be trying out some new (and open source!) apps yourself.</p>
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							(you might end up loving them, too.)
+						</p>
+					</section>
+
+					<OpenAppShowcase />
+
+					<section class="type-body mb-16 text-(--ink)">
+						<p>People are making these things for free, just for the fun of it.</p>
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							(tho you can donate to your favourite open app developers tho, too.)
+						</p>
+						<p class="mt-16">
+							we've got instructions on how to install these below, plus heaps more on the f-droid open
+							software repository (linked at the end of this page x)
+						</p>
+					</section>
 
 					<p class="type-body text-(--ink)">
 						There are also other very good reasons we're doing this, mainly to do with software freedom, but
@@ -274,102 +606,81 @@ import '@/styles/global.css';
 						</article>
 					</div>
 
-					<div class="type-body space-y-5 text-(--ink)">
+					<div class="type-body mb-16 text-(--ink)">
 						<p>
-							This isn't something we can achieve alone. We have made a little open thing online, and you can
-							suggest your best ideas to help save Android. Instead of mandating that Android developers
-							identify themselves, solving the problem must be (at a minimum):
+							So as a failsafe, if Google chooses to do nothing by their deadline in
+							<span
+								class="font-semibold tabular-nums text-(--ink)"
+								data-days-until-september
+							>
+								114</span
+							>
+							<span class="font-semibold text-(--ink)">days</span>, you might need to go around and manually
+							install our approach to genuinely sidestep Big Tech.
 						</p>
-						<ol class="ml-6 grid text-(--ink)">
-							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-(--accent-strong)">1.</span>
-								<span>safe for grandma,</span>
-							</li>
-							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-(--accent-strong)">2.</span>
-								<span>easy for geeks, and</span>
-							</li>
-							<li class="flex items-baseline gap-4 py-1">
-								<span class="text-(--accent-strong)">3.</span>
-								<span>anonymous for developers</span>
-							</li>
-						</ol>
-						<p>
-							Anyone can contribute ideas, and you're welcome to
-							<a
-								href="mailto:ideas@helpsaveandroid.org"
-								class="text-(--ink) font-semibold underline decoration-(--accent-strong) decoration-2 hover:decoration-4 underline-offset-4"
-							>
-								send an email</a
-							>
-							or
-							<a
-								href="https://github.com/saveandroid/helpsaveandroid.org"
-								target="_blank"
-								rel="noreferrer"
-								class="text-(--ink) font-semibold underline decoration-(--accent-strong) hover:decoration-4 decoration-2 underline-offset-4"
-							>
-								discuss approaches on GitHub</a
-							>.
+						<p
+							class="mt-3 pl-6 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted) sm:pl-12"
+						>
+							(and this includes things like tv's and such, but we'll make sure that it's a cozier and better
+							experience, too)
 						</p>
 					</div>
 
 					<section
 						aria-labelledby="scenario-heading"
-						class="type-body space-y-7 mt-20 text-(--ink)"
+						class="type-body mt-20 text-(--ink)"
 					>
 						<h2
 							id="scenario-heading"
 							class="type-subheading text-center text-(--ink)"
 						>
-							Here's a scenario...
+							A scenario.
 						</h2>
 
-						<p>
+						<p class="mt-12">
 							Let's imagine that the internet gets censored, and an anonymous developer builds chatting using
 							Bluetooth.
 						</p>
 
 						<div
-							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							class="mt-7 grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
 						>
 							<p class="type-body font-medium! text-(--muted)">
 								[developer sitting in the window programming]
 							</p>
 						</div>
 
-						<p>
+						<p class="mt-7">
 							You can relay messages between people, and share what you're thinking about in your
 							neighbourhood, and they relay around the world.
 						</p>
 
 						<div
-							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							class="mt-7 grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
 						>
 							<p class="type-body font-medium! text-(--muted)">
 								[how the app works and messaging around the world]
 							</p>
 						</div>
 
-						<p>
+						<p class="mt-7">
 							Google has to comply with the government, and takes down the app; they also give the government
 							the developers real name.
 						</p>
 
 						<div
-							class="grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							class="mt-7 grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
 						>
 							<p class="type-body font-medium! text-(--muted)">
 								[developer gets a knock on the door from people in suits]
 							</p>
 						</div>
 
-						<p>
-							It is also very possible that, at some point, there is a digital pre-requisite checking the
-							functionality of your application and doesn't even allow you to build it in the first place.
+						<p class="mt-7">
+							Or, due to the threat alone, you can't even dream to build it in the first place.
 						</p>
 
-						<p>
+						<p class="mt-7">
 							Unless we do something, the first step towards this future is in
 							<span
 								class="font-semibold tabular-nums text-(--ink)"
@@ -379,10 +690,265 @@ import '@/styles/global.css';
 							>
 							<span class="font-semibold text-(--ink)">days</span>.
 						</p>
+						<p class="mt-16 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
+							[4] (around 100m)
+						</p>
+						<p class="mt-5">
+							You can actually do this, Bluetooth reaches surprisingly far [4] and with enough people having
+							networks on their phones, plus people setting up large scale relay stations, you could relay
+							messages between people or around the world, all without the internet.
+						</p>
+						<p class="mt-16">
+							Again – we're not against Google either, more so the myth of this false tradeoff:
+						</p>
+						<p class="mt-5 pl-8 italic">“You can either have safety, or you can have privacy.”</p>
+						<p class="mt-5">
+							Though that isn't true, because
+							<strong><em>safety and privacy support each other.</em></strong>
+						</p>
+						<p class="mt-16">
+							Central control of an 'app store' means it's easy to erase protests, or apps to share safe
+							walking routes, or apps that help people bypass takedowns or censorship, since they can be shut
+							off and erased from millions of devices in a heartbeat when a government says they're
+							'disruptive'.
+						</p>
+						<p class="mt-16">What might happen next?</p>
+
+						<h2 class="type-subheading mt-28 text-center text-(--ink)">How might Google respond?</h2>
+						<p class="mt-12">we can expect that google will suddenly freak and think 'oh no whato no'</p>
+						<p class="mt-5">
+							and suddenly the problem would seem more difficult. there are multiple reasons that might not
+							work and see oh no we can't do this. we um!! we just can't okay??
+						</p>
+						<p class="mt-16">
+							there are so many vendors. and many phone firmwares and everything you know, and we know you
+							have to get the code from the bootloader and an enthusiast thing with jailbreaking (distant
+							memory). and we can't open that because of hackers.
+						</p>
+						<p class="type-subheading mt-16 pl-8 text-(--ink)">but,</p>
+						<p class="mt-16 pl-8">
+							it's better for everyone, including Google, if there's no scamming on Android.
+						</p>
+						<p class="mt-16">also, Google isn't a cartoon-ish villain; Google is a giant company with:</p>
+						<ul class="mt-5 ml-16 grid list-disc gap-1">
+							<li>legal obligations</li>
+							<li>security teams</li>
+							<li>app store incentives</li>
+							<li>government relationships</li>
+							<li>advertisers</li>
+							<li>shareholders</li>
+							<li>platform risk</li>
+							<li>public relations risks,</li>
+							<li>and billions of users.</li>
+						</ul>
+						<p class="mt-16">
+							Google has real reasons to care about scams; Google also has incentives to centralise control –
+							and both of these things can be true.
+						</p>
+						<p class="mt-5">
+							So, thank you for google to letting us suggest feedback. but I'm afraid it's not enough..
+						</p>
+						<p class="mt-5">
+							We reckon that there are better options that keep people safe, and keep your phone yours.
+						</p>
+						<p class="mt-16">Surely, we can make a phone secure, and focused on the people who use it.</p>
+						<p class="mt-5">You bought it, and so it should be yours forever – everything else is code.</p>
+						<p class="mt-5">
+							From your fridge to your phone to your tablet to your tell-y to your digital assistant to your
+							cat or dog, the joy from owning your own computer comes from when it respects your rights.
+						</p>
+						<p class="mt-16">
+							Defo a little corny saying this, but at heart, it's about choosing devices that choose you.
+						</p>
+						<p class="mt-5">
+							A couple of years down the line, when you're switching devices, thinking different – and
+							wondering about phones you can repair, with little things, like removable batteries
+						</p>
+						<p class="mt-5">and maybe even thinking about making your own 'cyberdeck'</p>
 					</section>
 
-					<RepresentativeVoting />
 					<CyberdeckScrapbook />
+
+					<section class="type-body mb-16 text-(--ink)">
+						<p>
+							Our devices are really powerful, and we can use them in ways that show how flexible and creative
+							they, and the people that use them, are.
+						</p>
+						<p class="mt-5">
+							We could do a lot of cool stuff together if everyone had a computer in their pocket. We can
+							eliminate scams and make a more accessible world for everyone.
+						</p>
+						<p class="mt-5">
+							Since this isn't just for android either, but it's a pretty cool thing to start with.
+						</p>
+						<p class="mt-16">Your phone now has the same speed and power as your computer.</p>
+						<p class="mt-5">Just remember: your phone is not a smartphone, it's a computer.</p>
+						<p class="mt-5 pl-8">
+							and showing your support to computers that don't have Google installed by default
+						</p>
+						<p class="mt-3 pl-14 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
+							(and placing pressure on banking apps and things that demand it)
+						</p>
+						<p class="mt-16">
+							A company putting digital locks on something doesn't make it more secure, it only makes the
+							world less fun, and doesn't let you use the thing that you bought.
+						</p>
+						<p class="mt-16">Since what we ask for, we get.</p>
+						<div
+							class="my-16 grid min-h-80 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper) p-6 text-center shadow-[0_1.2rem_2.4rem_var(--page-shadow)] lg:-ml-36 lg:w-[calc(100%+18rem)]"
+						>
+							<p class="type-subheading text-(--muted)">[line art of outline of cydia logo in background?]</p>
+						</div>
+						<p>Being able to use our devices as we choose, it'd be like having a bicycle for the mind.</p>
+						<p class="mt-16">
+							An open system is where a bicycle is yours to ride, repair, and share however you need – and
+							computers are no different.
+						</p>
+						<p class="mt-16">Simply put, what we want is:</p>
+						<ol class="mt-5 ml-6 grid gap-3 text-(--ink)">
+							<li>
+								<span class="font-semibold text-(--accent-strong)">1.</span>
+								No forced identity. Developers shouldn't need government ID to publish software.
+							</li>
+							<li>
+								<span class="font-semibold text-(--accent-strong)">2.</span>
+								No artificial delays. Users shouldn't wait 24 hours (or ever) to install an app on a device they
+								own.
+							</li>
+							<li>
+								<span class="font-semibold text-(--accent-strong)">3.</span>
+								Local safety. Scam protection should come from open on-device models – not a corporation deciding
+								what you're allowed to do.
+							</li>
+						</ol>
+						<p class="mt-16">We think these points are fair and achievable.</p>
+						<p class="mt-5">
+							Often at great cost, We choose our devices and we own them – not the other way around.
+						</p>
+						<p class="mt-16">
+							Above anything else, these decisions make it easier and safer for people to make things.
+						</p>
+						<p class="mt-5 pl-8 italic">(and no matter what tactic is tried, we will succeed.)</p>
+						<p class="mt-16">
+							and to google: and otherwise, if you don't do this, the entire thing, with new Mythos coding
+							models and such, every phone will be data breached and hacked and scammed, and such an outcome
+							is almost immediate and inevitable.
+						</p>
+						<p class="mt-16">The truth is that we can actually do heaps, together.</p>
+						<p class="mt-16">An anti-scam model ensures that safety is something we can work on together.</p>
+						<p class="mt-5">
+							An open app store is not only possible – thanks to the existing commons of open apps – but
+							central control of app stores looks silly in comparison – especially letting them control what
+							we can install outside of their walled gardens.
+						</p>
+						<p class="mt-16">
+							This involves trying new and open apps that people built with love and kindly shared by
+							developers on existing open app repositories, and that you and your friends might love, too.
+						</p>
+						<p class="mt-5">
+							Letting people know about what's possible in your discord bio (or any bio at all), or by leaving
+							one comment to a YouTuber, or with a short message to an influencer – and a friend replies "huh,
+							neat."
+						</p>
+						<p class="mt-16">
+							Everything we're experiencing as misery is a bunch of tiny bad things together.
+						</p>
+						<p class="mt-5">Which means the fix is a bunch of tiny good things together.</p>
+						<p class="mt-16">
+							Why worry about scams in the future, when we can imagine a world without them?
+						</p>
+						<p class="mt-5">
+							A world that is more safe reduces everyone's stress, since it's these little things that erode
+							our trust in others.
+						</p>
+						<p class="mt-5">
+							There's simply no more stories on people getting scammed or what to watch out for.
+						</p>
+					</section>
+
+					<div
+						class="my-16 overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)] lg:-ml-20 lg:w-[calc(100%+10rem)]"
+						aria-label="Task list placeholder"
+					>
+						<div class="border-b border-(--line) bg-(--paper-raised) px-4 py-2 font-semibold text-(--ink)">
+							things you can do
+						</div>
+						<div class="grid gap-3 p-4 text-[clamp(1.05rem,1.25vw,1.16rem)] leading-relaxed text-(--ink)">
+							<label class="flex items-start gap-3">
+								<input
+									type="checkbox"
+									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
+								/>
+								<span>[try one open app]</span>
+							</label>
+							<label class="flex items-start gap-3">
+								<input
+									type="checkbox"
+									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
+								/>
+								<span>[share helpsaveandroid.org with a friend]</span>
+							</label>
+							<label class="flex items-start gap-3">
+								<input
+									type="checkbox"
+									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
+								/>
+								<span>[message someone who might care]</span>
+							</label>
+							<label class="flex items-start gap-3">
+								<input
+									type="checkbox"
+									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
+								/>
+								<span>[add the link to a bio]</span>
+							</label>
+						</div>
+					</div>
+
+					<section class="type-body mb-16 text-(--ink)">
+						<p>
+							Imagine a world where your phone gets more trustworthy the longer you own it, because the model
+							protecting you was trained by your neighbors, not a company. Where we verify the code and
+							behavior, not the person.
+						</p>
+						<p class="mt-16">
+							Can you imagine pulling out a old phone from a while ago, and seeing what geeks around the world
+							have been up to?
+						</p>
+						<p class="mt-5">
+							Community security also means that devices stay useful far longer; to the extent where the
+							cheapest device anywhere has a thriving preowned scene – and even to the extent where e-waste
+							isn't really a problem anymore.
+						</p>
+						<p class="mt-5">
+							Plus, a post-platform governance model shows how other decentralised systems handle bad actors,
+							especially for types of software that couldn't be built otherwise – like bluetooth chatting,
+							union organising, or peer-to-peer logistics, even for things like healthcare.
+						</p>
+						<p class="mt-16">
+							We think that this will make the web more fun, as the texture of the internet moves from a
+							surveillance grid and back into a network.
+						</p>
+						<p class="mt-16">Yeah, we reckon this will be more fun.</p>
+						<p class="mt-5">Excited to see what we build together. The world is full of ideas.</p>
+						<p class="mt-5">Let's get the platforms right first.</p>
+						<p class="mt-16">I'll catch you on the flipside, skillet.</p>
+					</section>
+
+					<footer class="mt-16 mb-8 text-center">
+						<div
+							class="mx-auto h-36 w-70 bg-(--accent-strong) opacity-70"
+							style="-webkit-mask: url('/divider.svg') center / contain no-repeat; mask: url('/divider.svg') center / contain no-repeat;"
+							aria-hidden="true"
+						>
+						</div>
+						<a
+							href="mailto:hello@helpsaveandroid.org"
+							class="mt-8 inline-block text-[clamp(1.08rem,1.35vw,1.24rem)] font-semibold leading-relaxed text-(--muted)/55 hover:text-(--ink)"
+						>
+							hello@helpsaveandroid.org
+						</a>
+					</footer>
 				</div>
 			</section>
 		</main>
@@ -416,16 +982,19 @@ import '@/styles/global.css';
 				requestAnimationFrame(renderCounter);
 			}
 
-			const daysUntilSeptember = document.querySelector('[data-days-until-september]');
-			if (daysUntilSeptember) {
-				const targetDate = new Date('2026-09-01T00:00:00');
+			const daysUntilSeptember = document.querySelectorAll('[data-days-until-september]');
+			if (daysUntilSeptember.length) {
+				const targetDate = new Date('2026-09-30T00:00:00');
 				const startOfToday = new Date();
 				startOfToday.setHours(0, 0, 0, 0);
 				const msPerDay = 24 * 60 * 60 * 1000;
-				daysUntilSeptember.textContent = Math.max(
+				const daysRemaining = Math.max(
 					0,
 					Math.ceil((targetDate.getTime() - startOfToday.getTime()) / msPerDay),
 				).toLocaleString('en-US');
+				daysUntilSeptember.forEach((counter) => {
+					counter.textContent = daysRemaining;
+				});
 			}
 
 			const phones = document.querySelectorAll('[data-phone]');

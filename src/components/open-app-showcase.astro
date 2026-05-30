@@ -1,0 +1,114 @@
+---
+const apps = [
+	{
+		name: '[open maps app]',
+		note: 'offline maps, no account',
+		tilt: '-3deg',
+		rise: '1.5rem',
+	},
+	{
+		name: '[private notes app]',
+		note: 'local-first writing',
+		tilt: '2deg',
+		rise: '-0.75rem',
+	},
+	{
+		name: '[music player app]',
+		note: 'your files, your library',
+		tilt: '-1.2deg',
+		rise: '0.6rem',
+	},
+	{
+		name: '[secure chat app]',
+		note: 'simple, inspectable code',
+		tilt: '3.2deg',
+		rise: '-1.15rem',
+	},
+	{
+		name: '[tiny weather app]',
+		note: 'useful without tracking',
+		tilt: '-2.1deg',
+		rise: '1rem',
+	},
+];
+---
+
+<section
+	class="open-app-showcase relative z-10 my-16 lg:-ml-36 lg:w-[calc(100%+18rem)]"
+	aria-label="Examples of open source apps"
+>
+	<div class="open-app-strip">
+		{
+			apps.map((app) => (
+				<article
+					class="open-app-card"
+					style={`--tilt: ${app.tilt}; --rise: ${app.rise};`}
+				>
+					<div class="open-app-icon" />
+					<h3>{app.name}</h3>
+					<p>{app.note}</p>
+				</article>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.open-app-strip {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(9rem, 1fr));
+		gap: 1rem;
+		align-items: center;
+		overflow-x: auto;
+		padding: 2.5rem 1.25rem;
+		scroll-snap-type: x proximity;
+	}
+
+	.open-app-card {
+		min-height: 13rem;
+		min-width: 9rem;
+		scroll-snap-align: center;
+		transform: translateY(var(--rise)) rotate(var(--tilt));
+		border: 1px solid var(--line);
+		border-radius: 0.5rem;
+		background: var(--paper);
+		padding: 1rem;
+		box-shadow: 0 0.35rem 0.9rem color-mix(in srgb, var(--page-shadow) 64%, transparent);
+	}
+
+	.open-app-icon {
+		width: 3.4rem;
+		height: 3.4rem;
+		border-radius: 1rem;
+		border: 1px solid var(--line);
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, transparent), transparent 58%),
+			var(--paper-raised);
+	}
+
+	.open-app-card h3 {
+		margin-top: 1.2rem;
+		color: var(--ink);
+		font-size: clamp(1.02rem, 1.2vw, 1.18rem);
+		font-weight: 600;
+		line-height: 1.15;
+	}
+
+	.open-app-card p {
+		margin-top: 0.55rem;
+		color: var(--muted);
+		font-size: 0.95rem;
+		line-height: 1.35;
+	}
+
+	@media (max-width: 767px) {
+		.open-app-strip {
+			grid-template-columns: repeat(5, minmax(12rem, 1fr));
+			padding-inline: 0.5rem;
+		}
+
+		.open-app-card {
+			transform: rotate(var(--tilt));
+		}
+	}
+</style>
