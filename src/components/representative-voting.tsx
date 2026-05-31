@@ -23,12 +23,10 @@ type Representative = {
   label: string;
   description: string | null;
   wikidataUrl: string;
-  entityKind: string;
   upvoteCount: number;
   starCount: number;
   computedAt: string | null;
   fallbackStatus: string | null;
-  groupHeading: string | null;
   statusHtml: string;
   blockHtml: string;
 };
@@ -621,33 +619,15 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     </div>
   );
 
-  const renderTagPill = (label: string, offset = 0) => (
-    <span
-      key={label}
-      className="inline-flex h-7 items-center whitespace-nowrap rounded-full border bg-transparent px-2.5 text-xs font-semibold"
-      style={pillStyle(label, offset)}
-    >
-      {label}
-    </span>
-  );
-
-  const tagsFor = (row: Representative) =>
-    [
-      formatEntityKind(row.entityKind).toLowerCase(),
-      row.source === 'user' ? 'community added' : null,
-      row.groupHeading ? 'anti-scam' : null,
-    ].filter((tag): tag is string => Boolean(tag));
-
   const renderPersonTable = (rows: Representative[], options: { ranked?: boolean; dense?: boolean } = {}) => (
     <div className="overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)]">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[58rem] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[46rem] border-separate border-spacing-0 text-left">
           <thead>
             <tr className="bg-(--paper-raised) text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
-              <th className="w-[36%] px-3 py-2.5">Person</th>
-              <th className="w-[22%] px-3 py-2.5">Status</th>
-              <th className="w-[24%] px-3 py-2.5">Tags</th>
-              <th className="w-[18%] px-3 py-2.5 text-right">Votes</th>
+              <th className="w-[52%] px-3 py-2.5">Person</th>
+              <th className="w-[28%] px-3 py-2.5">Status</th>
+              <th className="w-[20%] px-3 py-2.5 text-right">Votes</th>
             </tr>
           </thead>
           <tbody>
@@ -658,7 +638,6 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
         const upvoteBusy = busyAction === `upvote:${row.qid}`;
         const starBusy = busyAction === `star:${row.qid}`;
         const statusText = stripHtml(row.statusHtml || row.fallbackStatus || 'status pending') || 'status pending';
-        const tags = tagsFor(row);
 
         return (
           <tr
@@ -702,11 +681,6 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
                 style={pillStyle(statusText, 2)}
                 dangerouslySetInnerHTML={{ __html: row.statusHtml || statusText }}
               />
-            </td>
-            <td className="border-t border-(--line) px-3 py-3 align-middle">
-              <div className="flex flex-wrap gap-1.5">
-                {tags.map((tag, tagIndex) => renderTagPill(tag, tagIndex))}
-              </div>
             </td>
             <td className="border-t border-(--line) px-3 py-3 align-middle">
               <div className="w-full inline-flex justify-end">

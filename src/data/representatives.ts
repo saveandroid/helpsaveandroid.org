@@ -3,7 +3,6 @@ export type SeedRepresentative = {
   label: string;
   description: string;
   fallbackStatus: string;
-  groupHeading?: string;
   entityKind: 'human' | 'account' | 'organization';
 };
 
@@ -27,7 +26,6 @@ export const seedRepresentatives = [
     label: 'Kitboga',
     description: 'American Twitch streamer and scambaiter',
     fallbackStatus: 'contacted, awaiting response',
-    groupHeading: 'people against scamming',
     entityKind: 'human',
   },
   {
@@ -35,7 +33,6 @@ export const seedRepresentatives = [
     label: 'Scammer Payback',
     description: 'American scambaiting YouTube channel',
     fallbackStatus: 'contacted, awaiting response',
-    groupHeading: 'people against scamming',
     entityKind: 'account',
   },
   {

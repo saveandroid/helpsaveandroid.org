@@ -8,7 +8,6 @@ export type CandidateRow = {
   label: string;
   description: string | null;
   wikidata_url: string;
-  entity_kind: string;
   upvote_count: number;
   star_count: number;
   computed_at: string | null;
@@ -20,12 +19,10 @@ export type RepresentativeApiRow = {
   label: string;
   description: string | null;
   wikidataUrl: string;
-  entityKind: string;
   upvoteCount: number;
   starCount: number;
   computedAt: string | null;
   fallbackStatus: string | null;
-  groupHeading: string | null;
   statusHtml: string;
   blockHtml: string;
 };
@@ -181,12 +178,10 @@ async function decorateRow(env: Pick<EnvBindings, 'HSA_REP_STATUS' | 'HSA_BLOCKE
     label: row.label,
     description: row.description,
     wikidataUrl: row.wikidata_url,
-    entityKind: row.entity_kind,
     upvoteCount: Number(row.upvote_count ?? 0),
     starCount: Number(row.star_count ?? 0),
     computedAt: row.computed_at,
     fallbackStatus: seed?.fallbackStatus ?? null,
-    groupHeading: seed?.groupHeading ?? null,
     statusHtml: renderSafeGfm(statusMarkdown),
     blockHtml: renderSafeGfm(blockReason),
   };
@@ -202,7 +197,6 @@ export async function getTopRepresentatives(env: EnvBindings, limit = 10): Promi
         c.label,
         c.description,
         c.wikidata_url,
-        c.entity_kind,
         COALESCE(cc.upvote_count, 0) AS upvote_count,
         COALESCE(cc.star_count, 0) AS star_count,
         cc.computed_at
@@ -243,7 +237,6 @@ export async function getRepresentativeRows(env: EnvBindings, qids: string[]): P
         c.label,
         c.description,
         c.wikidata_url,
-        c.entity_kind,
         COALESCE(cc.upvote_count, 0) AS upvote_count,
         COALESCE(cc.star_count, 0) AS star_count,
         cc.computed_at
