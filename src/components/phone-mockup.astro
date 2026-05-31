@@ -5,6 +5,7 @@ import devImage from '@/assets/dev.png';
 
 const { class: className = '', size = 'default' } = Astro.props;
 const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : undefined;
+const scanTitleId = `apk-scan-title-${size}`;
 ---
 
 <div
@@ -16,6 +17,7 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 	style={widthStyle}
 	data-phone
 	data-mode="chat"
+	data-scan-open="false"
 	aria-label="Mock Android phone showing a scam warning conversation and safer Android user groups"
 >
 	<div class="phone-speaker"></div>
@@ -45,8 +47,12 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 						<p class="phone-message-time mt-1 text-right text-[#697568]">10:32</p>
 					</div>
 
-					<div
-						class="urgent-pulse max-w-[91%] rounded-2xl rounded-tl-none border border-[rgba(200,78,85,.24)] bg-white px-3 py-3 shadow-sm"
+					<button
+						type="button"
+						class="urgent-pulse pointer-events-auto max-w-[91%] rounded-2xl rounded-tl-none border border-[rgba(200,78,85,.24)] bg-white px-3 py-3 text-left shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rose)]"
+						data-apk-trigger
+						aria-haspopup="dialog"
+						aria-expanded="false"
 					>
 						<div class="flex items-center gap-3">
 							<div
@@ -60,7 +66,7 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 							</div>
 						</div>
 						<p class="phone-message-time mt-2 text-right text-[#697568]">10:33</p>
-					</div>
+					</button>
 
 					<div class="ml-auto max-w-[78%] rounded-2xl rounded-tr-none bg-[#d5f5c4] px-4 py-3 shadow-sm">
 						<p class="phone-message-text leading-snug text-[#243126]">Who is this?</p>
@@ -69,12 +75,89 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 
 					<div class="mt-auto rounded-2xl border border-[#d0dcc7] bg-white/80 px-4 py-3">
 						<div class="flex items-center justify-between gap-3">
-							<p class="phone-warning-title font-semibold text-[#344136]">Android Warning</p>
+							<p class="phone-warning-title font-semibold text-[#344136]">Hey, this is a scam!</p>
 							<span class="h-2.5 w-2.5 rounded-full bg-(--rose)"></span>
 						</div>
 						<p class="phone-warning-text mt-1 leading-snug text-[#5f6d61]">
-							This file asks to bypass Play Protect and read messages!
+							This fake refund update is trying to bypass safety checks, read your screen, and capture private
+							messages.
 						</p>
+					</div>
+				</div>
+
+				<div
+					class="apk-scan-layer pointer-events-none absolute inset-0 z-20 grid place-items-center bg-[rgba(21,22,17,.24)] px-4 opacity-0 backdrop-blur-[2px]"
+					aria-hidden="true"
+					data-apk-dialog
+				>
+					<div
+						class="apk-scan-dialog relative w-full max-w-[18rem] translate-y-3 rounded-3xl border border-[rgba(21,22,17,.16)] bg-[#f9fbf5] p-4 text-[#243126] opacity-0 shadow-[0_1.4rem_3rem_rgba(21,22,17,.28)]"
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby={scanTitleId}
+					>
+						<button
+							type="button"
+							class="pointer-events-auto absolute right-3 top-3 grid h-8 w-8 shrink-0 place-items-center text-[#536052] transition-colors hover:text-[#17623b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--android-green-strong)]"
+							data-apk-close
+							aria-label="Close app scan"
+						>
+							<svg
+								viewBox="0 0 24 24"
+								width="18"
+								height="18"
+								aria-hidden="true"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2.4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M18 6 6 18"></path>
+								<path d="m6 6 12 12"></path>
+							</svg>
+						</button>
+
+						<div
+							class="scan-orbit mx-auto mb-3"
+							aria-hidden="true"
+						>
+						</div>
+
+						<div class="border-b border-[#d9e2d1] pb-3">
+							<div class="text-left">
+								<p
+									id={scanTitleId}
+									class="phone-scan-title font-semibold leading-tight"
+								>
+									currently scanning this app...
+								</p>
+								<p class="phone-scan-meta mt-1 text-[#697568]">Secure Refund Update.apk</p>
+							</div>
+						</div>
+
+						<ul class="phone-scan-list mt-4 grid gap-2.5">
+							<li>
+								<span class="scan-status scan-status--unknown"></span>
+								<span>was not in the open app database</span>
+							</li>
+							<li>
+								<span class="scan-status scan-status--danger"></span>
+								<span>tried to obfuscate what it does</span>
+							</li>
+							<li>
+								<span class="scan-status scan-status--danger"></span>
+								<span>asked to read notifications and texts</span>
+							</li>
+							<li>
+								<span class="scan-status scan-status--danger"></span>
+								<span>tried to watch the screen</span>
+							</li>
+						</ul>
+
+						<div class="mt-4 rounded-2xl bg-[#f1ddd9] px-3 py-2 text-[#7b2830]">
+							<p class="phone-scan-verdict font-semibold">This install has been blocked.</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -151,6 +234,10 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 		--phone-file-meta-size: 0.875rem;
 		--phone-warning-title-size: 0.875rem;
 		--phone-warning-text-size: 0.875rem;
+		--phone-scan-title-size: 0.92rem;
+		--phone-scan-meta-size: 0.72rem;
+		--phone-scan-list-size: 0.78rem;
+		--phone-scan-verdict-size: 0.78rem;
 		--phone-people-title-size: 1.125rem;
 		--phone-people-caption-size: 0.875rem;
 		border: 0.48rem solid color-mix(in srgb, var(--ink) 88%, var(--paper) 12%);
@@ -173,6 +260,10 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 		--phone-file-meta-size: 0.78rem;
 		--phone-warning-title-size: 0.78rem;
 		--phone-warning-text-size: 0.76rem;
+		--phone-scan-title-size: 0.78rem;
+		--phone-scan-meta-size: 0.62rem;
+		--phone-scan-list-size: 0.65rem;
+		--phone-scan-verdict-size: 0.66rem;
 		--phone-people-title-size: 0.98rem;
 		--phone-people-caption-size: 0.78rem;
 	}
@@ -270,6 +361,106 @@ const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : und
 
 	.phone-warning-text {
 		font-size: var(--phone-warning-text-size);
+	}
+
+	.phone-scan-title {
+		font-size: var(--phone-scan-title-size);
+	}
+
+	.phone-scan-meta {
+		font-size: var(--phone-scan-meta-size);
+	}
+
+	.phone-scan-list {
+		padding: 0;
+		margin-left: 0;
+		list-style: none;
+		font-size: var(--phone-scan-list-size);
+		line-height: 1.25;
+	}
+
+	.phone-scan-list li {
+		display: grid;
+		grid-template-columns: 0.65rem minmax(0, 1fr);
+		align-items: start;
+		gap: 0.55rem;
+	}
+
+	.scan-status {
+		width: 0.55rem;
+		height: 0.55rem;
+		margin-top: 0.23rem;
+		border-radius: 999px;
+	}
+
+	.scan-status--unknown {
+		background: var(--amber);
+	}
+
+	.scan-status--danger {
+		background: var(--rose);
+	}
+
+	.phone-scan-verdict {
+		font-size: var(--phone-scan-verdict-size);
+	}
+
+	.scan-orbit {
+		position: relative;
+		width: 4.25rem;
+		height: 4.25rem;
+		border-radius: 999px;
+		background:
+			radial-gradient(circle, var(--android-green-strong) 0 0.24rem, transparent 0.28rem),
+			repeating-radial-gradient(
+				circle,
+				color-mix(in srgb, var(--android-green-strong) 34%, transparent) 0 1px,
+				transparent 1px 0.82rem
+			),
+			radial-gradient(
+				circle,
+				color-mix(in srgb, var(--android-green) 14%, transparent) 0 1.75rem,
+				transparent 1.8rem
+			);
+		animation: scan-breathe 2.4s ease-in-out infinite;
+	}
+
+	.scan-orbit::before {
+		position: absolute;
+		inset: 0.42rem;
+		border-radius: inherit;
+		border: 1px solid color-mix(in srgb, var(--android-green-strong) 42%, transparent);
+		content: '';
+	}
+
+	.apk-scan-layer,
+	.apk-scan-dialog {
+		transition:
+			opacity 240ms ease,
+			transform 240ms ease;
+	}
+
+	.phone-shell[data-scan-open='true'] .apk-scan-layer {
+		pointer-events: auto;
+		opacity: 1;
+	}
+
+	.phone-shell[data-scan-open='true'] .apk-scan-dialog {
+		transform: translateY(0);
+		opacity: 1;
+	}
+
+	@keyframes scan-breathe {
+		0%,
+		100% {
+			opacity: 0.74;
+			transform: scale(0.98);
+		}
+
+		50% {
+			opacity: 1;
+			transform: scale(1.03);
+		}
 	}
 
 	.phone-people-title {
