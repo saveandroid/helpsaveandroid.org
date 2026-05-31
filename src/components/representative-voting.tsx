@@ -69,6 +69,7 @@ type SearchState = 'idle' | 'loading-local' | 'ready' | 'searching-remote' | 'er
 const formatter = new Intl.NumberFormat('en-US');
 const POPULAR_PEOPLE_URL = '/people/popular.json';
 const RANKED_REPRESENTATIVES_URL = '/api/representatives/top?limit=200';
+const REPRESENTATIVE_SELECTIONS_KEY = 'hsa.representativeSelections.v1';
 const entityKindLabel: Record<string, string> = {
   account: 'Account',
   human: 'Human',
@@ -382,6 +383,25 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const starred = starredQid ? rowsByQid.get(starredQid) ?? null : null;
+    const upvoted = [...upvotedQids]
+      .filter((qid) => qid !== starredQid)
+      .map((qid) => rowsByQid.get(qid))
+      .filter((row): row is Representative => Boolean(row));
+    const snapshot = { starred, upvoted };
+
+    try {
+      window.localStorage.setItem(REPRESENTATIVE_SELECTIONS_KEY, JSON.stringify(snapshot));
+    } catch {
+      // Broadcast still keeps same-page islands in sync when storage is unavailable.
+    }
+
+    window.dispatchEvent(new CustomEvent('hsa:representative-selections', { detail: snapshot }));
+  }, [loading, rowsByQid, starredQid, upvotedQids]);
 
   useEffect(() => {
     const trimmed = query.trim();
