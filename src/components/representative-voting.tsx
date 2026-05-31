@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { mergePeopleResults, searchPeopleLocal } from '@/lib/people/search';
 import type { PersonResult, PersonSource, PersonTuple } from '@/lib/people/types';
+import { useTurnstileToken } from '@/lib/use-turnstile-token';
 
 type Representative = {
   qid: string;
@@ -64,19 +65,6 @@ type SearchResult = {
 };
 
 type SearchState = 'idle' | 'loading-local' | 'ready' | 'searching-remote' | 'error';
-
-type TurnstileApi = {
-  render: (element: HTMLElement, options: Record<string, unknown>) => string;
-  execute: (widgetId: string) => void;
-  reset: (widgetId: string) => void;
-  remove: (widgetId: string) => void;
-};
-
-declare global {
-  interface Window {
-    turnstile?: TurnstileApi;
-  }
-}
 
 const formatter = new Intl.NumberFormat('en-US');
 const POPULAR_PEOPLE_URL = '/people/popular.json';
@@ -256,10 +244,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [rankedLoading, setRankedLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
-  const turnstileHostRef = useRef<HTMLDivElement>(null);
-  const turnstileWidgetRef = useRef<string | null>(null);
-  const turnstileResolverRef = useRef<((token: string) => void) | null>(null);
-  const turnstileRejectRef = useRef<((error: Error) => void) | null>(null);
+  const { turnstileHostRef, getTurnstileToken } = useTurnstileToken(siteKey);
   const popularPeoplePromiseRef = useRef<Promise<PersonTuple[]> | null>(null);
   const rankedRowsPromiseRef = useRef<Promise<Representative[]> | null>(null);
 
@@ -365,60 +350,6 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const ensureVisible = (row: Representative) => {
     if (topQids.has(row.qid)) return;
     setExtraRows((current) => uniqueRows([row, ...current]));
-  };
-
-  const getTurnstileToken = () => {
-    if (!siteKey) {
-      if (import.meta.env.DEV) return Promise.resolve('dev-turnstile-token');
-      return Promise.reject(new Error('Verification is not configured. Please try again later.'));
-    }
-
-    return new Promise<string>((resolve, reject) => {
-      const start = Date.now();
-      const waitForTurnstile = () => {
-        if (!turnstileHostRef.current) {
-          reject(new Error('Verification widget is not available.'));
-          return;
-        }
-        if (!window.turnstile) {
-          if (Date.now() - start > 8000) {
-            reject(new Error('Verification did not load. Please try again.'));
-            return;
-          }
-          window.setTimeout(waitForTurnstile, 120);
-          return;
-        }
-
-        turnstileResolverRef.current = resolve;
-        turnstileRejectRef.current = reject;
-
-        if (!turnstileWidgetRef.current) {
-          turnstileWidgetRef.current = window.turnstile.render(turnstileHostRef.current, {
-            sitekey: siteKey,
-            size: 'normal',
-            execution: 'execute',
-            appearance: 'execute',
-            callback: (token: string) => {
-              turnstileResolverRef.current?.(token);
-              turnstileResolverRef.current = null;
-            },
-            'error-callback': () => {
-              turnstileRejectRef.current?.(new Error('Verification failed. Please try again.'));
-              turnstileRejectRef.current = null;
-            },
-            'expired-callback': () => {
-              turnstileRejectRef.current?.(new Error('Verification expired. Please try again.'));
-              turnstileRejectRef.current = null;
-            },
-          });
-        }
-
-        window.turnstile.reset(turnstileWidgetRef.current);
-        window.turnstile.execute(turnstileWidgetRef.current);
-      };
-
-      waitForTurnstile();
-    });
   };
 
   useEffect(() => {
