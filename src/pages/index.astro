@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import acluPreviewImage from '@/assets/placeholder-aclu.png';
 import guardianPreviewImage from '@/assets/placeholder-guardian.png';
 import techradarPreviewImage from '@/assets/placeholder-techradar.png';
+import ActionChecklist from '@/components/action-checklist';
 import CyberdeckScrapbook from '@/components/cyberdeck-scrapbook.astro';
 import EventInterestInvite from '@/components/event-interest-invite.astro';
 import OpenAppShowcase from '@/components/open-app-showcase.astro';
@@ -838,44 +839,7 @@ import '@/styles/global.css';
 						</p>
 					</section>
 
-					<div
-						class="my-16 overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)] lg:-ml-20 lg:w-[calc(100%+10rem)]"
-						aria-label="Task list placeholder"
-					>
-						<div class="border-b border-(--line) bg-(--paper-raised) px-4 py-2 font-semibold text-(--ink)">
-							things you can do
-						</div>
-						<div class="grid gap-3 p-4 text-[clamp(1.05rem,1.25vw,1.16rem)] leading-relaxed text-(--ink)">
-							<label class="flex items-start gap-3">
-								<input
-									type="checkbox"
-									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
-								/>
-								<span>[try one open app]</span>
-							</label>
-							<label class="flex items-start gap-3">
-								<input
-									type="checkbox"
-									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
-								/>
-								<span>[share helpsaveandroid.org with a friend]</span>
-							</label>
-							<label class="flex items-start gap-3">
-								<input
-									type="checkbox"
-									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
-								/>
-								<span>[message someone who might care]</span>
-							</label>
-							<label class="flex items-start gap-3">
-								<input
-									type="checkbox"
-									class="mt-1 size-5 rounded border-(--line-strong) accent-(--accent-strong)"
-								/>
-								<span>[add the link to a bio]</span>
-							</label>
-						</div>
-					</div>
+					<ActionChecklist client:visible />
 
 					<section class="type-body mb-16 text-(--ink)">
 						<p>
@@ -989,6 +953,37 @@ import '@/styles/global.css';
 			const peopleTrigger = document.querySelector('[data-people-trigger]');
 			let ticking = false;
 			let phoneReady = false;
+
+			phones.forEach((phone) => {
+				const apkTrigger = phone.querySelector('[data-apk-trigger]');
+				const apkDialog = phone.querySelector('[data-apk-dialog]');
+				const apkClose = phone.querySelector('[data-apk-close]');
+
+				if (!apkTrigger || !apkDialog || !apkClose) return;
+
+				const setScanOpen = (isOpen) => {
+					phone.setAttribute('data-scan-open', isOpen ? 'true' : 'false');
+					apkTrigger.setAttribute('aria-expanded', String(isOpen));
+					apkDialog.setAttribute('aria-hidden', String(!isOpen));
+				};
+
+				apkTrigger.addEventListener('click', () => setScanOpen(true));
+				apkClose.addEventListener('click', () => setScanOpen(false));
+				apkDialog.addEventListener('click', (event) => {
+					if (event.target === apkDialog) {
+						setScanOpen(false);
+					}
+				});
+			});
+
+			document.addEventListener('keydown', (event) => {
+				if (event.key !== 'Escape') return;
+				phones.forEach((phone) => {
+					phone.setAttribute('data-scan-open', 'false');
+					phone.querySelector('[data-apk-trigger]')?.setAttribute('aria-expanded', 'false');
+					phone.querySelector('[data-apk-dialog]')?.setAttribute('aria-hidden', 'true');
+				});
+			});
 
 			const updatePhoneMode = () => {
 				if (!peopleTrigger) return;
