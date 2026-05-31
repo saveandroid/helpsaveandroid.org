@@ -11,6 +11,7 @@ type EventInterestState = {
 };
 
 const formatter = new Intl.NumberFormat('en-US');
+const EVENT_INTEREST_KEY = 'hsa.eventInterest.v1';
 
 async function apiJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -106,6 +107,19 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const snapshot = { joined, withoutTameImpala };
+    try {
+      window.localStorage.setItem(EVENT_INTEREST_KEY, JSON.stringify(snapshot));
+    } catch {
+      // Broadcast still keeps same-page islands in sync when storage is unavailable.
+    }
+
+    window.dispatchEvent(new CustomEvent('hsa:event-interest', { detail: snapshot }));
+  }, [joined, loading, withoutTameImpala]);
 
   const toggleJoined = () => {
     if (busy) return;
