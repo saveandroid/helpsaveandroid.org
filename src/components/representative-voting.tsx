@@ -370,7 +370,10 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   };
 
   const getTurnstileToken = () => {
-    if (!siteKey) return Promise.resolve('dev-turnstile-token');
+    if (!siteKey) {
+      if (import.meta.env.DEV) return Promise.resolve('dev-turnstile-token');
+      return Promise.reject(new Error('Verification is not configured. Please try again later.'));
+    }
 
     return new Promise<string>((resolve, reject) => {
       const start = Date.now();

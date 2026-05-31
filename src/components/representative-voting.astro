@@ -1,7 +1,8 @@
 ---
+import { env } from 'cloudflare:workers';
 import RepresentativeVotingIsland from './representative-voting.tsx';
 
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const siteKey = env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <section
