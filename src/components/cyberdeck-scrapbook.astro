@@ -245,40 +245,38 @@ const cyberdecks = [
 
 	@media (min-width: 1024px) {
 		.cyberdeck-strip {
-			display: flex;
-			justify-content: center;
-			justify-items: initial;
-			gap: 0;
+			display: grid;
+			width: min(100%, 62rem);
+			margin-inline: auto;
+			gap: 3.35rem;
 			overflow: visible;
-			padding: 4.5rem 3rem 5.2rem;
+			padding: 4.25rem 3rem 5.25rem;
 		}
 
 		.cyberdeck-card {
-			width: auto;
-			flex-basis: min(23vw, 18.75rem);
-			margin-left: -1.55rem;
-			margin-right: 0;
-			transform: translateY(var(--rise)) rotate(var(--tilt));
-		}
-
-		.cyberdeck-card:first-child {
+			width: min(44vw, 28rem);
 			margin-left: 0;
+			margin-right: 0;
+			transform: rotate(var(--tilt));
 		}
 
 		.cyberdeck-card:nth-child(even),
 		.cyberdeck-card:nth-child(odd) {
-			justify-self: auto;
-			margin-left: -1.55rem;
+			margin-left: 0;
 			margin-right: 0;
 		}
 
-		.cyberdeck-card:first-child {
-			margin-left: 0;
+		.cyberdeck-card:nth-child(even) {
+			justify-self: end;
+		}
+
+		.cyberdeck-card:nth-child(odd) {
+			justify-self: start;
 		}
 
 		.cyberdeck-card:focus-within,
 		.cyberdeck-card:hover {
-			transform: translateY(calc(var(--rise) - 0.7rem)) rotate(calc(var(--tilt) * 0.72));
+			transform: translateY(-0.55rem) rotate(calc(var(--tilt) * 0.72));
 		}
 
 		.cyberdeck-tape {
