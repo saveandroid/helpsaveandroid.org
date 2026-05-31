@@ -1,32 +1,53 @@
 ---
+import airguardIcon from '@/assets/app-airguard.png';
+import gritIcon from '@/assets/app-grit.png';
+import openreadsIcon from '@/assets/app-openreads.png';
+import paperknifeIcon from '@/assets/app-paperknife.png';
+import unittoIcon from '@/assets/app-unitto.png';
+
 const apps = [
 	{
-		name: '[open maps app]',
-		note: 'offline maps, no account',
+		name: 'Unitto',
+		note: 'A calculator, unit and currency converter.',
+		href: 'https://f-droid.org/packages/com.sadellie.unitto/',
+		icon: unittoIcon,
+		accent: '#2f9355',
 		tilt: '-3deg',
 		rise: '1.5rem',
 	},
 	{
-		name: '[private notes app]',
-		note: 'local-first writing',
+		name: 'Grit',
+		note: 'A to-do list and daily tracker to visualize your progress.',
+		href: 'https://f-droid.org/en/packages/com.shub39.grit/',
+		icon: gritIcon,
+		accent: '#e7d58b',
 		tilt: '2deg',
 		rise: '-0.75rem',
 	},
 	{
-		name: '[music player app]',
-		note: 'your files, your library',
+		name: 'PaperKnife+',
+		note: 'A privacy-first PDF utility to merge, split, etc.',
+		href: 'https://f-droid.org/packages/com.paperknifeplus.app/',
+		icon: paperknifeIcon,
+		accent: '#ef3155',
 		tilt: '-1.2deg',
 		rise: '0.6rem',
 	},
 	{
-		name: '[secure chat app]',
-		note: 'simple, inspectable code',
+		name: 'Openreads',
+		note: 'A private book organizer and reading progress tracker.',
+		href: 'https://f-droid.org/en/packages/software.mdev.bookstracker/',
+		icon: openreadsIcon,
+		accent: '#1d8d86',
 		tilt: '3.2deg',
 		rise: '-1.15rem',
 	},
 	{
-		name: '[tiny weather app]',
-		note: 'useful without tracking',
+		name: 'AirGuard',
+		note: 'Be aware of Apple AirTags stalking you, on Android .',
+		href: 'https://f-droid.org/packages/de.seemoo.at_tracking_detection/',
+		icon: airguardIcon,
+		accent: '#a240e5',
 		tilt: '-2.1deg',
 		rise: '1rem',
 	},
@@ -40,14 +61,24 @@ const apps = [
 	<div class="open-app-strip">
 		{
 			apps.map((app) => (
-				<article
+				<a
+					href={app.href}
+					target="_blank"
+					rel="noopener noreferrer"
 					class="open-app-card"
-					style={`--tilt: ${app.tilt}; --rise: ${app.rise};`}
+					style={`--tilt: ${app.tilt}; --rise: ${app.rise}; --app-accent: ${app.accent};`}
 				>
-					<div class="open-app-icon" />
+					<img
+						src={app.icon.src}
+						width={app.icon.width}
+						height={app.icon.height}
+						alt=""
+						class="open-app-icon"
+						loading="lazy"
+					/>
 					<h3>{app.name}</h3>
 					<p>{app.note}</p>
-				</article>
+				</a>
 			))
 		}
 	</div>
@@ -65,25 +96,50 @@ const apps = [
 	}
 
 	.open-app-card {
+		display: block;
 		min-height: 13rem;
 		min-width: 9rem;
 		scroll-snap-align: center;
 		transform: translateY(var(--rise)) rotate(var(--tilt));
 		border: 1px solid var(--line);
 		border-radius: 0.5rem;
-		background: var(--paper);
+		background:
+			radial-gradient(
+				circle at top left,
+				color-mix(in srgb, var(--app-accent) 18%, transparent),
+				transparent 58%
+			),
+			var(--paper);
 		padding: 1rem;
 		box-shadow: 0 0.35rem 0.9rem color-mix(in srgb, var(--page-shadow) 64%, transparent);
+		text-decoration: none;
+		transition:
+			transform 180ms ease,
+			box-shadow 180ms ease,
+			border-color 180ms ease;
+		will-change: transform;
+	}
+
+	.open-app-card:hover,
+	.open-app-card:focus-visible {
+		transform: translateY(calc(var(--rise) - 0.45rem)) rotate(var(--tilt));
+		border-color: color-mix(in srgb, var(--app-accent) 42%, var(--line));
+		box-shadow: 0 0.65rem 1.2rem color-mix(in srgb, var(--page-shadow) 72%, transparent);
+	}
+
+	.open-app-card:focus-visible {
+		outline: 0.15rem solid color-mix(in srgb, var(--app-accent) 72%, var(--accent-strong));
+		outline-offset: 0.18rem;
 	}
 
 	.open-app-icon {
+		display: block;
 		width: 3.4rem;
 		height: 3.4rem;
 		border-radius: 1rem;
 		border: 1px solid var(--line);
-		background:
-			linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, transparent), transparent 58%),
-			var(--paper-raised);
+		background: var(--paper-raised);
+		object-fit: cover;
 	}
 
 	.open-app-card h3 {
@@ -109,6 +165,11 @@ const apps = [
 
 		.open-app-card {
 			transform: rotate(var(--tilt));
+		}
+
+		.open-app-card:hover,
+		.open-app-card:focus-visible {
+			transform: translateY(-0.45rem) rotate(var(--tilt));
 		}
 	}
 </style>
