@@ -92,7 +92,7 @@ const cyberdecks = [
 			{
 				cyberdecks.map((deck) => (
 					<article
-						class="cyberdeck-card snap-center"
+						class="cyberdeck-card"
 						style={`--tilt: ${deck.tilt}; --mobile-tilt: ${deck.mobileTilt}; --rise: ${deck.rise}; --deck-z: ${deck.z}; --photo-scale: ${deck.cropScale}; --photo-position: ${deck.objectPosition};`}
 					>
 						<a
@@ -110,6 +110,7 @@ const cyberdecks = [
 								<Image
 									src={deck.image}
 									alt={deck.alt}
+									width={Math.min(deck.image.width, 900)}
 									loading="lazy"
 									decoding="async"
 									class="cyberdeck-image h-full w-full object-cover"
@@ -144,12 +145,10 @@ const cyberdecks = [
 	.cyberdeck-card {
 		position: relative;
 		z-index: var(--deck-z);
-		width: min(82vw, 22rem);
+		width: min(80vw, 21rem);
 		transform: rotate(var(--mobile-tilt));
 		transform-origin: 50% 65%;
-		transition:
-			transform 320ms ease,
-			filter 320ms ease;
+		transition: transform 320ms ease;
 	}
 
 	.cyberdeck-card:nth-child(even) {
@@ -190,18 +189,35 @@ const cyberdecks = [
 		top: -0.85rem;
 		left: 50%;
 		z-index: 3;
-		width: 5.5rem;
-		height: 1.45rem;
+		width: 7.25rem;
+		height: 1.9rem;
+		--tape-color: #dff4bf;
+		--tape-stripe: rgba(90, 142, 32, 0.12);
 		background:
 			repeating-linear-gradient(
 				-45deg,
 				rgba(255, 255, 255, 0.18) 0 0.35rem,
-				rgba(21, 22, 17, 0.04) 0.35rem 0.7rem
+				var(--tape-stripe) 0.35rem 0.7rem
 			),
-			color-mix(in srgb, var(--accent-soft) 78%, white);
+			var(--tape-color);
 		box-shadow: 0 0.18rem 0.28rem rgba(21, 22, 17, 0.14);
 		opacity: 0.86;
 		transform: translateX(-50%) rotate(calc(var(--mobile-tilt) * -0.45));
+	}
+
+	.cyberdeck-card:nth-child(2) .cyberdeck-tape {
+		--tape-color: #ffd89e;
+		--tape-stripe: rgba(200, 131, 23, 0.16);
+	}
+
+	.cyberdeck-card:nth-child(3) .cyberdeck-tape {
+		--tape-color: #e6d8ff;
+		--tape-stripe: rgba(111, 76, 171, 0.14);
+	}
+
+	.cyberdeck-card:nth-child(4) .cyberdeck-tape {
+		--tape-color: #cfe9ff;
+		--tape-stripe: rgba(32, 119, 180, 0.14);
 	}
 
 	.cyberdeck-photo {
@@ -239,7 +255,6 @@ const cyberdecks = [
 
 	.cyberdeck-card:focus-within,
 	.cyberdeck-card:hover {
-		filter: saturate(1.05);
 		transform: rotate(calc(var(--mobile-tilt) * 0.65)) translateY(-0.25rem);
 	}
 
@@ -254,7 +269,7 @@ const cyberdecks = [
 		}
 
 		.cyberdeck-card {
-			width: min(44vw, 28rem);
+			width: min(42vw, 26.75rem);
 			margin-left: 0;
 			margin-right: 0;
 			transform: rotate(var(--tilt));
