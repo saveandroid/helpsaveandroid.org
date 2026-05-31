@@ -550,10 +550,128 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     </div>
   );
 
+  const renderStatusPill = (row: Representative) => {
+    const statusText = stripHtml(row.statusHtml || row.fallbackStatus || 'status pending') || 'status pending';
+
+    return (
+      <div
+        className="rep-status inline-flex min-h-7 max-w-full items-center rounded-full border bg-transparent px-2.5 py-1 text-xs font-semibold leading-tight"
+        style={pillStyle(statusText, 2)}
+        dangerouslySetInnerHTML={{ __html: row.statusHtml || statusText }}
+      />
+    );
+  };
+
+  const renderVoteControls = (row: Representative, layout: 'desktop' | 'mobile' = 'desktop') => {
+    const starred = starredQid === row.qid;
+    const upvoted = upvotedQids.has(row.qid);
+    const upvoteBusy = busyAction === `upvote:${row.qid}`;
+    const starBusy = busyAction === `star:${row.qid}`;
+    const mobile = layout === 'mobile';
+    const buttonBase = mobile
+      ? 'inline-flex h-10 w-full items-center justify-center gap-1 border px-1 text-xs font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)'
+      : 'inline-flex h-9 min-w-16 items-center justify-center gap-1 border px-1.5 text-sm font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)';
+    const countClassName = [mobile ? 'max-w-7 truncate' : '', 'pl-0.5'].join(' ');
+
+    return (
+      <div className={mobile ? 'inline-flex w-14 shrink-0 flex-col justify-self-end' : 'inline-flex justify-end'}>
+        <button
+          type="button"
+          onClick={() => toggleUpvote(row)}
+          disabled={Boolean(busyAction)}
+          className={[
+            buttonBase,
+            mobile ? 'rounded-t-md' : 'rounded-l-md rounded-r-none',
+            upvoted
+              ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
+              : 'border-(--line) bg-transparent text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
+          ].join(' ')}
+          aria-pressed={upvoted}
+          title={upvoted ? 'Remove upvote' : 'Upvote'}
+          aria-label={`${upvoted ? 'Remove upvote from' : 'Upvote'} ${row.label}`}
+        >
+          {upvoteBusy ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
+          <span className={countClassName}>{formatter.format(countFor(row, 'upvote'))}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => toggleStar(row)}
+          onPointerEnter={() => setHoverStarQid(row.qid)}
+          onPointerLeave={() => setHoverStarQid(null)}
+          onFocus={() => setHoverStarQid(row.qid)}
+          onBlur={() => setHoverStarQid(null)}
+          disabled={Boolean(busyAction)}
+          className={[
+            buttonBase,
+            mobile ? '-mt-px rounded-b-md' : '-ml-px rounded-l-none rounded-r-md',
+            starred
+              ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
+              : 'border-(--line) bg-transparent text-(--muted) hover:border-(--amber) hover:text-(--ink)',
+          ].join(' ')}
+          aria-pressed={starred}
+          title={starred ? 'Clear star' : 'Star favorite'}
+          aria-label={`${starred ? 'Clear star from' : 'Star'} ${row.label}`}
+        >
+          {starBusy ? <Loader2 className="size-4 animate-spin" /> : <Star className={starred ? 'size-4 fill-current' : 'size-4'} />}
+          <span className={countClassName}>{formatter.format(countFor(row, 'star'))}</span>
+        </button>
+      </div>
+    );
+  };
+
   const renderPersonTable = (rows: Representative[], options: { ranked?: boolean; dense?: boolean } = {}) => (
     <div className="overflow-hidden rounded-lg border border-(--line) bg-(--paper) shadow-[0_0.6rem_1.4rem_var(--page-shadow)]">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[46rem] border-separate border-spacing-0 text-left">
+      <div className="divide-y divide-(--line) md:hidden">
+        {rows.map((row, index) => {
+          const starred = starredQid === row.qid;
+          const oldStarDimmed = starred && hoverStarQid && hoverStarQid !== row.qid;
+
+          return (
+            <article
+              key={row.qid}
+              className={[
+                'group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 transition',
+                starred ? 'bg-(--accent-soft)' : '',
+                oldStarDimmed ? 'opacity-55' : '',
+              ].join(' ')}
+            >
+              <div className="min-w-0">
+                <div className="flex min-w-0 items-start gap-2">
+                  {options.ranked && (
+                    <span className="mt-0.5 inline-flex h-6 min-w-8 shrink-0 items-center justify-center rounded-md border border-(--line) bg-(--paper-raised) px-1.5 text-[0.68rem] font-semibold tabular-nums text-(--muted)">
+                      #{index + 1}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex min-w-0 items-center gap-1">
+                      <h3 className={options.dense ? 'truncate text-base font-semibold leading-tight text-(--ink)' : 'truncate text-lg font-semibold leading-tight text-(--ink)'}>
+                        {row.label}
+                      </h3>
+                      <a
+                        href={row.wikidataUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent text-(--muted) transition hover:border-(--line) hover:text-(--ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)"
+                        aria-label={`Open ${row.label} on Wikidata`}
+                        title={`Open ${row.label} on Wikidata`}
+                      >
+                        <ExternalLink className="size-3.5" />
+                      </a>
+                    </div>
+                    {row.description && <p className="mt-1 line-clamp-2 text-sm leading-snug text-(--muted)">{row.description}</p>}
+                    <div className="mt-2">{renderStatusPill(row)}</div>
+                  </div>
+                </div>
+              </div>
+              {renderVoteControls(row, 'mobile')}
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full min-w-[42rem] border-separate border-spacing-0 text-left">
           <thead>
             <tr className="bg-(--paper-raised) text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
               <th className="w-[52%] px-3 py-2.5">Person</th>
@@ -563,101 +681,53 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
           </thead>
           <tbody>
             {rows.map((row, index) => {
-        const starred = starredQid === row.qid;
-        const upvoted = upvotedQids.has(row.qid);
-        const oldStarDimmed = starred && hoverStarQid && hoverStarQid !== row.qid;
-        const upvoteBusy = busyAction === `upvote:${row.qid}`;
-        const starBusy = busyAction === `star:${row.qid}`;
-        const statusText = stripHtml(row.statusHtml || row.fallbackStatus || 'status pending') || 'status pending';
+              const starred = starredQid === row.qid;
+              const oldStarDimmed = starred && hoverStarQid && hoverStarQid !== row.qid;
 
-        return (
-          <tr
-            key={row.qid}
-            className={[
-              'group transition hover:bg-(--paper-raised)',
-              starred ? 'bg-(--accent-soft)' : '',
-              oldStarDimmed ? 'opacity-55' : '',
-            ].join(' ')}
-          >
-            <td className="border-t border-(--line) px-3 py-3 align-middle">
-              <div className="flex min-w-0 items-start gap-2.5">
-                {options.ranked && (
-                  <span className="mt-0.5 inline-flex h-7 min-w-9 items-center justify-center rounded-md border border-(--line) bg-(--paper-raised) px-2 text-xs font-semibold tabular-nums text-(--muted)">
-                    #{index + 1}
-                  </span>
-                )}
-                <div className="min-w-0">
-                  <div className="flex min-w-0 items-center gap-1.5">
-                    <h3 className={options.dense ? 'truncate text-base font-semibold leading-tight text-(--ink)' : 'truncate text-lg font-semibold leading-tight text-(--ink)'}>
-                      {row.label}
-                    </h3>
-                    <a
-                      href={row.wikidataUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent text-(--muted) opacity-0 transition hover:border-(--line) hover:text-(--ink) group-hover:opacity-100 focus-visible:opacity-100"
-                      aria-label={`Open ${row.label} on Wikidata`}
-                      title={`Open ${row.label} on Wikidata`}
-                    >
-                      <ExternalLink className="size-3.5" />
-                    </a>
-                  </div>
-                  {row.description && <p className="mt-1 line-clamp-2 text-sm leading-snug text-(--muted)">{row.description}</p>}
-                </div>
-              </div>
-            </td>
-            <td className="border-t border-(--line) px-3 py-3 align-middle">
-              <div
-                className="rep-status inline-flex min-h-7 max-w-full items-center rounded-full border bg-transparent px-2.5 py-1 text-xs font-semibold leading-tight"
-                style={pillStyle(statusText, 2)}
-                dangerouslySetInnerHTML={{ __html: row.statusHtml || statusText }}
-              />
-            </td>
-            <td className="border-t border-(--line) px-3 py-3 align-middle">
-              <div className="w-full inline-flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => toggleUpvote(row)}
-                  disabled={Boolean(busyAction)}
+              return (
+                <tr
+                  key={row.qid}
                   className={[
-                    'inline-flex h-9 min-w-16 items-center justify-center gap-1 rounded-l-md rounded-r-none border px-1.5 text-sm font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
-                    upvoted
-                      ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
-                      : 'border-(--line) bg-transparent text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
+                    'group transition hover:bg-(--paper-raised)',
+                    starred ? 'bg-(--accent-soft)' : '',
+                    oldStarDimmed ? 'opacity-55' : '',
                   ].join(' ')}
-                  aria-pressed={upvoted}
-                  title={upvoted ? 'Remove upvote' : 'Upvote'}
-                  aria-label={`${upvoted ? 'Remove upvote from' : 'Upvote'} ${row.label}`}
                 >
-                  {upvoteBusy ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
-                  <span className='pl-0.5'>{formatter.format(countFor(row, 'upvote'))}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => toggleStar(row)}
-                  onPointerEnter={() => setHoverStarQid(row.qid)}
-                  onPointerLeave={() => setHoverStarQid(null)}
-                  onFocus={() => setHoverStarQid(row.qid)}
-                  onBlur={() => setHoverStarQid(null)}
-                  disabled={Boolean(busyAction)}
-                  className={[
-                    '-ml-px inline-flex h-9 min-w-16 items-center justify-center gap-1 rounded-l-none rounded-r-md border px-1.5 text-sm font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
-                    starred
-                      ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
-                      : 'border-(--line) bg-transparent text-(--muted) hover:border-(--amber) hover:text-(--ink)',
-                  ].join(' ')}
-                  aria-pressed={starred}
-                  title={starred ? 'Clear star' : 'Star favorite'}
-                  aria-label={`${starred ? 'Clear star from' : 'Star'} ${row.label}`}
-                >
-                  {starBusy ? <Loader2 className="size-4 animate-spin" /> : <Star className={starred ? 'size-4 fill-current' : 'size-4'} />}
-                  <span className='pl-0.5'>{formatter.format(countFor(row, 'star'))}</span>
-                </button>
-              </div>
-            </td>
-          </tr>
-        );
+                  <td className="border-t border-(--line) px-3 py-3 align-middle">
+                    <div className="flex min-w-0 items-start gap-2.5">
+                      {options.ranked && (
+                        <span className="mt-0.5 inline-flex h-7 min-w-9 items-center justify-center rounded-md border border-(--line) bg-(--paper-raised) px-2 text-xs font-semibold tabular-nums text-(--muted)">
+                          #{index + 1}
+                        </span>
+                      )}
+                      <div className="min-w-0">
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <h3 className={options.dense ? 'truncate text-base font-semibold leading-tight text-(--ink)' : 'truncate text-lg font-semibold leading-tight text-(--ink)'}>
+                            {row.label}
+                          </h3>
+                          <a
+                            href={row.wikidataUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent text-(--muted) opacity-0 transition hover:border-(--line) hover:text-(--ink) group-hover:opacity-100 focus-visible:opacity-100"
+                            aria-label={`Open ${row.label} on Wikidata`}
+                            title={`Open ${row.label} on Wikidata`}
+                          >
+                            <ExternalLink className="size-3.5" />
+                          </a>
+                        </div>
+                        {row.description && <p className="mt-1 line-clamp-2 text-sm leading-snug text-(--muted)">{row.description}</p>}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="border-t border-(--line) px-3 py-3 align-middle">
+                    {renderStatusPill(row)}
+                  </td>
+                  <td className="border-t border-(--line) px-3 py-3 align-middle">
+                    <div className="w-full inline-flex justify-end">{renderVoteControls(row)}</div>
+                  </td>
+                </tr>
+              );
             })}
           </tbody>
         </table>

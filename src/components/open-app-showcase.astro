@@ -159,12 +159,28 @@ const apps = [
 
 	@media (max-width: 767px) {
 		.open-app-strip {
-			grid-template-columns: repeat(5, minmax(12rem, 1fr));
-			padding-inline: 0.5rem;
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1.65rem;
+			overflow: visible;
+			padding: 1rem 0.5rem 1.6rem;
+			scroll-snap-type: none;
 		}
 
 		.open-app-card {
+			width: min(68vw, 15.5rem);
+			min-width: 0;
+			scroll-snap-align: none;
 			transform: rotate(var(--tilt));
+		}
+
+		.open-app-card:nth-child(odd) {
+			justify-self: start;
+			margin-left: 0.35rem;
+		}
+
+		.open-app-card:nth-child(even) {
+			justify-self: end;
+			margin-right: 0.35rem;
 		}
 
 		.open-app-card:hover,
