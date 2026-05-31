@@ -1,0 +1,25 @@
+---
+import { env } from 'cloudflare:workers';
+import EventInterestInviteIsland from './event-interest-invite.tsx';
+
+const siteKey = env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+---
+
+<section
+	class="event-interest relative z-10 my-16 lg:-ml-20 lg:w-[calc(100%+10rem)]"
+	aria-label="Event interest invite"
+>
+	<div class="mx-auto max-w-3xl">
+		<EventInterestInviteIsland
+			client:visible
+			siteKey={siteKey}
+		/>
+	</div>
+</section>
+
+<script
+	is:inline
+	src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+	async
+	defer
+></script>
