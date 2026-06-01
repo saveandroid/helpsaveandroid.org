@@ -126,7 +126,8 @@ import '@/styles/global.css';
 			</section>
 
 			<section
-				class="snap-panel relative z-10 border-t border-(--line) bg-(--paper-raised) px-5 pb-28 pt-20 sm:px-8 sm:pt-24 lg:px-12"
+				class="relative z-10 border-t border-(--line) bg-(--paper-raised) px-5 pb-28 pt-20 sm:px-8 sm:pt-24 lg:px-12"
+				data-regular-scroll-start
 			>
 				<div class="mx-auto max-w-3xl">
 					<p class="type-body text-(--ink)">
@@ -876,8 +877,7 @@ import '@/styles/global.css';
 
 					<footer class="mt-16 mb-8 text-center">
 						<div
-							class="mx-auto h-36 w-70 bg-(--accent-strong) opacity-70"
-							style="-webkit-mask: url('/divider.svg') center / contain no-repeat; mask: url('/divider.svg') center / contain no-repeat;"
+							class="mx-auto h-36 w-70"
 							aria-hidden="true"
 						>
 						</div>
@@ -916,6 +916,7 @@ import '@/styles/global.css';
 			});
 
 			const counters = document.querySelectorAll('[data-loss-counter]');
+			const regularScrollStart = document.querySelector('[data-regular-scroll-start]');
 			const loadAt = performance.now();
 
 			const lossAt = (time) => Math.max(0, ((time - scamStart) / msPerYear) * annualLossUsd);
@@ -1000,10 +1001,19 @@ import '@/styles/global.css';
 				ticking = false;
 			};
 
+			const updateIntroSnap = () => {
+				if (!regularScrollStart) return;
+				const isInPhoneIntro = regularScrollStart.getBoundingClientRect().top > window.innerHeight * 0.7;
+				document.documentElement.classList.toggle('intro-snap-active', isInPhoneIntro);
+			};
+
 			const requestPhoneUpdate = () => {
 				if (ticking) return;
 				ticking = true;
-				requestAnimationFrame(updatePhoneMode);
+				requestAnimationFrame(() => {
+					updatePhoneMode();
+					updateIntroSnap();
+				});
 			};
 
 			const newsPreviewCards = document.querySelectorAll('[data-news-preview-card]');
