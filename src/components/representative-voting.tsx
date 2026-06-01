@@ -537,16 +537,20 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   };
 
   const addCandidate = (result: SearchResult) => {
+    const alreadyUpvoted = upvotedQids.has(result.id);
+
     runAction(`add:${result.id}`, async (turnstileToken) => {
-      const payload = await apiJson<{ candidate: Representative }>('/api/representatives/candidates', {
+      const payload = await apiJson<{ candidate: Representative; upvotedQid?: string }>('/api/representatives/candidates', {
         method: 'POST',
         body: JSON.stringify({ qid: result.id, turnstileToken }),
       });
       ensureVisible(payload.candidate);
+      setUpvotedQids((current) => new Set(current).add(payload.upvotedQid ?? payload.candidate.qid));
+      if (!alreadyUpvoted) addDelta(payload.candidate.qid, 'upvote', 1);
       setQuery('');
       setSearchResults([]);
       setMessage({
-        text: `${payload.candidate.label} has been added below!`,
+        text: `${payload.candidate.label} has been added and upvoted below!`,
         type: 'success',
       });
     });
@@ -603,7 +607,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
             buttonBase,
             mobile ? 'rounded-t-md' : 'rounded-l-md rounded-r-none',
             upvoted
-              ? 'border-(--accent-strong) bg-(--accent-soft) text-(--ink)'
+              ? 'border-(--accent-strong) bg-(--accent-soft) text-(--accent-strong)'
               : 'border-(--line) bg-transparent text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
           ].join(' ')}
           aria-pressed={upvoted}
@@ -626,7 +630,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
             buttonBase,
             mobile ? '-mt-px rounded-b-md' : '-ml-px rounded-l-none rounded-r-md',
             starred
-              ? 'border-(--amber) bg-[#fff4cd] text-(--ink)'
+              ? 'border-(--amber) bg-[#fff4cd] text-(--amber)'
               : 'border-(--line) bg-transparent text-(--muted) hover:border-(--amber) hover:text-(--ink)',
           ].join(' ')}
           aria-pressed={starred}

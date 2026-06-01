@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { isValidQid } from '@/data/representatives';
 import { getOrCreateVoterHash } from '@/lib/representatives/cookies';
-import { ensureCandidate, getRepresentativeRows, isBlocked } from '@/lib/representatives/db';
+import { ensureCandidate, getRepresentativeRows, isBlocked, setUpvote } from '@/lib/representatives/db';
 import { envBindings, json, noStoreHeaders, readJsonBody } from '@/lib/representatives/http';
 import { validateTurnstile } from '@/lib/representatives/turnstile';
 import { fetchWikidataDetails } from '@/lib/representatives/wikidata';
@@ -30,7 +30,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   const voter = await getOrCreateVoterHash(request, bindings.HSA_COOKIE_SECRET);
   await ensureCandidate(bindings.HSA_VOTES_DB, details, voter.voterHash);
+  await setUpvote(bindings.HSA_VOTES_DB, qid, voter.voterHash, true);
   const [candidate] = await getRepresentativeRows(bindings, [qid]);
 
-  return json({ candidate }, { status: 201, headers: noStoreHeaders() }, voter.setCookie);
+  return json({ candidate, upvotedQid: qid }, { status: 201, headers: noStoreHeaders() }, voter.setCookie);
 };
