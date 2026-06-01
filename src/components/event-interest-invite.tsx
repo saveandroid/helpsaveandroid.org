@@ -11,6 +11,12 @@ type EventInterestState = {
   withoutTameImpalaCount: number;
 };
 
+type PushPublicKeyResponse = {
+  publicKey: string | null;
+};
+
+type EventNotificationPermission = NotificationPermission | 'not_configured' | 'unsupported';
+
 const formatter = new Intl.NumberFormat('en-US');
 const EVENT_INTEREST_KEY = 'hsa.eventInterest.v1';
 
@@ -49,7 +55,68 @@ function fireButtonConfetti(button: HTMLButtonElement | null) {
   });
 }
 
-export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
+function base64UrlToUint8Array(value: string): Uint8Array {
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+  const binary = window.atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+function requestEventNotificationPermission(publicKey: string | null): Promise<EventNotificationPermission> {
+  if (!publicKey) return Promise.resolve('not_configured');
+  if (
+    !window.isSecureContext ||
+    !('Notification' in window) ||
+    !('serviceWorker' in navigator) ||
+    !('PushManager' in window)
+  ) {
+    return Promise.resolve('unsupported');
+  }
+  if (Notification.permission !== 'default') return Promise.resolve(Notification.permission);
+  return Notification.requestPermission();
+}
+
+async function subscribeToEventNotifications(publicKey: string): Promise<void> {
+  const registration = await navigator.serviceWorker.register('/event-push-sw.js', { scope: '/' });
+  const readyRegistration = await navigator.serviceWorker.ready;
+  const subscription =
+    (await readyRegistration.pushManager.getSubscription()) ??
+    (await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: base64UrlToUint8Array(publicKey),
+    }));
+
+  await apiJson<{ ok: true }>('/api/event-interest/push-subscription', {
+    method: 'POST',
+    body: JSON.stringify({ subscription: subscription.toJSON() }),
+  });
+}
+
+async function unsubscribeFromEventNotifications(): Promise<void> {
+  if (!('serviceWorker' in navigator)) return;
+
+  const registration = await navigator.serviceWorker.getRegistration('/');
+  const subscription = await registration?.pushManager.getSubscription();
+
+  await apiJson<{ ok: true }>('/api/event-interest/push-subscription', {
+    method: 'DELETE',
+    body: JSON.stringify({ subscription: subscription?.toJSON() }),
+  });
+
+  await subscription?.unsubscribe();
+}
+
+export default function EventInterestInvite({
+  siteKey,
+  pushPublicKey: initialPushPublicKey = null,
+}: {
+  siteKey: string;
+  pushPublicKey?: string | null;
+}) {
   const [joined, setJoined] = useState(false);
   const [withoutTameImpala, setWithoutTameImpala] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -57,6 +124,7 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [pushPublicKey, setPushPublicKey] = useState<string | null>(initialPushPublicKey);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { getTurnstileToken } = useTurnstileToken(siteKey);
 
@@ -95,9 +163,15 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
   useEffect(() => {
     let cancelled = false;
 
-    apiJson<EventInterestState>('/api/event-interest')
-      .then((state) => {
-        if (!cancelled) applyState(state);
+    Promise.allSettled([
+      apiJson<EventInterestState>('/api/event-interest'),
+      pushPublicKey ? Promise.resolve<PushPublicKeyResponse>({ publicKey: pushPublicKey }) : apiJson<PushPublicKeyResponse>('/api/event-interest/push-public-key'),
+    ])
+      .then(([eventResult, pushResult]) => {
+        if (cancelled) return;
+        if (eventResult.status === 'fulfilled') applyState(eventResult.value);
+        else setMessage(eventResult.reason instanceof Error ? eventResult.reason.message : 'Could not load the invite count.');
+        if (pushResult.status === 'fulfilled') setPushPublicKey(pushResult.value.publicKey);
       })
       .catch((error) => {
         if (!cancelled) setMessage(error instanceof Error ? error.message : 'Could not load the invite count.');
@@ -126,9 +200,34 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
 
   const toggleJoined = () => {
     if (busy) return;
-    void saveState(!joined, joined ? false : withoutTameImpala).catch(() => {
-      // Message state is set in saveState.
-    });
+
+    const nextJoined = !joined;
+    const permission = nextJoined ? requestEventNotificationPermission(pushPublicKey) : Promise.resolve<EventNotificationPermission>('default');
+
+    void saveState(nextJoined, joined ? false : withoutTameImpala)
+      .then(async () => {
+        if (!nextJoined) {
+          await unsubscribeFromEventNotifications().catch(() => undefined);
+          return;
+        }
+
+        try {
+          const notificationPermission = await permission;
+          if (notificationPermission === 'granted' && pushPublicKey) {
+            await subscribeToEventNotifications(pushPublicKey);
+            setMessage('browser notifications are on for event updates.');
+          } else if (notificationPermission === 'denied') {
+            setMessage('you are on the list. browser notifications are blocked in this browser.');
+          } else if (notificationPermission === 'not_configured') {
+            setMessage('you are on the list. notification keys still need to be configured.');
+          }
+        } catch {
+          setMessage('you are on the list, but browser notifications could not be enabled.');
+        }
+      })
+      .catch(() => {
+        // Message state is set in saveState.
+      });
   };
 
   const toggleWithoutTameImpala = (checked: boolean) => {

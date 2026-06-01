@@ -3,6 +3,7 @@ import { env } from 'cloudflare:workers';
 import EventInterestInviteIsland from './event-interest-invite.tsx';
 
 const siteKey = env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const pushPublicKey = env.HSA_WEB_PUSH_PUBLIC_KEY ?? null;
 ---
 
 <section
@@ -13,6 +14,7 @@ const siteKey = env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLIC_TURNSTIL
 		<EventInterestInviteIsland
 			client:visible
 			siteKey={siteKey}
+			pushPublicKey={pushPublicKey}
 		/>
 	</div>
 </section>

@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "test": "vitest run",
     "deploy": "wrangler deploy",
+    "vapid:generate": "node scripts/generate-vapid-keys.mjs",
     "astro": "astro"
   },
   "dependencies": {
