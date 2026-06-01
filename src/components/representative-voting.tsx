@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { mergePeopleResults, searchPeopleLocal } from '@/lib/people/search';
 import type { PersonResult, PersonSource, PersonTuple } from '@/lib/people/types';
+import { useBeforeUnloadWhen } from '@/lib/use-before-unload';
 import { useTurnstileToken } from '@/lib/use-turnstile-token';
 
 type Representative = {
@@ -239,15 +240,17 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [popularPeople, setPopularPeople] = useState<PersonTuple[]>([]);
   const [popularLoadError, setPopularLoadError] = useState<string | null>(null);
   const [rankedLoadError, setRankedLoadError] = useState<string | null>(null);
-  const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [busyActions, setBusyActions] = useState<Set<string>>(() => new Set());
   const [hoverStarQid, setHoverStarQid] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [rankedLoading, setRankedLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
-  const { turnstileHostRef, getTurnstileToken } = useTurnstileToken(siteKey);
+  const { getTurnstileToken } = useTurnstileToken(siteKey);
   const popularPeoplePromiseRef = useRef<Promise<PersonTuple[]> | null>(null);
   const rankedRowsPromiseRef = useRef<Promise<Representative[]> | null>(null);
+  const busyActionsRef = useRef<Set<string>>(new Set());
+  const starActionQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   const topQids = useMemo(() => new Set(topRows.map((row) => row.qid)), [topRows]);
   const rowsByQid = useMemo(() => {
@@ -283,6 +286,16 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     () => [...popularSearchResults, ...wikidataSearchResults],
     [popularSearchResults, wikidataSearchResults],
   );
+  const starActionBusy = useMemo(
+    () => [...busyActions].some((key) => key.startsWith('star:')),
+    [busyActions],
+  );
+  const addActionBusy = useMemo(
+    () => [...busyActions].some((key) => key.startsWith('add:')),
+    [busyActions],
+  );
+
+  useBeforeUnloadWhen(busyActions.size > 0);
 
   const loadPopularPeople = useCallback(async () => {
     if (popularPeople.length > 0) return popularPeople;
@@ -468,20 +481,46 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
     };
   }, [loadPopularPeople, popularPeople, query]);
 
-  const runAction = async (key: string, action: (token: string) => Promise<void>) => {
-    setBusyAction(key);
+  const beginAction = (key: string) => {
+    if (busyActionsRef.current.has(key)) return false;
+    busyActionsRef.current.add(key);
+    setBusyActions(new Set(busyActionsRef.current));
+    return true;
+  };
+
+  const finishAction = (key: string) => {
+    busyActionsRef.current.delete(key);
+    setBusyActions(new Set(busyActionsRef.current));
+  };
+
+  const enqueueStarAction = (action: () => Promise<void>) => {
+    const queued = starActionQueueRef.current.then(action, action);
+    starActionQueueRef.current = queued.then(
+      () => undefined,
+      () => undefined,
+    );
+    return queued;
+  };
+
+  const runAction = (key: string, action: (token: string) => Promise<void>, options: { serializeStar?: boolean } = {}) => {
+    if (!beginAction(key)) return;
     setMessage(null);
-    try {
-      const token = await getTurnstileToken();
-      await action(token);
-    } catch (error) {
-      setMessage({
-        text: error instanceof Error ? error.message : 'The action failed.',
-        type: 'error',
-      });
-    } finally {
-      setBusyAction(null);
-    }
+
+    const job = async () => {
+      try {
+        const token = await getTurnstileToken();
+        await action(token);
+      } catch (error) {
+        setMessage({
+          text: error instanceof Error ? error.message : 'The action failed.',
+          type: 'error',
+        });
+      } finally {
+        finishAction(key);
+      }
+    };
+
+    void (options.serializeStar ? enqueueStarAction(job) : job());
   };
 
   const toggleUpvote = (row: Representative) => {
@@ -504,17 +543,16 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const toggleStar = (row: Representative) => {
     if (starredQid === row.qid) {
       runAction(`star:${row.qid}`, async (turnstileToken) => {
-        await apiJson('/api/representatives/star', {
+        const result = await apiJson<{ previousQid: string | null }>('/api/representatives/star', {
           method: 'DELETE',
           body: JSON.stringify({ turnstileToken }),
         });
         setStarredQid(null);
-        addDelta(row.qid, 'star', -1);
-      });
+        if (result.previousQid) addDelta(result.previousQid, 'star', -1);
+      }, { serializeStar: true });
       return;
     }
 
-    const previousQid = starredQid;
     runAction(`star:${row.qid}`, async (turnstileToken) => {
       const result = await apiJson<{ previousQid: string | null; convertedPreviousToUpvote: boolean }>(
         '/api/representatives/star',
@@ -523,8 +561,10 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
           body: JSON.stringify({ qid: row.qid, turnstileToken }),
         },
       );
-      if (previousQid) addDelta(previousQid, 'star', -1);
-      addDelta(row.qid, 'star', 1);
+      if (result.previousQid !== row.qid) {
+        if (result.previousQid) addDelta(result.previousQid, 'star', -1);
+        addDelta(row.qid, 'star', 1);
+      }
       setStarredQid(row.qid);
 
       if (result.previousQid && result.convertedPreviousToUpvote) {
@@ -533,7 +573,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
         addDelta(result.previousQid, 'upvote', 1);
         if (previousRow) ensureVisible(previousRow);
       }
-    });
+    }, { serializeStar: true });
   };
 
   const addCandidate = (result: SearchResult) => {
@@ -589,8 +629,8 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const renderVoteControls = (row: Representative, layout: 'desktop' | 'mobile' = 'desktop') => {
     const starred = starredQid === row.qid;
     const upvoted = upvotedQids.has(row.qid);
-    const upvoteBusy = busyAction === `upvote:${row.qid}`;
-    const starBusy = busyAction === `star:${row.qid}`;
+    const upvoteBusy = busyActions.has(`upvote:${row.qid}`);
+    const starBusy = busyActions.has(`star:${row.qid}`);
     const mobile = layout === 'mobile';
     const buttonBase = mobile
       ? 'inline-flex h-10 w-full items-center justify-center gap-1 border px-1 text-xs font-semibold tabular-nums transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)'
@@ -602,7 +642,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
         <button
           type="button"
           onClick={() => toggleUpvote(row)}
-          disabled={Boolean(busyAction)}
+          disabled={upvoteBusy}
           className={[
             buttonBase,
             mobile ? 'rounded-t-md' : 'rounded-l-md rounded-r-none',
@@ -625,7 +665,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
           onPointerLeave={() => setHoverStarQid(null)}
           onFocus={() => setHoverStarQid(row.qid)}
           onBlur={() => setHoverStarQid(null)}
-          disabled={Boolean(busyAction)}
+          disabled={starBusy || (starActionBusy && starred)}
           className={[
             buttonBase,
             mobile ? '-mt-px rounded-b-md' : '-ml-px rounded-l-none rounded-r-md',
@@ -766,7 +806,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
       <button
         key={result.id}
         type="button"
-        disabled={Boolean(busyAction) || result.blocked || !result.eligible}
+        disabled={busyActions.has(`add:${result.id}`) || result.blocked || !result.eligible}
         onClick={() => addCandidate(result)}
         className="grid rounded-lg border border-(--line) bg-(--paper-raised) p-3 text-left transition hover:border-(--accent-strong) disabled:cursor-not-allowed disabled:opacity-60"
       >
@@ -830,7 +870,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
         </div>
         <button
           type="submit"
-          disabled={Boolean(busyAction) || !orderedSearchResults.some((result) => result.eligible && !result.blocked)}
+          disabled={addActionBusy || !orderedSearchResults.some((result) => result.eligible && !result.blocked)}
           className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-(--accent-strong) bg-(--accent-strong) px-4 text-base font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-(--line-strong)"
         >
           <Sparkles className="size-4" />
@@ -893,8 +933,6 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
 
   return (
     <div className="grid gap-5">
-      <div ref={turnstileHostRef} className="fixed bottom-0 left-0 size-px overflow-hidden" aria-hidden="true" />
-
       {message && (
         <div className="flex items-start gap-2 rounded-lg border border-(--line) bg-(--paper) p-3 text-sm text-(--ink)">
           {message.type === 'success' ? (

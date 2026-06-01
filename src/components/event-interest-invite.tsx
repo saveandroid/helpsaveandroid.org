@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Check, Loader2, PartyPopper, Undo2 } from 'lucide-react';
+import { useBeforeUnloadWhen } from '@/lib/use-before-unload';
 import { useTurnstileToken } from '@/lib/use-turnstile-token';
 
 type EventInterestState = {
@@ -57,7 +58,9 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { turnstileHostRef, getTurnstileToken } = useTurnstileToken(siteKey);
+  const { getTurnstileToken } = useTurnstileToken(siteKey);
+
+  useBeforeUnloadWhen(busy);
 
   const applyState = (state: EventInterestState) => {
     setJoined(state.joined);
@@ -150,8 +153,6 @@ export default function EventInterestInvite({ siteKey }: { siteKey: string }) {
           : 'border-(--line) bg-[linear-gradient(112deg,var(--paper)_0%,var(--paper-raised)_64%,var(--accent-soft)_130%)] text-(--ink)',
       ].join(' ')}
     >
-      <div ref={turnstileHostRef} className="fixed bottom-0 left-0 size-px overflow-hidden" aria-hidden="true" />
-
       <div
         className={[
           'pointer-events-none absolute inset-y-0 right-0 w-24 border-l border-dashed transition-colors sm:w-32',
