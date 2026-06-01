@@ -49,6 +49,11 @@ type MessageState = {
   type: 'error' | 'success';
 };
 
+type DatabaseSort = {
+  field: keyof CountDelta;
+  direction: 'asc' | 'desc';
+};
+
 type SearchResult = {
   id: string;
   label: string;
@@ -233,6 +238,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const [deltas, setDeltas] = useState<Record<string, CountDelta>>({});
   const [rankedExpanded, setRankedExpanded] = useState(false);
   const [databaseOpen, setDatabaseOpen] = useState(false);
+  const [databaseSort, setDatabaseSort] = useState<DatabaseSort>({ field: 'star', direction: 'desc' });
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchedQuery, setSearchedQuery] = useState('');
@@ -359,6 +365,24 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   const countFor = (row: Representative, field: keyof CountDelta) => {
     const base = field === 'upvote' ? row.upvoteCount : row.starCount;
     return Math.max(0, base + (deltas[row.qid]?.[field] ?? 0));
+  };
+
+  const sortedDatabaseRows = [...databaseRows].sort((left, right) => {
+    const primaryDifference = countFor(left, databaseSort.field) - countFor(right, databaseSort.field);
+    if (primaryDifference !== 0) return databaseSort.direction === 'asc' ? primaryDifference : -primaryDifference;
+
+    const secondaryField = databaseSort.field === 'star' ? 'upvote' : 'star';
+    const secondaryDifference = countFor(right, secondaryField) - countFor(left, secondaryField);
+    if (secondaryDifference !== 0) return secondaryDifference;
+
+    return left.label.localeCompare(right.label);
+  });
+
+  const updateDatabaseSort = (field: keyof CountDelta) => {
+    setDatabaseSort((current) => ({
+      field,
+      direction: current.field === field && current.direction === 'desc' ? 'asc' : 'desc',
+    }));
   };
 
   const ensureVisible = (row: Representative) => {
@@ -681,6 +705,32 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
           <span className={countClassName}>{formatter.format(countFor(row, 'star'))}</span>
         </button>
       </div>
+    );
+  };
+
+  const renderDatabaseSortButton = (field: keyof CountDelta, label: string) => {
+    const active = databaseSort.field === field;
+    const Icon = field === 'star' ? Star : ArrowUp;
+
+    return (
+      <button
+        type="button"
+        onClick={() => updateDatabaseSort(field)}
+        className={[
+          'inline-flex h-9 items-center justify-center gap-1.5 border px-3 text-xs font-semibold uppercase tracking-[0.12em] transition focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ink)',
+          field === 'star' ? 'rounded-l-full' : '-ml-px rounded-r-full',
+          active
+            ? 'border-(--accent-strong) bg-(--accent-soft) text-(--accent-strong)'
+            : 'border-(--line) bg-transparent text-(--muted) hover:border-(--line-strong) hover:text-(--ink)',
+        ].join(' ')}
+        aria-pressed={active}
+        aria-label={`Sort full database by ${label.toLowerCase()} ${active && databaseSort.direction === 'desc' ? 'ascending' : 'descending'}`}
+        title={`Sort by ${label.toLowerCase()}`}
+      >
+        <Icon className={['size-3.5', field === 'star' && active ? 'fill-current' : ''].join(' ')} />
+        {label}
+        {active && <ChevronDown className={['size-3.5 transition', databaseSort.direction === 'asc' ? 'rotate-180' : ''].join(' ')} />}
+      </button>
     );
   };
 
@@ -1033,18 +1083,24 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
               <p className="text-sm text-(--muted)">
                 {databaseRows.length === 1 ? '1 person' : `${formatter.format(databaseRows.length)} people`} currently visible.
               </p>
-              <span className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-transparent px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
-                <Database className="size-3.5" />
-                Ranked by stars, then upvotes
-              </span>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--muted)">
+                  <Database className="size-3.5" />
+                  Sort
+                </span>
+                <div className="inline-flex">
+                  {renderDatabaseSortButton('star', 'Stars')}
+                  {renderDatabaseSortButton('upvote', 'Upvotes')}
+                </div>
+              </div>
             </div>
 
-            {rankedLoading && databaseRows.length === 0 ? (
+            {rankedLoading && sortedDatabaseRows.length === 0 ? (
               <div className="grid min-h-48 place-items-center rounded-lg border border-dashed border-(--line-strong) bg-(--paper)">
                 <Loader2 className="size-7 animate-spin text-(--accent-strong)" />
               </div>
             ) : (
-              renderPersonTable(databaseRows, { ranked: true, dense: true })
+              renderPersonTable(sortedDatabaseRows, { ranked: true, dense: true })
             )}
           </div>
         </section>
