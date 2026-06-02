@@ -55,7 +55,7 @@ html {
 }
 
 html.intro-snap-active {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
 }
 
 body {
