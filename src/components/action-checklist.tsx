@@ -80,7 +80,7 @@ const baseGroups: ChecklistGroup[] = [
         text: 'try out a new, open source app',
         children: [
           { id: 'curious-open-app-install', text: 'install one app that seems genuinely useful or fun' },
-          { id: 'curious-open-app-share', text: 'tell one person what felt different about it' },
+          { id: 'curious-open-app-share', text: 'tell one person who might like it' },
         ],
       },
     ],
