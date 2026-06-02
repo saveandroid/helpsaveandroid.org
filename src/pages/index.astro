@@ -894,9 +894,23 @@ import '@/styles/global.css';
 								href="https://discord.gg/gXBAggx9UG"
 								target="_blank"
 								rel="noreferrer"
-								class="inline-flex min-h-14 items-center justify-center rounded-lg border border-[#6d65bd] bg-[#6d65bd] px-6 py-3 text-lg font-semibold text-white shadow-[0_0.8rem_1.8rem_var(--page-shadow)] transition hover:bg-[#5d55aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--ink)"
+								class="footer-discord-cta"
 							>
-								join our discord
+								<span>join our discord</span>
+								<span
+									class="footer-discord-cta-icon"
+									aria-hidden="true"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										class="footer-contact-glyph size-4.5"
+										fill="currentColor"
+									>
+										<path
+											d="M20.32 4.37a19.8 19.8 0 0 0-4.89-1.52.07.07 0 0 0-.08.04c-.21.38-.44.86-.61 1.25a18.3 18.3 0 0 0-5.48 0 13 13 0 0 0-.62-1.25.08.08 0 0 0-.08-.04A19.7 19.7 0 0 0 3.68 4.37a.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 0 0 .03.05 19.9 19.9 0 0 0 5.99 3.03.08.08 0 0 0 .09-.03 14.1 14.1 0 0 0 1.22-1.99.08.08 0 0 0-.04-.11 13.1 13.1 0 0 1-1.87-.89.08.08 0 0 1-.01-.13c.13-.09.25-.19.37-.29a.07.07 0 0 1 .08-.01c3.93 1.79 8.18 1.79 12.06 0a.07.07 0 0 1 .08.01c.12.1.25.2.37.29a.08.08 0 0 1-.01.13 12.3 12.3 0 0 1-1.87.89.08.08 0 0 0-.04.11c.36.7.77 1.36 1.23 1.99a.08.08 0 0 0 .08.03 19.8 19.8 0 0 0 6-3.03.08.08 0 0 0 .03-.05c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 0 0-.03-.03ZM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.96 2.42-2.16 2.42Zm7.98 0c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42Z"
+										></path>
+									</svg>
+								</span>
 							</a>
 						</div>
 						<div
@@ -964,6 +978,72 @@ import '@/styles/global.css';
 		</main>
 
 		<style>
+			.footer-discord-cta {
+				display: inline-flex;
+				min-height: 3.5rem;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid #6d65bd;
+				border-radius: 0.5rem;
+				background-color: #6d65bd;
+				padding: 0.75rem 1.5rem;
+				color: white;
+				font-size: 1.125rem;
+				font-weight: 650;
+				text-decoration: none;
+				box-shadow: 0 0.8rem 1.8rem var(--page-shadow);
+				transition:
+					background-color 150ms ease,
+					border-color 150ms ease,
+					box-shadow 150ms ease,
+					transform 150ms ease;
+			}
+
+			.footer-discord-cta:hover {
+				border-color: #5865f2;
+				background-color: #5865f2;
+				box-shadow: 0 1rem 2rem var(--page-shadow);
+				transform: translateY(-1px);
+			}
+
+			.footer-discord-cta:active {
+				transform: translateY(0);
+			}
+
+			.footer-discord-cta:focus-visible {
+				outline: 2px solid var(--ink);
+				outline-offset: 4px;
+			}
+
+			.footer-discord-cta-icon {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 0;
+				height: 1.5rem;
+				margin-left: 0;
+				overflow: hidden;
+				border-radius: 9999px;
+				background-color: white;
+				color: #5865f2;
+				opacity: 0;
+				transform: translateY(0.04em);
+				transition:
+					width 150ms ease,
+					margin-left 150ms ease,
+					opacity 150ms ease;
+			}
+
+			.footer-discord-cta:hover .footer-discord-cta-icon {
+				width: 1.5rem;
+				margin-left: 0.625rem;
+				opacity: 1;
+			}
+
+			.footer-discord-cta:hover .footer-contact-glyph {
+				animation: footer-contact-spin 300ms ease;
+			}
+
 			.footer-contact-link {
 				display: inline-flex;
 				align-items: center;
