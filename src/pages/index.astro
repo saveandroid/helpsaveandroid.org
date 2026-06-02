@@ -64,14 +64,8 @@ import '@/styles/global.css';
 				class="relative mx-auto grid max-w-7xl px-5 sm:px-8 md:grid-cols-[minmax(0,1fr)_minmax(19rem,27rem)] md:gap-16 md:px-12 xl:gap-24"
 			>
 				<div class="relative z-10">
-					<div class="pointer-events-none sticky top-0 z-20 -mb-[100svh] h-svh overflow-hidden md:hidden">
-						<div class="absolute inset-x-0 bottom-0 flex justify-center">
-							<PhoneMockup size="compact" />
-						</div>
-					</div>
-
 					<section
-						class="snap-panel relative z-10 flex min-h-screen items-start pb-[30rem] pt-8 sm:pt-10 md:items-center md:pb-24 md:pt-24"
+						class="snap-panel relative z-10 flex min-h-screen flex-col items-start pb-16 pt-8 sm:pt-10 md:items-center md:pb-24 md:pt-24"
 					>
 						<div class="max-w-3xl">
 							<p class="type-body italic text-(--ink)">since the beginning of last year,</p>
@@ -92,11 +86,19 @@ import '@/styles/global.css';
 								<p class="text-(--ink)">what might a better approach, and a better android look like?</p>
 							</div>
 						</div>
+
+						<div class="pointer-events-none mt-12 flex w-full justify-center md:hidden">
+							<PhoneMockup
+								size="compact"
+								mode="chat"
+								fixedMode
+							/>
+						</div>
 					</section>
 
 					<section
 						id="solution"
-						class="snap-panel relative z-10 flex min-h-screen items-start pb-[30rem] pt-12 sm:pt-16 md:items-center md:py-24"
+						class="snap-panel relative z-10 flex min-h-screen flex-col items-start pb-16 pt-12 sm:pt-16 md:items-center md:py-24"
 						data-people-trigger
 					>
 						<div class="max-w-3xl">
@@ -116,6 +118,14 @@ import '@/styles/global.css';
 									<span>anonymous for developers.</span>
 								</li>
 							</ol>
+						</div>
+
+						<div class="pointer-events-none mt-12 flex w-full justify-center md:hidden">
+							<PhoneMockup
+								size="compact"
+								mode="people"
+								fixedMode
+							/>
 						</div>
 					</section>
 				</div>
@@ -1106,6 +1116,7 @@ import '@/styles/global.css';
 				if (!peopleTrigger) return;
 				const shouldShowPeople = peopleTrigger.getBoundingClientRect().top < window.innerHeight * 0.58;
 				phones.forEach((phone) => {
+					if (phone.getAttribute('data-fixed-mode') === 'true') return;
 					phone.setAttribute('data-mode', shouldShowPeople ? 'people' : 'chat');
 				});
 				if (!phoneReady) {

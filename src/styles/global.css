@@ -96,7 +96,7 @@ body {
 
 .snap-panel {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
 }
 
 .side-wordmark {
@@ -119,6 +119,12 @@ body {
 
 .side-wordmark:hover {
   color: var(--accent-strong);
+}
+
+@media (max-width: 767px) {
+  .side-wordmark {
+    pointer-events: none;
+  }
 }
 
 .phone-shell[data-mode="people"] .chat-screen,

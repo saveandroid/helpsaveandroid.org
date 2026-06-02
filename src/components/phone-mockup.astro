@@ -3,9 +3,9 @@ import grandmaImage from '@/assets/grandma.png';
 import geekImage from '@/assets/geek.png';
 import devImage from '@/assets/dev.png';
 
-const { class: className = '', size = 'default' } = Astro.props;
+const { class: className = '', fixedMode = false, mode = 'chat', size = 'default' } = Astro.props;
 const widthStyle = size === 'compact' ? '--phone-width: min(74vw, 19rem);' : undefined;
-const scanTitleId = `apk-scan-title-${size}`;
+const scanTitleId = `apk-scan-title-${size}-${mode}`;
 ---
 
 <div
@@ -16,7 +16,8 @@ const scanTitleId = `apk-scan-title-${size}`;
 	]}
 	style={widthStyle}
 	data-phone
-	data-mode="chat"
+	data-fixed-mode={fixedMode ? 'true' : undefined}
+	data-mode={mode}
 	data-scan-open="false"
 	aria-label="Mock Android phone showing a scam warning conversation and safer Android user groups"
 >
