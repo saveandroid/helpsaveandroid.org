@@ -143,8 +143,9 @@ import '@/styles/global.css';
 				<div class="absolute right-5 top-5 z-20 flex max-w-[calc(100%-2.5rem)] flex-col items-end gap-3 text-right sm:right-8 sm:top-8 sm:flex-row sm:items-center lg:right-12">
 					<p class="text-[clamp(1.05rem,1.45vw,1.28rem)] leading-tight font-medium text-(--ink)">
 						<span
-							class="inline border-b-[0.28rem] border-(--rose) pb-px pr-1 font-black tabular-nums text-(--ink)"
+							class="inline-block pr-1 font-black tabular-nums text-(--ink)"
 							data-days-until-september
+							data-rough-countdown-underline
 						>
 							114</span
 						>
@@ -329,22 +330,28 @@ import '@/styles/global.css';
 									<tbody>
 										<tr>
 											<td class="border-b border-(--line) px-4 py-3 align-top">
-												import txt from github, or maybe gitlab?
+												create an open app store where larger models verify apps using a consensus
+												mechanism and human review.
 											</td>
 											<td class="border-b border-l border-(--line) px-4 py-3 align-top">
-												all developers need to identify themselves with government ID
+												all developers inside and outside the play store need to identify themselves
+												using government identification.
 											</td>
 										</tr>
 										<tr>
-											<td class="border-b border-(--line) px-4 py-3 align-top text-(--muted)"></td>
+											<td class="border-b border-(--line) px-4 py-3 align-top">
+												run a local language model on device to screen scams from all vectors.
+											</td>
 											<td class="border-b border-l border-(--line) px-4 py-3 align-top">
-												mandate apps and developers that are approved using checksums
+												mandate apps and developers using a centralised database.
 											</td>
 										</tr>
 										<tr>
-											<td class="px-4 py-3 align-top text-(--muted)"></td>
+											<td class="px-4 py-3 align-top">
+												create a network for discovering and governing open software.
+											</td>
 											<td class="border-l border-(--line) px-4 py-3 align-top">
-												prevent installing unapproved applications for 24 hours.
+												prevent installing unapproved applications for 24 hours and display a warning.
 											</td>
 										</tr>
 									</tbody>
@@ -1308,6 +1315,41 @@ import '@/styles/global.css';
 			requestPhoneUpdate();
 			window.addEventListener('scroll', requestPhoneUpdate, { passive: true });
 			window.addEventListener('resize', requestPhoneUpdate);
+		</script>
+		<script>
+			import { annotate } from 'rough-notation';
+
+			const countdownNumber = document.querySelector('[data-rough-countdown-underline]');
+
+			if (countdownNumber) {
+				const rose = getComputedStyle(document.documentElement).getPropertyValue('--rose').trim();
+				const annotation = annotate(countdownNumber, {
+					type: 'underline',
+					color: rose || '#c84e55',
+					strokeWidth: 3,
+					padding: 2,
+					animationDuration: 850,
+				});
+
+				const showAnnotation = () => {
+					annotation.show();
+				};
+
+				if ('IntersectionObserver' in window) {
+					const observer = new IntersectionObserver(
+						(entries) => {
+							if (!entries.some((entry) => entry.isIntersecting)) return;
+							showAnnotation();
+							observer.disconnect();
+						},
+						{ threshold: 0.35 },
+					);
+
+					observer.observe(countdownNumber);
+				} else {
+					showAnnotation();
+				}
+			}
 		</script>
 	</body>
 </html>
