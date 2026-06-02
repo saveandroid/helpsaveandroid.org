@@ -55,7 +55,7 @@ html {
 }
 
 html.intro-snap-active {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
 }
 
 body {
@@ -96,7 +96,7 @@ body {
 
 .snap-panel {
   scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  scroll-snap-stop: always;
 }
 
 .side-wordmark {
