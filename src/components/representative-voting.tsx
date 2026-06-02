@@ -72,14 +72,14 @@ type SearchResult = {
 
 type SearchState = 'idle' | 'loading-local' | 'ready' | 'searching-remote' | 'error';
 
-const formatter = new Intl.NumberFormat('en-US');
+const formatter = new Intl.NumberFormat('en-AU');
 const POPULAR_PEOPLE_URL = '/people/popular.json';
 const RANKED_REPRESENTATIVES_URL = '/api/representatives/top?limit=200';
 const REPRESENTATIVE_SELECTIONS_KEY = 'hsa.representativeSelections.v1';
 const entityKindLabel: Record<string, string> = {
   account: 'Account',
   human: 'Human',
-  organization: 'Organization',
+  organization: 'Organisation',
 };
 
 const pillPalettes = [
@@ -698,7 +698,7 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
               : 'border-(--line) bg-transparent text-(--muted) hover:border-(--amber) hover:text-(--ink)',
           ].join(' ')}
           aria-pressed={starred}
-          title={starred ? 'Clear star' : 'Star favorite'}
+          title={starred ? 'Clear star' : 'Star favourite'}
           aria-label={`${starred ? 'Clear star from' : 'Star'} ${row.label}`}
         >
           {starBusy ? <Loader2 className="size-4 animate-spin" /> : <Star className={starred ? 'size-4 fill-current' : 'size-4'} />}

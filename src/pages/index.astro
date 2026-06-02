@@ -126,7 +126,7 @@ import '@/styles/global.css';
 			</section>
 
 			<section
-				class="snap-panel relative z-10 border-t border-(--line) bg-(--paper-raised) px-5 pb-28 pt-20 sm:px-8 sm:pt-24 lg:px-12"
+				class="relative z-10 border-t border-(--line) bg-(--paper-raised) px-5 pb-28 pt-20 sm:px-8 sm:pt-24 lg:px-12"
 				data-regular-scroll-start
 			>
 				<div class="mx-auto max-w-3xl">
@@ -524,7 +524,7 @@ import '@/styles/global.css';
 								<p class="text-sm font-semibold uppercase tracking-[0.12em] text-white/72">ACLU</p>
 								<h3 class="type-subheading mt-3">Your Smartphone, Their Rules</h3>
 								<p class="type-body mt-4 text-white/82">
-									How centralized app stores can enable corporate-government censorship.
+									How centralised app stores can enable corporate-government censorship.
 								</p>
 							</a>
 							<div
@@ -845,8 +845,8 @@ import '@/styles/global.css';
 					<section class="type-body mb-16 text-(--ink)">
 						<p>
 							Imagine a world where your phone gets more trustworthy the longer you own it, because the model
-							protecting you was trained by your neighbors, not a company. Where we verify the code and
-							behavior, not the person.
+							protecting you was trained by your neighbours, not a company. Where we verify the code and
+							behaviour, not the person.
 						</p>
 						<p class="mt-5">
 							There's simply no more stories on people getting scammed or what to watch out for.
@@ -1025,7 +1025,7 @@ import '@/styles/global.css';
 			const scamStart = new Date('2025-01-01T00:00:00.000Z').getTime();
 			const annualLossUsd = 400_000_000_000;
 			const msPerYear = 365 * 24 * 60 * 60 * 1000;
-			const formatter = new Intl.NumberFormat('en-US', {
+			const formatter = new Intl.NumberFormat('en-AU', {
 				style: 'currency',
 				currency: 'USD',
 				maximumFractionDigits: 0,
@@ -1060,7 +1060,7 @@ import '@/styles/global.css';
 				const daysRemaining = Math.max(
 					0,
 					Math.ceil((targetDate.getTime() - startOfToday.getTime()) / msPerDay),
-				).toLocaleString('en-US');
+				).toLocaleString('en-AU');
 				daysUntilSeptember.forEach((counter) => {
 					counter.textContent = daysRemaining;
 				});

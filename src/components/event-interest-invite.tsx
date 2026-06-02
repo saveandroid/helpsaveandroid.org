@@ -17,7 +17,7 @@ type PushPublicKeyResponse = {
 
 type EventNotificationPermission = NotificationPermission | 'not_configured' | 'unsupported';
 
-const formatter = new Intl.NumberFormat('en-US');
+const formatter = new Intl.NumberFormat('en-AU');
 const EVENT_INTEREST_KEY = 'hsa.eventInterest.v1';
 
 async function apiJson<T>(url: string, init?: RequestInit): Promise<T> {

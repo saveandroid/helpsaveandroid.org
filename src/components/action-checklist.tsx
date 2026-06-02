@@ -121,8 +121,6 @@ const baseGroups: ChecklistGroup[] = [
     accent: '#27856f',
     items: [
       { id: 'tech-exec-remember', text: 'remember what life was like growing up' },
-      { id: 'tech-exec-open-path', text: 'ask whether your team can support open paths instead of identity gates' },
-      { id: 'tech-exec-defaults', text: 'treat root access and local ai as normal consumer rights' },
     ],
   },
   {
@@ -133,8 +131,6 @@ const baseGroups: ChecklistGroup[] = [
       { id: 'future-repairable-phone', text: 'switch to a repairable phone with a removable battery' },
       { id: 'future-cyberdeck', text: 'build your own cyberdeck' },
       { id: 'future-choose-devices', text: "choose devices that choose you" },
-      { id: 'future-expect-root', text: 'expect root access and local ai as a standard consumer right' },
-      { id: 'future-mentor', text: "become the mentor who shows someone else what's possible" },
     ],
   },
 ];
