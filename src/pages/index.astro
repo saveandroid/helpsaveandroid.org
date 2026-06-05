@@ -6,8 +6,8 @@ import guardianPreviewImage from '@/assets/placeholder-guardian.png';
 import techradarPreviewImage from '@/assets/placeholder-techradar.png';
 import discordClippyDarkImage from '@/assets/discord-clippy-dark.png';
 import discordClippyLightImage from '@/assets/discord-clippy-light.png';
-import tldrConversationImage from '@/assets/tldr-conversation.png';
-import tldrOnlineOutreachImage from '@/assets/tldr-online-outreach.png';
+import tldrConversationImage from '@/assets/tldr-geek-work-school.png';
+import tldrOnlineOutreachImage from '@/assets/post-malone.jpg';
 import ActionChecklist from '@/components/action-checklist';
 import CyberdeckScrapbook from '@/components/cyberdeck-scrapbook.astro';
 import EventInterestInvite from '@/components/event-interest-invite.astro';
@@ -236,9 +236,6 @@ import '@/styles/global.css';
 									/>
 									<p class="tldr-help-copy">
 										<span class="tldr-help-title">reaching out to people online</span>
-										<span class="tldr-help-note"
-											>A calm nudge from real people goes further than a rant.</span
-										>
 									</p>
 								</li>
 							</ul>
@@ -1438,6 +1435,7 @@ import '@/styles/global.css';
 				if (document.documentElement.classList.contains('page-content-revealed')) return;
 				deferredPage.removeAttribute('hidden');
 				document.documentElement.classList.add('page-content-revealed');
+				document.documentElement.classList.remove('intro-snap-active');
 			};
 
 			const isLoadedGateActive = () => {
@@ -1549,15 +1547,15 @@ import '@/styles/global.css';
 			};
 
 			const updateIntroSnap = () => {
-				const isPageContentRevealed = document.documentElement.classList.contains('page-content-revealed');
-				const snapEnd = isPageContentRevealed
-					? regularScrollStart
-					: scrollModeEnd || regularScrollStart;
+				if (document.documentElement.classList.contains('page-content-revealed')) {
+					document.documentElement.classList.remove('intro-snap-active');
+					return;
+				}
+
+				const snapEnd = scrollModeEnd || regularScrollStart;
 				if (!snapEnd) return;
 				const snapEndRect = snapEnd.getBoundingClientRect();
-				const isInPhoneIntro = isPageContentRevealed
-					? snapEndRect.top > window.innerHeight * -0.55
-					: snapEndRect.bottom > window.innerHeight * 0.45;
+				const isInPhoneIntro = snapEndRect.bottom > window.innerHeight * 0.45;
 				document.documentElement.classList.toggle('intro-snap-active', isInPhoneIntro);
 			};
 
