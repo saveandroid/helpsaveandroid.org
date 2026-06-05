@@ -192,6 +192,10 @@ html.page-content-revealed .page-reveal-gate {
   scroll-margin-top: 5rem;
 }
 
+.tldr-heading {
+  font-size: clamp(1.75rem, 3.25vw, 2.7rem);
+}
+
 .tldr-help-item {
   display: grid;
   grid-template-rows: minmax(10rem, 1fr) auto;
