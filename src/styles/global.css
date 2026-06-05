@@ -146,11 +146,19 @@ body {
   scroll-snap-stop: normal;
 }
 
-.scroll-learn-more-cue-snap {
-  height: 1px;
-  margin-top: 1rem;
+.tldr-snap-panel {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
+html.tldr-entry-snap-active .tldr-snap-panel {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+}
+
+.scroll-learn-more-cue-snap {
+  scroll-margin-top: max(0rem, calc(100vh - 9rem));
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
 }
 
 .scroll-learn-more-snap {

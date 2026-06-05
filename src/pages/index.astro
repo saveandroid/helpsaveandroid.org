@@ -128,7 +128,7 @@ import '@/styles/global.css';
 			</section>
 
 			<section
-				class="snap-panel relative z-10 min-h-screen border-t border-(--line) bg-(--paper-raised) px-5 pb-20 pt-20 sm:px-8 sm:pt-24 lg:px-12"
+				class="tldr-snap-panel relative z-10 min-h-screen border-t border-(--line) bg-(--paper-raised) px-5 pb-20 pt-20 sm:px-8 sm:pt-24 lg:px-12"
 			>
 				<div class="absolute right-5 top-5 z-20 flex max-w-[calc(100%-2.5rem)] flex-col items-end gap-3 text-right sm:right-8 sm:top-8 sm:flex-row sm:items-center lg:right-12">
 					<p class="text-[clamp(1.05rem,1.45vw,1.28rem)] leading-tight font-medium text-(--ink)">
@@ -287,7 +287,7 @@ import '@/styles/global.css';
 							<p class="mt-10">
 								After all, if everyone had their own computer in their pocket, what might we solve next?
 							</p>
-							<div class="mt-14">
+							<div class="scroll-learn-more-cue-snap mt-14">
 								<p class="text-center text-[clamp(1rem,1.2vw,1.1rem)] font-semibold text-(--muted)">
 									scroll to learn more
 								</p>
@@ -296,10 +296,6 @@ import '@/styles/global.css';
 									aria-hidden="true"
 								></div>
 							</div>
-							<div
-								class="scroll-learn-more-cue-snap"
-								aria-hidden="true"
-							></div>
 						</div>
 					</section>
 				</div>
@@ -1387,14 +1383,13 @@ import '@/styles/global.css';
 			const counters = document.querySelectorAll('[data-loss-counter]');
 			const regularScrollStart = document.querySelector('[data-regular-scroll-start]');
 			const scrollModeEnd = document.querySelector('[data-scroll-mode-end]');
-			const learnMoreCueSnap = document.querySelector('.scroll-learn-more-cue-snap');
+			const tldrSnapPanel = document.querySelector('.tldr-snap-panel');
 			const deferredPage = document.querySelector('[data-deferred-page]');
 			const pageRevealGate = document.querySelector('[data-page-reveal-gate]');
 			const howHeading = document.querySelector('#how-heading');
 			const howScrollButtons = document.querySelectorAll('[data-scroll-to-how]');
 			const loadAt = performance.now();
 			let gateTouchStartY = 0;
-			let isCueSnapSettling = false;
 
 			const lossAt = (time) => Math.max(0, ((time - scamStart) / msPerYear) * annualLossUsd);
 			const easeOut = (value) => 1 - Math.pow(1 - value, 3);
@@ -1447,36 +1442,14 @@ import '@/styles/global.css';
 				return gateRect.top <= 4 && gateRect.bottom > window.innerHeight * 0.5;
 			};
 
-			const catchLearnMoreCueSnap = () => {
-				if (!learnMoreCueSnap) return false;
-				const cueRect = learnMoreCueSnap.getBoundingClientRect();
-				const isCueAhead = cueRect.top > 8 && cueRect.top < window.innerHeight * 0.72;
-				if (!isCueAhead && !isCueSnapSettling) return false;
-
-				if (!isCueSnapSettling) {
-					isCueSnapSettling = true;
-					learnMoreCueSnap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-					window.setTimeout(() => {
-						isCueSnapSettling = false;
-					}, 420);
-				}
-
-				return true;
-			};
-
 			window.addEventListener(
 				'wheel',
 				(event) => {
-					if (event.deltaY > 8 && catchLearnMoreCueSnap()) {
-						event.preventDefault();
-						return;
-					}
-
 					if (event.deltaY > 8 && isLoadedGateActive()) {
 						revealPage();
 					}
 				},
-				{ passive: false },
+				{ passive: true },
 			);
 
 			window.addEventListener(
@@ -1491,9 +1464,6 @@ import '@/styles/global.css';
 				'touchmove',
 				(event) => {
 					const touchY = event.touches[0]?.clientY ?? gateTouchStartY;
-					if (gateTouchStartY - touchY > 24 && catchLearnMoreCueSnap()) {
-						return;
-					}
 
 					if (gateTouchStartY - touchY > 24 && isLoadedGateActive()) {
 						revealPage();
@@ -1581,6 +1551,14 @@ import '@/styles/global.css';
 					? snapEndRect.top > window.innerHeight * -0.55
 					: snapEndRect.bottom > window.innerHeight * 0.45;
 				document.documentElement.classList.toggle('intro-snap-active', isInPhoneIntro);
+
+				if (tldrSnapPanel) {
+					const tldrRect = tldrSnapPanel.getBoundingClientRect();
+					const isNearTldrStart =
+						tldrRect.top > window.innerHeight * -0.45 &&
+						tldrRect.top < window.innerHeight * 0.95;
+					document.documentElement.classList.toggle('tldr-entry-snap-active', isNearTldrStart);
+				}
 			};
 
 			const requestPhoneUpdate = () => {
