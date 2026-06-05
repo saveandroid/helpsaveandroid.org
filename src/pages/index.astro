@@ -1388,17 +1388,12 @@ import '@/styles/global.css';
 			const counters = document.querySelectorAll('[data-loss-counter]');
 			const regularScrollStart = document.querySelector('[data-regular-scroll-start]');
 			const scrollModeEnd = document.querySelector('[data-scroll-mode-end]');
-			const tldrSnapPanel = document.querySelector('.tldr-snap-panel');
-			const learnMoreCueSnap = document.querySelector('.scroll-learn-more-cue-snap');
-			const learnMoreSectionSnap = document.querySelector('.scroll-learn-more-snap');
 			const deferredPage = document.querySelector('[data-deferred-page]');
 			const pageRevealGate = document.querySelector('[data-page-reveal-gate]');
 			const howHeading = document.querySelector('#how-heading');
 			const howScrollButtons = document.querySelectorAll('[data-scroll-to-how]');
 			const loadAt = performance.now();
 			let gateTouchStartY = 0;
-			let lastScrollY = window.scrollY;
-			const keyboardSnapKeys = [' ', 'ArrowDown', 'PageDown', 'ArrowUp', 'PageUp'];
 
 			const lossAt = (time) => Math.max(0, ((time - scamStart) / msPerYear) * annualLossUsd);
 			const easeOut = (value) => 1 - Math.pow(1 - value, 3);
@@ -1482,30 +1477,12 @@ import '@/styles/global.css';
 			);
 
 			document.addEventListener('keydown', (event) => {
-				if (!keyboardSnapKeys.includes(event.key)) return;
+				if (![' ', 'ArrowDown', 'PageDown'].includes(event.key)) return;
 				if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '')) return;
 
-				const isMovingDown = [' ', 'ArrowDown', 'PageDown'].includes(event.key);
-				if (isMovingDown && isLoadedGateActive()) {
+				if (isLoadedGateActive()) {
 					event.preventDefault();
 					revealPage();
-					return;
-				}
-
-				if (!document.documentElement.classList.contains('intro-snap-active')) return;
-
-				const snapTargets = [
-					...document.querySelectorAll(
-						'.snap-panel, .tldr-snap-panel, .scroll-learn-more-cue-snap, .scroll-learn-more-snap',
-					),
-				].filter((target) => !target.hasAttribute('hidden'));
-				const target = isMovingDown
-					? snapTargets.find((snapTarget) => snapTarget.getBoundingClientRect().top > 8)
-					: [...snapTargets].reverse().find((snapTarget) => snapTarget.getBoundingClientRect().top < -8);
-
-				if (target) {
-					event.preventDefault();
-					target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			});
 
@@ -1582,41 +1559,6 @@ import '@/styles/global.css';
 					? snapEndRect.top > window.innerHeight * -0.55
 					: snapEndRect.bottom > window.innerHeight * 0.45;
 				document.documentElement.classList.toggle('intro-snap-active', isInPhoneIntro);
-				const isScrollingDown = window.scrollY >= lastScrollY;
-
-				if (tldrSnapPanel) {
-					const tldrRect = tldrSnapPanel.getBoundingClientRect();
-					document.documentElement.classList.toggle('phone-snap-panels-active', tldrRect.top > 0);
-					const isNearTldrStart =
-						isScrollingDown &&
-						tldrRect.top > 0 &&
-						tldrRect.top < window.innerHeight * 1.35;
-					document.documentElement.classList.toggle('tldr-entry-snap-active', isNearTldrStart);
-				}
-
-				if (learnMoreCueSnap) {
-					const cueRect = learnMoreCueSnap.getBoundingClientRect();
-					const isNearCue =
-						cueRect.top > window.innerHeight * 0.35 &&
-						cueRect.top < window.innerHeight * 1.05;
-					document.documentElement.classList.toggle(
-						'learn-more-cue-snap-active',
-						isScrollingDown && isNearCue,
-					);
-				}
-
-				if (learnMoreSectionSnap) {
-					const learnMoreRect = learnMoreSectionSnap.getBoundingClientRect();
-					const isNearLearnMoreStart =
-						learnMoreRect.top > window.innerHeight * -0.35 &&
-						learnMoreRect.top < window.innerHeight * 0.85;
-					document.documentElement.classList.toggle(
-						'learn-more-section-snap-active',
-						isScrollingDown && isNearLearnMoreStart,
-					);
-				}
-
-				lastScrollY = window.scrollY;
 			};
 
 			const requestPhoneUpdate = () => {

@@ -141,40 +141,20 @@ body {
   text-underline-offset: 0.18em;
 }
 
+.snap-panel,
+.tldr-snap-panel,
+.scroll-learn-more-cue-snap,
+.scroll-learn-more-snap {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
 .snap-panel {
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
-}
-
-html.phone-snap-panels-active .snap-panel {
-  scroll-snap-align: start;
-}
-
-.tldr-snap-panel {
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
-}
-
-html.tldr-entry-snap-active .tldr-snap-panel {
-  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .scroll-learn-more-cue-snap {
   scroll-margin-top: max(0rem, calc(100vh - 9rem));
-  scroll-snap-stop: normal;
-}
-
-html.learn-more-cue-snap-active .scroll-learn-more-cue-snap {
-  scroll-snap-align: start;
-}
-
-.scroll-learn-more-snap {
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
-}
-
-html.learn-more-section-snap-active .scroll-learn-more-snap {
-  scroll-snap-align: start;
 }
 
 .scroll-cue-arrow {
