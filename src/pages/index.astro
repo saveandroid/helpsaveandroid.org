@@ -191,9 +191,6 @@ import '@/styles/global.css';
 							</h3>
 							<ul class="mt-10 grid gap-5 sm:grid-cols-3 sm:gap-6">
 								<li class="tldr-help-item">
-									<p class="text-center text-[clamp(1.05rem,1.45vw,1.18rem)] leading-snug font-semibold text-(--ink)">
-										telling a geek at work or school
-									</p>
 									<img
 										src={tldrConversationImage.src}
 										alt=""
@@ -201,11 +198,11 @@ import '@/styles/global.css';
 										decoding="async"
 										class="tldr-help-image"
 									/>
+									<p class="tldr-help-copy">
+										<span class="tldr-help-title">telling a geek at work or school</span>
+									</p>
 								</li>
 								<li class="tldr-help-item">
-									<p class="text-center text-[clamp(1.05rem,1.45vw,1.18rem)] leading-snug font-semibold text-(--ink)">
-										putting this website in your discord bio
-									</p>
 									<span
 										class="tldr-help-image-card"
 										aria-hidden="true"
@@ -225,11 +222,11 @@ import '@/styles/global.css';
 											class="tldr-help-image tldr-help-image--theme tldr-help-image--dark"
 										/>
 									</span>
+									<p class="tldr-help-copy">
+										<span class="tldr-help-title">putting this website in your discord bio</span>
+									</p>
 								</li>
 								<li class="tldr-help-item">
-									<p class="text-center text-[clamp(1.05rem,1.45vw,1.18rem)] leading-snug font-semibold text-(--ink)">
-										reaching out to people online
-									</p>
 									<img
 										src={tldrOnlineOutreachImage.src}
 										alt=""
@@ -237,6 +234,12 @@ import '@/styles/global.css';
 										decoding="async"
 										class="tldr-help-image"
 									/>
+									<p class="tldr-help-copy">
+										<span class="tldr-help-title">reaching out to people online</span>
+										<span class="tldr-help-note"
+											>A calm nudge from real people goes further than a rant.</span
+										>
+									</p>
 								</li>
 							</ul>
 							<p class="mt-10">
@@ -287,6 +290,7 @@ import '@/styles/global.css';
 							<p class="mt-10">
 								After all, if everyone had their own computer in their pocket, what might we solve next?
 							</p>
+							<br><br>
 							<div class="scroll-learn-more-cue-snap mt-14">
 								<p class="text-center text-[clamp(1rem,1.2vw,1.1rem)] font-semibold text-(--muted)">
 									scroll to learn more
@@ -306,6 +310,7 @@ import '@/styles/global.css';
 				data-page-reveal-gate
 				data-scroll-mode-end
 			>
+			<br><br><br><br><br><br><br><br>
 				<div class="page-reveal-gate__content mx-auto max-w-3xl">
 					<p class="type-body text-(--ink)">
 						we propose creating a local and open language model to detect scams, for everyone.
@@ -1384,12 +1389,15 @@ import '@/styles/global.css';
 			const regularScrollStart = document.querySelector('[data-regular-scroll-start]');
 			const scrollModeEnd = document.querySelector('[data-scroll-mode-end]');
 			const tldrSnapPanel = document.querySelector('.tldr-snap-panel');
+			const learnMoreCueSnap = document.querySelector('.scroll-learn-more-cue-snap');
+			const learnMoreSectionSnap = document.querySelector('.scroll-learn-more-snap');
 			const deferredPage = document.querySelector('[data-deferred-page]');
 			const pageRevealGate = document.querySelector('[data-page-reveal-gate]');
 			const howHeading = document.querySelector('#how-heading');
 			const howScrollButtons = document.querySelectorAll('[data-scroll-to-how]');
 			const loadAt = performance.now();
 			let gateTouchStartY = 0;
+			let lastScrollY = window.scrollY;
 
 			const lossAt = (time) => Math.max(0, ((time - scamStart) / msPerYear) * annualLossUsd);
 			const easeOut = (value) => 1 - Math.pow(1 - value, 3);
@@ -1551,14 +1559,41 @@ import '@/styles/global.css';
 					? snapEndRect.top > window.innerHeight * -0.55
 					: snapEndRect.bottom > window.innerHeight * 0.45;
 				document.documentElement.classList.toggle('intro-snap-active', isInPhoneIntro);
+				const isScrollingDown = window.scrollY >= lastScrollY;
 
 				if (tldrSnapPanel) {
 					const tldrRect = tldrSnapPanel.getBoundingClientRect();
+					document.documentElement.classList.toggle('phone-snap-panels-active', tldrRect.top > 0);
 					const isNearTldrStart =
-						tldrRect.top > window.innerHeight * -0.45 &&
+						isScrollingDown &&
+						tldrRect.top > 0 &&
 						tldrRect.top < window.innerHeight * 0.95;
 					document.documentElement.classList.toggle('tldr-entry-snap-active', isNearTldrStart);
 				}
+
+				if (learnMoreCueSnap) {
+					const cueRect = learnMoreCueSnap.getBoundingClientRect();
+					const isNearCue =
+						cueRect.top > window.innerHeight * 0.35 &&
+						cueRect.top < window.innerHeight * 1.05;
+					document.documentElement.classList.toggle(
+						'learn-more-cue-snap-active',
+						isScrollingDown && isNearCue,
+					);
+				}
+
+				if (learnMoreSectionSnap) {
+					const learnMoreRect = learnMoreSectionSnap.getBoundingClientRect();
+					const isNearLearnMoreStart =
+						learnMoreRect.top > window.innerHeight * -0.35 &&
+						learnMoreRect.top < window.innerHeight * 0.85;
+					document.documentElement.classList.toggle(
+						'learn-more-section-snap-active',
+						isNearLearnMoreStart,
+					);
+				}
+
+				lastScrollY = window.scrollY;
 			};
 
 			const requestPhoneUpdate = () => {

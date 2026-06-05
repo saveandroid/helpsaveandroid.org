@@ -142,8 +142,12 @@ body {
 }
 
 .snap-panel {
-  scroll-snap-align: start;
+  scroll-snap-align: none;
   scroll-snap-stop: normal;
+}
+
+html.phone-snap-panels-active .snap-panel {
+  scroll-snap-align: start;
 }
 
 .tldr-snap-panel {
@@ -157,13 +161,20 @@ html.tldr-entry-snap-active .tldr-snap-panel {
 
 .scroll-learn-more-cue-snap {
   scroll-margin-top: max(0rem, calc(100vh - 9rem));
-  scroll-snap-align: start;
   scroll-snap-stop: normal;
 }
 
-.scroll-learn-more-snap {
+html.learn-more-cue-snap-active .scroll-learn-more-cue-snap {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+}
+
+.scroll-learn-more-snap {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
+html.learn-more-section-snap-active .scroll-learn-more-snap {
+  scroll-snap-align: start;
 }
 
 .scroll-cue-arrow {
@@ -203,15 +214,40 @@ html.page-content-revealed .page-reveal-gate {
 
 .tldr-help-item {
   display: grid;
-  align-content: end;
-  gap: 1.25rem;
-  min-height: 15.5rem;
+  grid-template-rows: minmax(8rem, 1fr) auto;
+  align-content: stretch;
+  gap: 1rem;
+  min-height: 16.25rem;
   border: 1px solid var(--line-strong);
+  border-radius: 0.5rem;
+  background-color: var(--paper);
   padding: clamp(1rem, 2.5vw, 1.35rem);
+  box-shadow: 0 0.6rem 1.4rem var(--page-shadow);
+  transform: rotate(-0.35deg);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.tldr-help-item:nth-child(2) {
+  transform: rotate(0.32deg);
+}
+
+.tldr-help-item:nth-child(3) {
+  transform: rotate(-0.16deg);
+}
+
+.tldr-help-item:hover {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0.8rem 1.65rem var(--page-shadow);
+  transform: translateY(-2px) rotate(0deg);
 }
 
 .tldr-help-image {
   width: 100%;
+  align-self: center;
+  justify-self: center;
   max-height: clamp(7rem, 18vw, 11rem);
   object-fit: contain;
 }
@@ -219,7 +255,30 @@ html.page-content-revealed .page-reveal-gate {
 .tldr-help-image-card {
   display: grid;
   width: min(100%, 11rem);
+  align-self: center;
   justify-self: center;
+}
+
+.tldr-help-copy {
+  display: grid;
+  gap: 0.45rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.8rem;
+  text-align: center;
+}
+
+.tldr-help-title {
+  color: var(--ink);
+  font-size: clamp(1.02rem, 1.35vw, 1.16rem);
+  font-weight: 650;
+  line-height: 1.12;
+}
+
+.tldr-help-note {
+  color: var(--muted);
+  font-size: clamp(0.86rem, 1vw, 0.94rem);
+  font-style: italic;
+  line-height: 1.35;
 }
 
 .tldr-help-image--theme {
