@@ -197,7 +197,118 @@ html.page-content-revealed .page-reveal-gate {
   font-size: clamp(1.75rem, 3.25vw, 2.7rem);
 }
 
+.lightbox-trigger {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  cursor: zoom-in;
+  font: inherit;
+  text-align: inherit;
+}
+
+.lightbox-trigger:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 0.35rem;
+}
+
+.image-lightbox {
+  width: min(92vw, 72rem);
+  max-height: 92vh;
+  margin: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--paper-raised) 88%, transparent);
+  padding: clamp(0.7rem, 1.5vw, 1rem);
+  box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  overflow: visible;
+  transform: scale(0.97) translateY(0.35rem);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    overlay 180ms ease allow-discrete,
+    display 180ms ease allow-discrete;
+}
+
+.image-lightbox[open] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+@starting-style {
+  .image-lightbox[open] {
+    opacity: 0;
+    transform: scale(0.97) translateY(0.35rem);
+  }
+}
+
+.image-lightbox::backdrop {
+  background: color-mix(in srgb, var(--ink) 54%, transparent);
+  backdrop-filter: blur(0.35rem);
+}
+
+.image-lightbox-image {
+  display: block;
+  width: 100%;
+  max-height: calc(92vh - 2rem);
+  border-radius: 0.45rem;
+  object-fit: contain;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: -0.85rem;
+  right: -0.85rem;
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.45rem;
+  line-height: 1;
+  box-shadow: 0 0.45rem 1rem var(--page-shadow);
+}
+
+.image-lightbox-close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.image-lightbox-close:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 0.18rem;
+}
+
+.tldr-help-list {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .tldr-help-list {
+    width: calc(100% + 3rem);
+    margin-inline: -1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tldr-help-list {
+    width: calc(100% + 8rem);
+    margin-inline: -4rem;
+  }
+}
+
 .tldr-help-item {
+  position: relative;
   display: grid;
   grid-template-rows: minmax(10rem, 1fr) auto;
   align-content: stretch;
@@ -209,6 +320,69 @@ html.page-content-revealed .page-reveal-gate {
   padding: clamp(1rem, 2.5vw, 1.35rem);
   box-shadow: 0 0.6rem 1.4rem var(--page-shadow);
   transform: rotate(-0.35deg);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.tldr-help-item:has(.tldr-help-check:checked) {
+  border-color: var(--accent-strong);
+  background-color: var(--accent-strong);
+  color: white;
+}
+
+.tldr-help-item:has(.tldr-help-check:checked) .tldr-help-copy {
+  border-top-color: rgba(255, 255, 255, 0.38);
+}
+
+.tldr-help-item:has(.tldr-help-check:checked) .tldr-help-title {
+  color: white;
+}
+
+.tldr-help-check {
+  appearance: none;
+  position: absolute;
+  top: clamp(1.45rem, 3vw, 1.8rem);
+  left: clamp(1.45rem, 3vw, 1.8rem);
+  z-index: 2;
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.42rem;
+  background-color: white;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    0 0.35rem 0.9rem var(--page-shadow);
+  cursor: pointer;
+}
+
+.tldr-help-check::after {
+  width: 1.05rem;
+  height: 1.05rem;
+  background-color: color-mix(in srgb, var(--muted) 55%, transparent);
+  content: '';
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.25 8.2 6.35 11.1 12.75 4.9' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.tldr-help-check:checked {
+  border-color: var(--accent-strong);
+  background-color: white;
+}
+
+.tldr-help-check:checked::after {
+  background-color: var(--accent-strong);
+}
+
+.tldr-help-check:hover {
+  border-color: var(--accent-strong);
+}
+
+.tldr-help-check:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 
 .tldr-help-item:nth-child(2) {

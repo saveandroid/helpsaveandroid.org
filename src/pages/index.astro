@@ -175,7 +175,7 @@ import '@/styles/global.css';
 							<p class="mt-3">
 								Google's fix is about locking Android down – forcing real names and centralising control.
 							</p>
-							<p class="mt-14">We're thinking different.</p>
+							<p class="mt-14">Let's think different.</p>
 							<p class="mt-6">
 								We propose an on-device open language model, stopping scams before they reach you.
 							</p>
@@ -187,55 +187,91 @@ import '@/styles/global.css';
 
 						<div class="mt-20">
 							<h3 class="text-[clamp(1.35rem,2vw,1.82rem)] leading-tight font-semibold text-(--ink)">
-								You can help by
+								You can join by
 							</h3>
-							<ul class="mt-10 grid gap-5 sm:grid-cols-3 sm:gap-6">
+							<ul class="tldr-help-list mt-10 grid gap-5 sm:grid-cols-3 sm:gap-6">
 								<li class="tldr-help-item">
-									<img
-										src={tldrConversationImage.src}
-										alt=""
-										loading="lazy"
-										decoding="async"
-										class="tldr-help-image"
+									<input
+										type="checkbox"
+										class="tldr-help-check"
+										aria-label="Mark telling a geek at work or school complete"
 									/>
+									<button
+										type="button"
+										class="lightbox-trigger"
+										data-lightbox-trigger
+										aria-label="Open example conversation image"
+									>
+										<img
+											src={tldrConversationImage.src}
+											alt=""
+											loading="lazy"
+											decoding="async"
+											class="tldr-help-image"
+										/>
+									</button>
 									<p class="tldr-help-copy">
-										<span class="tldr-help-title">telling a geek at work or school</span>
+										<span class="tldr-help-title">telling&nbsp;a&nbsp;geek&nbsp;at work&nbsp;or&nbsp;school</span>
 									</p>
 								</li>
 								<li class="tldr-help-item">
-									<span
-										class="tldr-help-image-card"
-										aria-hidden="true"
+									<input
+										type="checkbox"
+										class="tldr-help-check"
+										aria-label="Mark adding to your Discord bio complete"
+									/>
+									<button
+										type="button"
+										class="lightbox-trigger"
+										data-lightbox-trigger
+										aria-label="Open Discord bio image"
 									>
-										<img
-											src={discordClippyLightImage.src}
-											alt=""
-											loading="lazy"
-											decoding="async"
-											class="tldr-help-image tldr-help-image--theme tldr-help-image--light"
-										/>
-										<img
-											src={discordClippyDarkImage.src}
-											alt=""
-											loading="lazy"
-											decoding="async"
-											class="tldr-help-image tldr-help-image--theme tldr-help-image--dark"
-										/>
-									</span>
+										<span
+											class="tldr-help-image-card"
+											aria-hidden="true"
+										>
+											<img
+												src={discordClippyLightImage.src}
+												alt=""
+												loading="lazy"
+												decoding="async"
+												class="tldr-help-image tldr-help-image--theme tldr-help-image--light"
+											/>
+											<img
+												src={discordClippyDarkImage.src}
+												alt=""
+												loading="lazy"
+												decoding="async"
+												class="tldr-help-image tldr-help-image--theme tldr-help-image--dark"
+											/>
+										</span>
+									</button>
 									<p class="tldr-help-copy">
-										<span class="tldr-help-title">adding to your discord bio</span>
+										<span class="tldr-help-title">adding&nbsp;to&nbsp;your discord&nbsp;bio</span>
 									</p>
 								</li>
 								<li class="tldr-help-item tldr-help-item--online">
-									<img
-										src={tldrOnlineOutreachImage.src}
-										alt=""
-										loading="lazy"
-										decoding="async"
-										class="tldr-help-image tldr-help-image--online"
+									<input
+										type="checkbox"
+										class="tldr-help-check"
+										aria-label="Mark reaching out to people online complete"
 									/>
+									<button
+										type="button"
+										class="lightbox-trigger"
+										data-lightbox-trigger
+										aria-label="Open online outreach image"
+									>
+										<img
+											src={tldrOnlineOutreachImage.src}
+											alt=""
+											loading="lazy"
+											decoding="async"
+											class="tldr-help-image tldr-help-image--online"
+										/>
+									</button>
 									<p class="tldr-help-copy">
-										<span class="tldr-help-title">reaching out to people online</span>
+										<span class="tldr-help-title">reaching&nbsp;out&nbsp;to people&nbsp;online</span>
 									</p>
 								</li>
 							</ul>
@@ -436,13 +472,19 @@ import '@/styles/global.css';
 					</div>
 
 					<figure class="my-16 lg:-ml-36 lg:w-[calc(100%+18rem)]">
-						<img
-							src={articleBitdefenderImage.src}
-							alt="Screenshot of a Bitdefender article about a phishing swindle that conned Google and Facebook."
-							loading="lazy"
-							decoding="async"
-							class="block w-full rounded-lg border border-(--line) bg-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
-						/>
+						<button
+							type="button"
+							class="lightbox-trigger"
+							data-lightbox-trigger
+						>
+							<img
+								src={articleBitdefenderImage.src}
+								alt="Screenshot of a Bitdefender article about a phishing swindle that conned Google and Facebook."
+								loading="lazy"
+								decoding="async"
+								class="block w-full rounded-lg border border-(--line) bg-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+							/>
+						</button>
 						<figcaption class="mt-4 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
 							source:
 							<a
@@ -1191,6 +1233,26 @@ import '@/styles/global.css';
 			</section>
 		</main>
 
+		<dialog
+			id="image-lightbox"
+			class="image-lightbox"
+		>
+			<button
+				type="button"
+				class="image-lightbox-close"
+				aria-label="Close image"
+				data-lightbox-close
+			>
+				&times;
+			</button>
+			<img
+				src=""
+				alt=""
+				class="image-lightbox-image"
+				data-lightbox-image
+			/>
+		</dialog>
+
 		<style>
 			.footer-discord-cta {
 				display: inline-flex;
@@ -1609,6 +1671,47 @@ import '@/styles/global.css';
 				});
 			});
 
+			const lightbox = document.querySelector('#image-lightbox');
+			const lightboxImage = document.querySelector('[data-lightbox-image]');
+			const lightboxClose = document.querySelector('[data-lightbox-close]');
+			const lightboxTriggers = document.querySelectorAll('[data-lightbox-trigger]');
+
+			const getVisibleImage = (trigger) => {
+				const images = Array.from(trigger.querySelectorAll('img'));
+				return images.find((image) => getComputedStyle(image).display !== 'none') ?? images[0];
+			};
+
+			lightboxTriggers.forEach((trigger) => {
+				trigger.addEventListener('click', (event) => {
+					if (trigger instanceof HTMLAnchorElement && !(event.target instanceof Element && event.target.closest('img'))) {
+						return;
+					}
+
+					const image = getVisibleImage(trigger);
+					if (!(lightbox instanceof HTMLDialogElement) || !(lightboxImage instanceof HTMLImageElement) || !image) return;
+
+					event.preventDefault();
+					lightboxImage.src = image.currentSrc || image.src;
+					lightboxImage.alt = image.alt;
+
+					if (!lightbox.open) {
+						lightbox.showModal();
+					}
+				});
+			});
+
+			lightboxClose?.addEventListener('click', () => {
+				if (lightbox instanceof HTMLDialogElement) {
+					lightbox.close();
+				}
+			});
+
+			lightbox?.addEventListener('click', (event) => {
+				if (event.target === lightbox && lightbox instanceof HTMLDialogElement) {
+					lightbox.close();
+				}
+			});
+
 			requestPhoneUpdate();
 			window.addEventListener('scroll', requestPhoneUpdate, { passive: true });
 			window.addEventListener('resize', requestPhoneUpdate);
@@ -1645,28 +1748,81 @@ import '@/styles/global.css';
 				}
 			};
 
-			const rootStyles = getComputedStyle(document.documentElement);
-			const countdownNumber = document.querySelector('[data-rough-countdown-underline]');
-			const tldrHeading = document.querySelector('[data-rough-tldr-underline]');
+			const runRoughNotation = () => {
+				const rootStyles = getComputedStyle(document.documentElement);
+				const countdownNumber = document.querySelector('[data-rough-countdown-underline]');
+				const tldrHeading = document.querySelector('[data-rough-tldr-underline]');
 
-			if (countdownNumber) {
-				const rose = rootStyles.getPropertyValue('--rose').trim();
-				annotateOnView(countdownNumber, {
-					color: rose || '#c84e55',
-				});
+				if (countdownNumber) {
+					const rose = rootStyles.getPropertyValue('--rose').trim();
+					annotateOnView(countdownNumber, {
+						color: rose || '#c84e55',
+					});
+				}
+
+				if (tldrHeading) {
+					const amber = rootStyles.getPropertyValue('--amber').trim();
+					const tldrAnnotation = annotate(tldrHeading, {
+						type: 'underline',
+						color: amber || '#f4c542',
+						strokeWidth: 4,
+						padding: 3,
+						animate: false,
+						animationDuration: 0,
+					});
+					tldrAnnotation.show();
+				}
+			};
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', runRoughNotation, { once: true });
+			} else {
+				runRoughNotation();
 			}
+		</script>
+		<script>
+			import confetti from 'canvas-confetti';
 
-			if (tldrHeading) {
-				const amber = rootStyles.getPropertyValue('--amber').trim();
-				const tldrAnnotation = annotate(tldrHeading, {
-					type: 'underline',
-					color: amber || '#f4c542',
-					strokeWidth: 4,
-					padding: 3,
-					animate: false,
-					animationDuration: 0,
+			const fireTldrConfetti = (target) => {
+				const rect = target.getBoundingClientRect();
+				const source = {
+					x: rect.left + rect.width / 2,
+					y: rect.top + rect.height / 2,
+				};
+				const origin = {
+					x: source.x / window.innerWidth,
+					y: source.y / window.innerHeight,
+				};
+				const angleToCenter =
+					(Math.atan2(window.innerHeight / 2 - source.y, window.innerWidth / 2 - source.x) * 180) /
+					Math.PI;
+				const angle = (360 - angleToCenter) % 360;
+
+				void confetti({
+					angle,
+					particleCount: 86,
+					spread: 48,
+					startVelocity: 38,
+					scalar: 0.92,
+					origin,
+					colors: ['#fbfbf4', '#3ddc84', '#e5b75a', '#2077b4', '#151611'],
+					disableForReducedMotion: true,
 				});
-				tldrAnnotation.show();
+			};
+
+			const wireTldrConfetti = () => {
+				document.querySelectorAll('.tldr-help-check').forEach((checkbox) => {
+					checkbox.addEventListener('change', (event) => {
+						if (!(event.currentTarget instanceof HTMLInputElement) || !event.currentTarget.checked) return;
+						fireTldrConfetti(event.currentTarget);
+					});
+				});
+			};
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', wireTldrConfetti, { once: true });
+			} else {
+				wireTldrConfetti();
 			}
 		</script>
 	</body>
