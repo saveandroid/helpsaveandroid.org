@@ -1398,6 +1398,7 @@ import '@/styles/global.css';
 			const loadAt = performance.now();
 			let gateTouchStartY = 0;
 			let lastScrollY = window.scrollY;
+			const keyboardSnapKeys = [' ', 'ArrowDown', 'PageDown', 'ArrowUp', 'PageUp'];
 
 			const lossAt = (time) => Math.max(0, ((time - scamStart) / msPerYear) * annualLossUsd);
 			const easeOut = (value) => 1 - Math.pow(1 - value, 3);
@@ -1481,8 +1482,30 @@ import '@/styles/global.css';
 			);
 
 			document.addEventListener('keydown', (event) => {
-				if ([' ', 'ArrowDown', 'PageDown'].includes(event.key) && isLoadedGateActive()) {
+				if (!keyboardSnapKeys.includes(event.key)) return;
+				if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '')) return;
+
+				const isMovingDown = [' ', 'ArrowDown', 'PageDown'].includes(event.key);
+				if (isMovingDown && isLoadedGateActive()) {
+					event.preventDefault();
 					revealPage();
+					return;
+				}
+
+				if (!document.documentElement.classList.contains('intro-snap-active')) return;
+
+				const snapTargets = [
+					...document.querySelectorAll(
+						'.snap-panel, .tldr-snap-panel, .scroll-learn-more-cue-snap, .scroll-learn-more-snap',
+					),
+				].filter((target) => !target.hasAttribute('hidden'));
+				const target = isMovingDown
+					? snapTargets.find((snapTarget) => snapTarget.getBoundingClientRect().top > 8)
+					: [...snapTargets].reverse().find((snapTarget) => snapTarget.getBoundingClientRect().top < -8);
+
+				if (target) {
+					event.preventDefault();
+					target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			});
 
@@ -1567,7 +1590,7 @@ import '@/styles/global.css';
 					const isNearTldrStart =
 						isScrollingDown &&
 						tldrRect.top > 0 &&
-						tldrRect.top < window.innerHeight * 0.95;
+						tldrRect.top < window.innerHeight * 1.35;
 					document.documentElement.classList.toggle('tldr-entry-snap-active', isNearTldrStart);
 				}
 
