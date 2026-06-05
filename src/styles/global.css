@@ -149,7 +149,8 @@ body {
   scroll-snap-stop: normal;
 }
 
-.snap-panel {
+.snap-panel,
+.tldr-snap-panel {
   scroll-snap-stop: always;
 }
 
