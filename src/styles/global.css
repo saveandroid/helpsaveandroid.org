@@ -225,6 +225,21 @@ html.page-content-revealed .page-reveal-gate {
   object-fit: cover;
 }
 
+@media (max-width: 639px) {
+  .tldr-help-item--online {
+    grid-template-rows: clamp(10rem, 58vw, 14.5rem) auto;
+    min-height: clamp(19.5rem, 84vw, 21rem);
+  }
+
+  .tldr-help-image--online {
+    width: min(100%, 21rem);
+    height: clamp(10rem, 58vw, 14.5rem);
+    align-self: center;
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
 .tldr-help-image-card {
   display: grid;
   width: 100%;
