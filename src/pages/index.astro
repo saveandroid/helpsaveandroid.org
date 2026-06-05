@@ -1589,7 +1589,7 @@ import '@/styles/global.css';
 						learnMoreRect.top < window.innerHeight * 0.85;
 					document.documentElement.classList.toggle(
 						'learn-more-section-snap-active',
-						isNearLearnMoreStart,
+						isScrollingDown && isNearLearnMoreStart,
 					);
 				}
 
