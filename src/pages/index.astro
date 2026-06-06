@@ -1,6 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import articleBitdefenderImage from '@/assets/article-bitdefender.png';
+import articleBitdefenderDarkReaderImage from '@/assets/article-bitdefender-dark-reader.png';
 import acluPreviewImage from '@/assets/placeholder-aclu.png';
 import guardianPreviewImage from '@/assets/placeholder-guardian.png';
 import techradarPreviewImage from '@/assets/placeholder-techradar.png';
@@ -477,13 +478,19 @@ import '@/styles/global.css';
 							class="lightbox-trigger"
 							data-lightbox-trigger
 						>
-							<img
-								src={articleBitdefenderImage.src}
-								alt="Screenshot of a Bitdefender article about a phishing swindle that conned Google and Facebook."
-								loading="lazy"
-								decoding="async"
-								class="block w-full rounded-lg border border-(--line) bg-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
-							/>
+							<picture>
+								<source
+									srcset={articleBitdefenderDarkReaderImage.src}
+									media="(prefers-color-scheme: dark)"
+								/>
+								<img
+									src={articleBitdefenderImage.src}
+									alt="Screenshot of a Bitdefender article about a phishing swindle that conned Google and Facebook."
+									loading="lazy"
+									decoding="async"
+									class="block w-full rounded-lg border border-(--line) bg-white shadow-[0_1.2rem_2.4rem_var(--page-shadow)]"
+								/>
+							</picture>
 						</button>
 						<figcaption class="mt-4 text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed italic text-(--muted)">
 							source:
