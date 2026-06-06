@@ -143,7 +143,6 @@ body {
 
 .snap-panel,
 .tldr-snap-panel,
-.scroll-learn-more-cue-snap,
 .scroll-learn-more-snap {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
@@ -402,6 +401,10 @@ html.page-content-revealed .page-reveal-gate {
   border-radius: 0.35rem;
   overflow: hidden;
   object-fit: cover;
+}
+
+.tldr-help-image--geek {
+  object-position: left center;
 }
 
 @media (max-width: 639px) {
