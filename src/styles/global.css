@@ -117,7 +117,7 @@ body {
 
 .footnote-number {
   margin-right: 0.45rem;
-  color: var(--accent-strong);
+  color: var(--muted);
   font-style: normal;
   font-weight: 700;
 }
@@ -130,7 +130,7 @@ body {
 }
 
 .footnote-ref a {
-  color: var(--accent-strong);
+  color: var(--muted);
   font-weight: 700;
   text-decoration: none;
 }
@@ -139,6 +139,40 @@ body {
   text-decoration: underline;
   text-decoration-thickness: 0.12em;
   text-underline-offset: 0.18em;
+}
+
+.art-placeholder {
+  position: relative;
+}
+
+.art-placeholder-link {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.75rem;
+  color: var(--accent-strong);
+  font-size: 0.86rem;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.art-placeholder .got-art-link {
+  color: var(--muted);
+}
+
+.art-placeholder-link:hover {
+  color: var(--ink);
+}
+
+.art-placeholder .got-art-link:hover {
+  color: var(--muted);
+}
+
+.art-placeholder-link:focus-visible {
+  border-radius: 0.2rem;
+  outline: 2px solid var(--ink);
+  outline-offset: 0.2rem;
 }
 
 .snap-panel,
