@@ -50,7 +50,7 @@ html {
   background-color: var(--paper);
   background-image: url("../assets/transparent-texture.png");
   background-repeat: repeat;
-  font-size: 103.125%;
+  font-size: 119.792%;
   scroll-behavior: smooth;
   scroll-snap-type: none;
 }
