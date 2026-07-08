@@ -76,6 +76,8 @@ const formatter = new Intl.NumberFormat('en-AU');
 const POPULAR_PEOPLE_URL = '/people/popular.json';
 const RANKED_REPRESENTATIVES_URL = '/api/representatives/top?limit=200';
 const REPRESENTATIVE_SELECTIONS_KEY = 'hsa.representativeSelections.v1';
+const DEFAULT_STATUS_TEXT = 'yet to reach out';
+const DEFAULT_STATUS_PALETTE_INDEX = 2;
 const entityKindLabel: Record<string, string> = {
   account: 'Account',
   human: 'Human',
@@ -91,16 +93,20 @@ const pillPalettes = [
   { border: '#27856f', color: '#166d5a' },
 ];
 
+function pillStyleForPaletteIndex(index: number) {
+  const palette = pillPalettes[index % pillPalettes.length];
+  return {
+    borderColor: `color-mix(in srgb, ${palette.border} 62%, transparent)`,
+    color: palette.color,
+  };
+}
+
 function hashString(value: string): number {
   return [...value].reduce((hash, character) => hash + character.charCodeAt(0), 0);
 }
 
 function pillStyle(value: string, offset = 0) {
-  const palette = pillPalettes[(hashString(value) + offset) % pillPalettes.length];
-  return {
-    borderColor: `color-mix(in srgb, ${palette.border} 62%, transparent)`,
-    color: palette.color,
-  };
+  return pillStyleForPaletteIndex((hashString(value) + offset) % pillPalettes.length);
 }
 
 function stripHtml(value: string): string {
@@ -639,12 +645,13 @@ export default function RepresentativeVoting({ siteKey }: { siteKey: string }) {
   );
 
   const renderStatusPill = (row: Representative) => {
-    const statusText = stripHtml(row.statusHtml || row.fallbackStatus || 'status pending') || 'status pending';
+    const hasStatus = Boolean(row.statusHtml || row.fallbackStatus);
+    const statusText = stripHtml(row.statusHtml || row.fallbackStatus || DEFAULT_STATUS_TEXT) || DEFAULT_STATUS_TEXT;
 
     return (
       <div
         className="rep-status inline-flex min-h-7 max-w-full items-center rounded-full border bg-transparent px-2.5 py-1 text-xs font-semibold leading-tight"
-        style={pillStyle(statusText, 2)}
+        style={hasStatus ? pillStyle(statusText, 2) : pillStyleForPaletteIndex(DEFAULT_STATUS_PALETTE_INDEX)}
         dangerouslySetInnerHTML={{ __html: row.statusHtml || statusText }}
       />
     );
